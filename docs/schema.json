@@ -1,0 +1,87 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CarLeaseLoanContract",
+  "type": "object",
+
+  "properties": {
+    "vehicle": {
+      "type": "object",
+      "properties": {
+        "make": {"type": "string"},
+        "model": {"type": "string"},
+        "year": {"type": "integer"},
+        "vin": {"type": "string"},
+        "odometer": {"type": "integer"}
+      },
+      "required": ["make", "model", "year"]
+    },
+
+    "customer": {
+      "type": "object",
+      "properties": {
+        "name": {"type": "string"},
+        "address": {"type": "string"},
+        "phone": {"type": "string"}
+      },
+      "required": ["name"]
+    },
+
+    "dealer": {
+      "type": "object",
+      "properties": {
+        "dealer_name": {"type": "string"},
+        "dealer_address": {"type": "string"},
+        "lender_name": {"type": "string"},
+        "lender_type": {"type": "string"}
+      }
+    },
+
+    "financial_terms": {
+      "type": "object",
+      "properties": {
+        "contract_type": {"type": "string"},
+        "vehicle_price": {"type": "number"},
+        "down_payment": {"type": "number"},
+        "interest_rate": {"type": "number"},
+        "apr": {"type": "number"},
+        "loan_term_months": {"type": "integer"},
+        "monthly_payment": {"type": "number"},
+        "total_payable_amount": {"type": "number"},
+        "balloon_payment": {"type": "number"},
+        "taxes_and_fees": {"type": "number"}
+      },
+      "required": ["contract_type"]
+    },
+
+    "lease_terms": {
+      "type": "object",
+      "properties": {
+        "residual_value": {"type": "number"},
+        "mileage_limit_per_year": {"type": "integer"},
+        "excess_mileage_fee": {"type": "number"},
+        "wear_and_tear_policy": {"type": "string"}
+      }
+    },
+
+    "loan_terms": {
+      "type": "object",
+      "properties": {
+        "amortization_type": {"type": "string"},
+        "prepayment_penalty": {"type": "number"},
+        "late_fee_rules": {"type": "string"}
+      }
+    },
+
+    "contract_metadata": {
+      "type": "object",
+      "properties": {
+        "contract_date": {"type": "string"},
+        "contract_id": {"type": "string"},
+        "vendor_source": {"type": "string"}
+      },
+      "required": ["contract_date"]
+    }
+  },
+
+  "required": ["vehicle", "customer", "financial_terms", "contract_metadata"]
+}
