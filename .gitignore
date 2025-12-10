@@ -1,0 +1,13 @@
+# Python cache
+__pycache__/
+*.pyc
+
+
+# Virtual environment
+env/
+
+# Pytest cache
+.pytest_cache/
+
+# Local config / env files
+*.env

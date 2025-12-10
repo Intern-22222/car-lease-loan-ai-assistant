@@ -1,0 +1,48 @@
+{
+  "vehicle_information": {
+    "make": "Honda",
+    "model": "City Petrol ZX CVT",
+    "year": "2020",
+    "vin": null,
+    "odometer": null
+  },
+  "customer_information": {
+    "name": "Sample User",
+    "address": "Delhi NCR",
+    "phone": null
+  },
+  "dealer_lender_information": {
+    "dealer_name": "Honda Authorized Dealer",
+    "dealer_address": "Delhi NCR",
+    "lender_name": "ICICI Bank / TranzLease",
+    "lender_type": "bank + leasing"
+  },
+  "financial_terms": {
+    "contract_type": "SMART EMI",
+    "vehicle_price": null,
+    "down_payment": null,
+    "interest_rate": null,
+    "apr": null,
+    "loan_term_months": "36",
+    "monthly_payment": "32801",
+    "total_payable_amount": null,
+    "balloon_payment": "Agreed bullet payment",
+    "taxes_and_fees": "Included (Registration, Insurance, Maintenance)"
+  },
+  "lease_specific_terms": {
+    "residual_value": "Guaranteed resale value",
+    "mileage_limit_per_year": null,
+    "excess_mileage_fee": null,
+    "wear_and_tear_policy": "Full maintenance included except tyres/battery"
+  },
+  "loan_specific_terms": {
+    "amortization_type": "Residual-value based amortization",
+    "prepayment_penalty": null,
+    "late_fee_rules": null
+  },
+  "contract_metadata": {
+    "contract_date": "2019-12-16",
+    "contract_id": "HONDA-SMART-EMI-2020",
+    "vendor_source": "Honda SMART EMI Press Release"
+  }
+}

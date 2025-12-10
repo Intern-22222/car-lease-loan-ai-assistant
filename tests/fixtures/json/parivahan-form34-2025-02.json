@@ -1,0 +1,48 @@
+{
+  "vehicle_information": {
+    "make": "Maruti",
+    "model": "Swift",
+    "year": "2023",
+    "vin": null,
+    "odometer": null
+  },
+  "customer_information": {
+    "name": "Arjun Singh",
+    "address": null,
+    "phone": "9876500000"
+  },
+  "dealer_lender_information": {
+    "dealer_name": null,
+    "dealer_address": null,
+    "lender_name": "Example Finance Company Ltd.",
+    "lender_type": "NBFC"
+  },
+  "financial_terms": {
+    "contract_type": "Hypothecation",
+    "vehicle_price": null,
+    "down_payment": null,
+    "interest_rate": null,
+    "apr": null,
+    "loan_term_months": null,
+    "monthly_payment": null,
+    "total_payable_amount": null,
+    "balloon_payment": null,
+    "taxes_and_fees": "Form submission fee"
+  },
+  "lease_specific_terms": {
+    "residual_value": null,
+    "mileage_limit_per_year": null,
+    "excess_mileage_fee": null,
+    "wear_and_tear_policy": null
+  },
+  "loan_specific_terms": {
+    "amortization_type": null,
+    "prepayment_penalty": null,
+    "late_fee_rules": null
+  },
+  "contract_metadata": {
+    "contract_date": "2025-02-28",
+    "contract_id": "LACC12345678",
+    "vendor_source": "Parivahan FORM 34"
+  }
+}

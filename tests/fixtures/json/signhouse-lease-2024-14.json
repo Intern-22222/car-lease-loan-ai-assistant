@@ -1,0 +1,54 @@
+{
+  "vehicle_information": {
+    "make": "Toyota",
+    "model": "Corolla",
+    "year": "2024",
+    "vin": "Not provided in template",
+    "odometer": "Not applicable"
+  },
+
+  "customer_information": {
+    "name": "David Wilson",
+    "address": "456 Leasing Lane, City, State",
+    "phone": "9998887777"
+  },
+
+  "dealer_lender_information": {
+    "dealer_name": "SignHouse Leasing Co.",
+    "dealer_address": "789 Lessor Street, City, State",
+    "lender_name": "SignHouse Leasing Co.",
+    "lender_type": "Leasing Company"
+  },
+
+  "financial_terms": {
+    "contract_type": "lease",
+    "vehicle_price": "Not applicable",
+    "down_payment": "0",
+    "interest_rate": "Not applicable",
+    "apr": "Not applicable",
+    "loan_term_months": "Month-to-month",
+    "monthly_payment": "3500",
+    "total_payable_amount": "Monthly payments only",
+    "balloon_payment": "Not applicable",
+    "taxes_and_fees": "Overtime usage charges may apply"
+  },
+
+  "lease_specific_terms": {
+    "residual_value": "Not mentioned (owner retains the vehicle)",
+    "mileage_limit_per_year": "Not specified",
+    "excess_mileage_fee": "Usage-based overtime fee",
+    "wear_and_tear_policy": "Security deposit covers damage beyond normal wear; lessee pays for repairs"
+  },
+
+  "loan_specific_terms": {
+    "amortization_type": "Not applicable",
+    "prepayment_penalty": "No penalty for early return",
+    "late_fee_rules": "Late payment fee applied after 5 days"
+  },
+
+  "contract_metadata": {
+    "contract_date": "2024-05-01",
+    "contract_id": "LEASE-SGNH-2024-14",
+    "vendor_source": "SignHouse Lease Agreement Template"
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "vehicle_information": {
+    "make": "Honda",
+    "model": "City",
+    "year": "2022",
+    "vin": "MH12AB1234XYZ",
+    "odometer": "15400"
+  },
+  "customer_information": {
+    "name": "Rahul Sharma",
+    "address": "Mumbai, Maharashtra",
+    "phone": "9876543210"
+  },
+  "dealer_lender_information": {
+    "dealer_name": "Honda Auto World",
+    "dealer_address": "Andheri East, Mumbai",
+    "lender_name": "AXIS Bank Ltd.",
+    "lender_type": "bank"
+  },
+  "financial_terms": {
+    "contract_type": "loan",
+    "vehicle_price": "1150000",
+    "down_payment": "150000",
+    "interest_rate": "9.5",
+    "apr": "10.2",
+    "loan_term_months": "60",
+    "monthly_payment": "18500",
+    "total_payable_amount": "1330000",
+    "balloon_payment": "0",
+    "taxes_and_fees": "25000"
+  },
+  "lease_specific_terms": {
+    "residual_value": null,
+    "mileage_limit_per_year": null,
+    "excess_mileage_fee": null,
+    "wear_and_tear_policy": null
+  },
+  "loan_specific_terms": {
+    "amortization_type": "Equated Monthly Installment (EMI) / fixed rate",
+    "prepayment_penalty": "Foreclosure Charges: 5% of the Principal Outstanding Plus GST. Part PrePayment Charges: 5% the part Payment amount plus GST. Allowed twice/year, once/month, min. 1 EMI, max. 25% of balance principal/year.",
+    "late_fee_rules": "Penal/Default Interest Rate applied on all overdue amounts. Cheque return charges: Rs. 500 per return."
+  },
+  "contract_metadata": {
+    "contract_date": "2025-01-15",
+    "contract_id": "AXIS-LOAN-2025-01",
+    "vendor_source": "AXIS Bank Loan Cum Hypothecation Agreement"
+  }
+}

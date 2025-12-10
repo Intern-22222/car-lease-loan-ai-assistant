@@ -1,0 +1,54 @@
+{
+  "vehicle_information": {
+    "make": "Tata",
+    "model": "Nexon",
+    "year": "2024",
+    "vin": "Not specified",
+    "odometer": "Not specified"
+  },
+
+  "customer_information": {
+    "name": "Suresh Rao",
+    "address": "Not specified",
+    "phone": "Not specified"
+  },
+
+  "dealer_lender_information": {
+    "dealer_name": "Not specified",
+    "dealer_address": "Not specified",
+    "lender_name": "TATA CAPITAL FINANCIAL SERVICES LIMITED",
+    "lender_type": "NBFC"
+  },
+
+  "financial_terms": {
+    "contract_type": "loan",
+    "vehicle_price": "1000000",
+    "down_payment": "100000",
+    "interest_rate": "10.0",
+    "apr": "10.5",
+    "loan_term_months": "60",
+    "monthly_payment": "19000",
+    "total_payable_amount": "Not specified",
+    "balloon_payment": "Not specified",
+    "taxes_and_fees": "Repossession charges, dishonour charges, processing fees and statutory taxes"
+  },
+
+  "lease_specific_terms": {
+    "residual_value": "N/A - Loan Contract",
+    "mileage_limit_per_year": "N/A - Loan Contract",
+    "excess_mileage_fee": "N/A - Loan Contract",
+    "wear_and_tear_policy": "Borrower must maintain the vehicle in good condition and pay for repairs"
+  },
+
+  "loan_specific_terms": {
+    "amortization_type": "EMI with pre-monthly instalment interest (PMII)",
+    "prepayment_penalty": "Prepayment charges apply on outstanding amount as per facility documents",
+    "late_fee_rules": "Additional interest on overdue amounts and dishonour charges for failed payments"
+  },
+
+  "contract_metadata": {
+    "contract_date": "2024-03-01",
+    "contract_id": "TATA-LOAN-MTC-2024-03",
+    "vendor_source": "TATA CAPITAL Master Terms and Conditions (Auto Loan)"
+  }
+}
