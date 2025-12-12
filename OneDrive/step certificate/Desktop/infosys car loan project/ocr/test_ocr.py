@@ -10,7 +10,7 @@ def ocr_one_pdf(pdf_path, output_path):
     print(f"Processing {pdf_path}...")
     
     # 1. Convert PDF to images (one image per page)
-    # 300 DPI is a standard high resolution for OCR [cite: 65]
+    # 300 DPI is a standard high resolution for OCR 
     images = convert_from_path(pdf_path, dpi=300)
     
     full_text = ""
