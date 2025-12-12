@@ -3,7 +3,7 @@ import os
 from backend.app.ocr import process_pdf
 
 # Helper to find a sample PDF for testing
-SAMPLE_PDF_PATH = "tests/fixtures/sample_contract.pdf" # Ensure Intern A put a file here 
+SAMPLE_PDF_PATH = "tests/contract_sample_01.pdf" # Ensure Intern A put a file here 
 
 def test_ocr_extraction_length():
   
