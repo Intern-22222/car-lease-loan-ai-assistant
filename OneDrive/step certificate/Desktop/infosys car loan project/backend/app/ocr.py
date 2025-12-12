@@ -5,7 +5,6 @@ import re
 def clean_text(text):
     """
     Basic cleanup: remove excess newlines and fix common OCR artifacts.
-    [cite: 65]
     """
     # Replace multiple newlines with a single newline
     text = re.sub(r'\n+', '\n', text)
@@ -17,7 +16,6 @@ def process_pdf(file_bytes: bytes) -> str:
     """
     Takes raw PDF bytes (from upload), converts to images, 
     extracts text, and returns a clean string.
-    [cite: 66, 68]
     """
     # 1. Convert PDF bytes to images with optimized DPI
     images = convert_from_bytes(file_bytes, dpi=300)
