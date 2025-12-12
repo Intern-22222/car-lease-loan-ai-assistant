@@ -2,17 +2,12 @@ import pytesseract
 from pdf2image import convert_from_path
 import os
 
-# CONFIGURATION
-# If you are on Windows and Tesseract isn't in your PATH, uncomment and set this:
-# pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
-
 def ocr_one_pdf(pdf_path, output_path):
     print(f"Processing {pdf_path}...")
     
     # 1. Convert PDF to images (one image per page)
     # 300 DPI is a standard high resolution for OCR 
     images = convert_from_path(pdf_path, dpi=300)
-    
     full_text = ""
     
     # 2. Loop through pages and extract text
