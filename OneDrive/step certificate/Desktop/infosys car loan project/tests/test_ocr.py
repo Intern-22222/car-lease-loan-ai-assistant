@@ -3,12 +3,11 @@ import os
 from backend.app.ocr import process_pdf
 
 # Helper to find a sample PDF for testing
-SAMPLE_PDF_PATH = "tests/fixtures/sample_contract.pdf" # Ensure Intern A put a file here [cite: 52]
+SAMPLE_PDF_PATH = "tests/fixtures/sample_contract.pdf" # Ensure Intern A put a file here 
 
 def test_ocr_extraction_length():
     """
     Verify output existence and minimal length (>100 chars).
-    
     """
     if not os.path.exists(SAMPLE_PDF_PATH):
         pytest.skip("Sample PDF not found in tests/fixtures/")
