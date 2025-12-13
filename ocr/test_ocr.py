@@ -1,36 +1,42 @@
 import os
 import subprocess
+import shutil
 import pytesseract
 from PIL import Image
 
-# Configure tesseract (adjust if your installation is elsewhere)
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+# Step 0: Auto-detect executables
+tesseract_cmd = shutil.which("tesseract")
+pdftoppm_cmd = shutil.which("pdftoppm")
 
-# Compute paths relative to this script so it's reproducible when run from any cwd
+if not tesseract_cmd:
+    raise FileNotFoundError("Tesseract not found! Please install it and add to PATH.")
+if not pdftoppm_cmd:
+    raise FileNotFoundError("Poppler pdftoppm not found! Please install Poppler and add to PATH.")
+
+# Configure pytesseract
+pytesseract.pytesseract.tesseract_cmd = tesseract_cmd
+
+# Step 1: Paths
 here = os.path.dirname(os.path.abspath(__file__))
-poppler_bin = r"C:\poppler\poppler-25.12.0\Library\bin"   # path to pdftoppm.exe
-pdftoppm_exe = os.path.join(poppler_bin, "pdftoppm.exe")
-pdf_file = os.path.normpath(os.path.join(here, os.pardir, "samples", "file1.pdf"))
+pdf_file = os.path.join(here, "..", "samples", "file1.pdf")
+pdf_file = os.path.normpath(pdf_file)
 output_txt = os.path.join(here, "output.txt")
 output_prefix = os.path.join(here, "page")
 
-# Step 1: Convert PDF → PNG images using Poppler directly
+# Step 2: Convert PDF → PNG
 print("Converting PDF to images using Poppler...")
-if not os.path.exists(pdftoppm_exe):
-    raise FileNotFoundError(f"pdftoppm not found at {pdftoppm_exe}")
 if not os.path.exists(pdf_file):
     raise FileNotFoundError(f"PDF file not found at {pdf_file}")
 
-proc = subprocess.run([pdftoppm_exe, "-png", pdf_file, output_prefix], capture_output=True, text=True)
+proc = subprocess.run([pdftoppm_cmd, "-png", pdf_file, output_prefix], capture_output=True, text=True)
 if proc.returncode != 0:
     print("pdftoppm stderr:", proc.stderr)
     raise RuntimeError("pdftoppm failed")
 
-# Step 2: OCR all generated images
+# Step 3: OCR
 print("Running OCR...")
 text_output = []
 
-# Find all generated image files page-1.png, page-2.png, ... in the script directory
 for img_name in sorted([f for f in os.listdir(here) if f.startswith("page") and f.endswith(".png")]):
     img_path = os.path.join(here, img_name)
     img = Image.open(img_path)
@@ -38,7 +44,7 @@ for img_name in sorted([f for f in os.listdir(here) if f.startswith("page") and 
     text_output.append(f"----- {img_name} -----\n{text}\n")
     print(f"OCR done for {img_name}")
 
-# Step 3: Save output
+# Step 4: Save text
 with open(output_txt, "w", encoding="utf-8") as f:
     f.write("\n".join(text_output))
 
