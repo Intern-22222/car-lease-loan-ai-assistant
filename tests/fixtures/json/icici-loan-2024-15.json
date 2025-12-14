@@ -1,0 +1,48 @@
+{
+  "vehicle_information": {
+    "make": "Hyundai",
+    "model": "Creta",
+    "year": "2023",
+    "vin": "MALCXXEEMN1234567",
+    "odometer": "9500"
+  },
+  "customer_information": {
+    "name": "Suresh Iyer",
+    "address": "Bengaluru, Karnataka, India",
+    "phone": "9845012345"
+  },
+  "dealer_lender_information": {
+    "dealer_name": "ICICI Bank Empanelled Auto Dealer",
+    "dealer_address": "Bengaluru, Karnataka",
+    "lender_name": "ICICI Bank Limited",
+    "lender_type": "bank"
+  },
+  "financial_terms": {
+    "contract_type": "loan",
+    "vehicle_price": "1450000",
+    "down_payment": "250000",
+    "interest_rate": "9.25",
+    "apr": "9.85",
+    "loan_term_months": "60",
+    "monthly_payment": "27500",
+    "total_payable_amount": "1650000",
+    "balloon_payment": "0",
+    "taxes_and_fees": "Processing fee, insurance charges, documentation charges, and applicable stamp duty as per ICICI Bank policy"
+  },
+  "lease_specific_terms": {
+    "residual_value": null,
+    "mileage_limit_per_year": null,
+    "excess_mileage_fee": null,
+    "wear_and_tear_policy": null
+  },
+  "loan_specific_terms": {
+    "amortization_type": "Equated Monthly Instalments (EMI) with fixed interest rate",
+    "prepayment_penalty": "Foreclosure charges up to 3% of principal outstanding depending on loan seasoning; nil after specified tenure",
+    "late_fee_rules": "Penal interest of approximately 5% per annum on overdue amounts and applicable cheque dishonour charges"
+  },
+  "contract_metadata": {
+    "contract_date": "2024-09-05",
+    "contract_id": "ICICI-AUTO-LOAN-2024-552341",
+    "vendor_source": "ICICI Bank Car Loan and Two Wheeler Loan Agreement / Key Facts Statement"
+  }
+}

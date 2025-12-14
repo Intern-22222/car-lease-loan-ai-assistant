@@ -1,0 +1,48 @@
+{
+  "vehicle_information": {
+    "make": "Toyota",
+    "model": "Camry SE",
+    "year": "2019",
+    "vin": "4T1B11HK5KU765432",
+    "odometer": "18500"
+  },
+  "customer_information": {
+    "name": "Michael Anderson",
+    "address": "742 Evergreen Terrace, San Jose, CA 95136",
+    "phone": "4085552198"
+  },
+  "dealer_lender_information": {
+    "dealer_name": "Sunnyvale Toyota",
+    "dealer_address": "898 W El Camino Real, Sunnyvale, CA",
+    "lender_name": "Toyota Motor Credit Corporation",
+    "lender_type": "Captive finance"
+  },
+  "financial_terms": {
+    "contract_type": "loan",
+    "vehicle_price": "23800",
+    "down_payment": "2500",
+    "interest_rate": "4.3",
+    "apr": "4.6",
+    "loan_term_months": "60",
+    "monthly_payment": "395",
+    "total_payable_amount": "23700",
+    "balloon_payment": "0",
+    "taxes_and_fees": "State sales tax, registration fee, documentation fee"
+  },
+  "lease_specific_terms": {
+    "residual_value": null,
+    "mileage_limit_per_year": null,
+    "excess_mileage_fee": null,
+    "wear_and_tear_policy": null
+  },
+  "loan_specific_terms": {
+    "amortization_type": "Simple interest",
+    "prepayment_penalty": "No prepayment penalty",
+    "late_fee_rules": "Late fee assessed if payment is not received within 10 days of due date"
+  },
+  "contract_metadata": {
+    "contract_date": "2020-07-01",
+    "contract_id": "TMCC-ACCOUNT-45892173",
+    "vendor_source": "Toyota Motor Credit Corporation (TMCC)"
+  }
+}

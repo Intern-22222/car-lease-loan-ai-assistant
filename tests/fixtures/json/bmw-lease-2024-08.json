@@ -1,0 +1,48 @@
+{
+  "vehicle_information": {
+    "make": "BMW",
+    "model": "X3",
+    "year": "2023",
+    "vin": "WBA7E2C51N5A12345",
+    "odometer": "12800"
+  },
+  "customer_information": {
+    "name": "Amit Verma",
+    "address": "Auckland, New Zealand",
+    "phone": "0213456789"
+  },
+  "dealer_lender_information": {
+    "dealer_name": "BMW Auckland Central",
+    "dealer_address": "35 Great North Road, Grey Lynn, Auckland",
+    "lender_name": "BMW Financial Services New Zealand Limited",
+    "lender_type": "bank"
+  },
+  "financial_terms": {
+    "contract_type": "loan_with_guaranteed_future_value",
+    "vehicle_price": "75000",
+    "down_payment": "10000",
+    "interest_rate": "8.9",
+    "apr": "9.3",
+    "loan_term_months": "36",
+    "monthly_payment": "1250",
+    "total_payable_amount": "80000",
+    "balloon_payment": "35000",
+    "taxes_and_fees": "3000"
+  },
+  "lease_specific_terms": {
+    "residual_value": "35000",
+    "mileage_limit_per_year": "15000",
+    "excess_mileage_fee": "0.75 NZD per km",
+    "wear_and_tear_policy": "Normal fair wear and tear as assessed at end-of-term inspection"
+  },
+  "loan_specific_terms": {
+    "amortization_type": "Fixed-rate loan with equal monthly instalments",
+    "prepayment_penalty": "Partial prepayment not permitted; full prepayment allowed with early termination fee",
+    "late_fee_rules": "Default interest charged daily on overdue amounts until paid in full"
+  },
+  "contract_metadata": {
+    "contract_date": "2024-06-15",
+    "contract_id": "BMW-GFV-LOAN-2024-001",
+    "vendor_source": "BMW Full Circle Loan Agreement (New Zealand)"
+  }
+}

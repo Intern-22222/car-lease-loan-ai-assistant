@@ -1,0 +1,48 @@
+{
+  "vehicle_information": {
+    "make": "Mercedes-Benz",
+    "model": "C-Class C 200",
+    "year": "2023",
+    "vin": "W1KWF8DB0MR123456",
+    "odometer": "0"
+  },
+  "customer_information": {
+    "name": "Daniel Roberts",
+    "address": "Austin, Texas, USA",
+    "phone": "5125558732"
+  },
+  "dealer_lender_information": {
+    "dealer_name": "Mercedes-Benz of Austin",
+    "dealer_address": "7011 Burnet Rd, Austin, TX",
+    "lender_name": "Mercedes-Benz Financial Services USA LLC",
+    "lender_type": "captive finance"
+  },
+  "financial_terms": {
+    "contract_type": "lease",
+    "vehicle_price": "46500",
+    "down_payment": "3000",
+    "interest_rate": "4.9",
+    "apr": "5.2",
+    "loan_term_months": "36",
+    "monthly_payment": "620",
+    "total_payable_amount": "25320",
+    "balloon_payment": "28000",
+    "taxes_and_fees": "Acquisition fee, registration, documentation, and applicable state taxes"
+  },
+  "lease_specific_terms": {
+    "residual_value": "28000",
+    "mileage_limit_per_year": "12000",
+    "excess_mileage_fee": "0.25 USD per mile",
+    "wear_and_tear_policy": "Normal wear and tear as defined by Mercedes-Benz Financial Services lease guidelines"
+  },
+  "loan_specific_terms": {
+    "amortization_type": "Not applicable (lease contract)",
+    "prepayment_penalty": "Not applicable (lease contract)",
+    "late_fee_rules": "Late payment fee applies if payment is not received by the due date as per MBFS policy"
+  },
+  "contract_metadata": {
+    "contract_date": "2024-10-18",
+    "contract_id": "MBFS-LEASE-2024-771234",
+    "vendor_source": "Mercedes-Benz Financial Services Credit Application (Personal)"
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "vehicle_information": {
+    "make": "Ford",
+    "model": "Ecosport",
+    "year": "2022",
+    "vin": "MAJAXXMR2N1234567",
+    "odometer": "18200"
+  },
+  "customer_information": {
+    "name": "Rohit Mehta",
+    "address": "Pune, Maharashtra, India",
+    "phone": "9876012345"
+  },
+  "dealer_lender_information": {
+    "dealer_name": "Ford India Authorized Dealer",
+    "dealer_address": "Pune, Maharashtra",
+    "lender_name": "Ford Credit India Private Limited",
+    "lender_type": "captive finance"
+  },
+  "financial_terms": {
+    "contract_type": "loan",
+    "vehicle_price": "950000",
+    "down_payment": "150000",
+    "interest_rate": "9.75",
+    "apr": "10.4",
+    "loan_term_months": "60",
+    "monthly_payment": "19500",
+    "total_payable_amount": "1170000",
+    "balloon_payment": "0",
+    "taxes_and_fees": "22000"
+  },
+  "lease_specific_terms": {
+    "residual_value": null,
+    "mileage_limit_per_year": null,
+    "excess_mileage_fee": null,
+    "wear_and_tear_policy": null
+  },
+  "loan_specific_terms": {
+    "amortization_type": "Equated Monthly Installment (EMI) with fixed interest rate",
+    "prepayment_penalty": "Foreclosure charges as per lender policy, applicable after lock-in period",
+    "late_fee_rules": "Late payment attracts penal interest and may result in loan recall and vehicle repossession as per RBI guidelines"
+  },
+  "contract_metadata": {
+    "contract_date": "2024-08-10",
+    "contract_id": "FCIPL-LOAN-2024-08921",
+    "vendor_source": "Ford Credit India Private Limited Loan Application Form and Terms & Conditions"
+  }
+}
