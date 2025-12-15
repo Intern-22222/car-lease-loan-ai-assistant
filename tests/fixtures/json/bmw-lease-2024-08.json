@@ -1,0 +1,49 @@
+{
+  "vehicle": {
+    "make": "BMW",
+    "model": "3 Series 320i",
+    "year": 2024,
+    "vin": "WBASN31010B765432",
+    "odometer": 350
+  },
+  "customer": {
+    "name": "Meera Nair",
+    "address": "No. 18, MG Road, Panampilly Nagar, Kochi, Kerala",
+    "phone": "+91-9846012345"
+  },
+  "dealer": {
+    "dealer_name": "Metro BMW Kochi",
+    "dealer_address": "Panampilly Nagar, Kochi, Kerala",
+    "lender_name": "BMW Financial Services India",
+    "lender_type": "captive finance"
+  },
+  "financial_terms": {
+    "contract_type": "lease",
+    "vehicle_price": 5200000.0,
+    "down_payment": 400000.0,
+    "interest_rate": 4.0,
+    "apr": 4.4,
+    "loan_term_months": 36,
+    "monthly_payment": 54500.0,
+    "total_amount_financed": 4800000.0,
+    "total_payable_amount": 1962000.0,
+    "balloon_payment": 2200000.0,
+    "taxes_and_fees": 60000.0
+  },
+  "lease_terms": {
+    "residual_value": 2200000.0,
+    "mileage_limit_per_year": 15000,
+    "excess_mileage_fee": 0.30,
+    "wear_and_tear_policy": "Normal wear allowed; excessive damage charged as per dealer inspection"
+  },
+  "loan_terms": {
+    "amortization_type": null,
+    "prepayment_penalty": null,
+    "late_fee_rules": "Late fee: 2% of overdue amount per month"
+  },
+  "contract_metadata": {
+    "contract_date": "2024-08-10",
+    "contract_id": "bmw-lease-2024-08",
+    "vendor_source": "BMW Financial Services Lease Agreement"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "vehicle": {
+    "make": "Honda",
+    "model": "City",
+    "year": 2022,
+    "vin": "MH12AB1234XYZ5678",
+    "odometer": 12000
+  },
+  "customer": {
+    "name": "Rahul Sharma",
+    "address": "Flat 12B, Sai Residency, Andheri East, Mumbai, Maharashtra",
+    "phone": "+91-9876543210"
+  },
+  "dealer": {
+    "dealer_name": "Axis Honda Dealers",
+    "dealer_address": "Andheri East, Mumbai",
+    "lender_name": "Axis Bank Ltd.",
+    "lender_type": "bank"
+  },
+  "financial_terms": {
+    "contract_type": "loan",
+    "vehicle_price": 800000.0,
+    "down_payment": 80000.0,
+    "interest_rate": 9.2,
+    "apr": 9.5,
+    "loan_term_months": 60,
+    "monthly_payment": 14800.0,
+    "total_amount_financed": 720000.0,
+    "total_payable_amount": 888000.0,
+    "balloon_payment": null,
+    "taxes_and_fees": 15000.0
+  },
+  "lease_terms": {
+    "residual_value": null,
+    "mileage_limit_per_year": null,
+    "excess_mileage_fee": null,
+    "wear_and_tear_policy": null
+  },
+  "loan_terms": {
+    "amortization_type": "EMI",
+    "prepayment_penalty": "Foreclosure charge: 5% of outstanding principal + GST",
+    "late_fee_rules": "Penal interest of 2% p.m. on overdue amount; cheque bounce fee ₹500"
+  },
+  "contract_metadata": {
+    "contract_date": "2025-01-15",
+    "contract_id": "axisbank-loan-2025-01",
+    "vendor_source": "Axis Bank Loan Cum Hypothecation Agreement"
+  }
+}
+
