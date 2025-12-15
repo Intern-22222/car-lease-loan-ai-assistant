@@ -84,11 +84,6 @@ Where the PDFs contained placeholders or missing values, realistic example value
 
 ---
 
-## User Story (Demo Preparation)
-
-**User Story:**  
-As a user, I want to upload a car loan or lease contract and receive a structured summary so that I can clearly understand vehicle details, financial terms, penalties, and lender information before proceeding.
-
 **Pipeline Summary:**  
 The uploaded PDF is processed through OCR, mapped to predefined SLA fields, and converted into a structured JSON output matching the Week-2 fixtures. This output is then used for validation, testing, and demonstration purposes.
 
