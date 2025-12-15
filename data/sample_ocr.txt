@@ -1,0 +1,35 @@
+# Sample OCR Output
+# Generated from sample PDF processing
+
+--- Page 1 ---
+CAR LEASE AGREEMENT
+
+This Vehicle Lease Agreement ("Agreement") is entered into as of the date signed below.
+
+PARTIES:
+Lessor: ABC Auto Leasing Company
+Lessee: [Customer Name]
+
+VEHICLE INFORMATION:
+Make: Toyota
+Model: Camry
+Year: 2024
+VIN: 1HGBH41JXMN109186
+Color: Silver Metallic
+
+LEASE TERMS:
+- Lease Duration: 36 months
+- Monthly Payment: $450.00
+- Security Deposit: $500.00
+- Mileage Allowance: 12,000 miles per year
+- Excess Mileage Charge: $0.25 per mile
+
+TOTAL LEASE COST:
+Base Monthly Payment: $450.00
+Taxes and Fees: $45.00
+Total Monthly Payment: $495.00
+
+This is a sample OCR output demonstrating the text extraction capabilities
+of the OCR module using PaddleOCR for the Car Lease/Loan AI Assistant project.
+
+--- End of Document ---
