@@ -14,10 +14,12 @@ Where the PDFs contained placeholders or missing values, realistic example value
 | PDF File | Contract Type | Extraction Approach | Notes |
 |--------|---------------|---------------------|-------|
 | axisbank-loan-2025-01.pdf | Loan | Template-based manual labeling | PDF contained placeholders only |
-| honda-loan-2024-07.pdf | Loan | Example-based manual extraction | Filled with realistic loan values |
-| bmw-lease-2024-08.pdf | Lease | Lease-specific field extraction | Residual & mileage fields populated |
+| honda-loan-2024-07.pdf | Loan | Example-based extraction | Filled with realistic loan values |
+| tatacapital-loan-2024-03.pdf | Loan | Loan agreement extraction | EMI, tenure, and penalties populated |
+| bmw-lease-2024-08.pdf | Lease | Lease-specific extraction | Residual value and mileage limits populated |
 | signhouse-lease-2024-14.pdf | Lease | Dealer lease extraction | Wear & tear and usage limits included |
-| tatacapital-loan-2024-03.pdf | Loan | Loan terms manual extraction | EMI and penalty terms populated |
+| parivahan-form34-2025-02.pdf | Hypothecation (Loan) | Registry form mapping | Financial values inferred for testing |
+| paperform-lease-2024-13.pdf | Lease | Lease template extraction | Monthly lease and mileage fields populated |
 
 ---
 
@@ -90,5 +92,5 @@ The uploaded PDF is processed through OCR, mapped to predefined SLA fields, and 
 ---
 
 ## Conclusion
-All five contract PDFs were manually reviewed and converted into structured JSON fixtures following the project schema.  
+All Seven contract PDFs were manually reviewed and converted into structured JSON fixtures following the project schema.  
 This labeled dataset serves as a reliable reference for backend validation, OCR evaluation, and pipeline demonstrations.
