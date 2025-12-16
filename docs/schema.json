@@ -1,0 +1,32 @@
+{
+    "$schema": "https://json-schema.org/draft-07/schema#",
+    "title": "Lease/Loan Extraction Schema",
+    "type" : "object",
+    "properties": {
+        "interest_rate"  : {"type":["number","null"],"minimum": 0},
+        "lease_term_months"  : {"type":["integer","null"],"minimum": 0},
+        "monthly_payment" :{"type":["number","null"],"minimum": 0},
+        "down_payment"  :{"type":["number","null"],"minimum": 0},
+        "residual_value":{"type":["number","null"],"minimum": 0},
+        "mileage_limit_per_year":{"type":["number","null"],"minimum": 0},
+        "overage_fee_per_mile":{"type":["number","null"],"minimum": 0},
+        "early_termination_fee":{"type":["string","null"]},
+        "notice_period_days":{"type":["integer","null"],"minimum": 0},
+        "security_deposit_amount":{"type":["number","null"],"minimum":0},
+        "monthly_rent_amount":{"type":["number","null"],"minimum": 0},
+        "lease_start_date":{"type":["string","null"],"format": "date"},
+        "lease_end_date":{"type":["string","null"],"format": "date"},
+        "rent_due_day":{"type":["integer","null"],"minimum": 1,"maximum": 31},
+        "grace_period_days":{"type":["integer","null"],"minimum": 0},
+        "late_fee_amount":{"type":["number","null"],"minimum": 0},
+        "late_fee_percentage":{"type":["number","null"],"minimum": 0,"maximum": 100},
+        "interest_on_late_payment":{"type":["number","null"],"minimum": 0},
+        "default_definition":{"type":["string","null"]},
+        "cure_period_days":{"type":["integer","null"],"minimum": 0},
+        "remedies_on_default":{"type":["string","null"]},
+        "termination_rights":{"type":["string","null"]},
+        "governing_law":{"type":["string","null"]},
+        "jurisdiction":{"type":["string","null"]},
+        "special_conditions": {"type": ["string", "null"]}
+    }
+}

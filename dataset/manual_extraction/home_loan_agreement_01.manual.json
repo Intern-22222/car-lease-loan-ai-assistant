@@ -1,0 +1,21 @@
+{
+    "contract_metadata":{
+        "contract_id": "home_loan_agreement_01",
+        "source_file": "home_loan_agreement_01.pdf",
+        "document_type": "Home Loan Agreement",
+        "lender_name": null,
+        "borrower_name": null
+    },
+    "extracted_fields":{
+        "loan_amount":{
+        "value": null,
+        "evidence": null,
+        "page_number":4,
+        "clause_text":"The Borrower agrees to borrow from the Bank and Bank agrees to lend to the Borrower a sum as mentioned in   the Schedule to this Agreement.",
+        "note":"Loan amount is referenced as being defined in the Schedule; however, the Schedule field 'Loan / Facility amount'   is blank in this document."
+        },
+        "interest_rate":{
+            
+        }
+    }
+}
