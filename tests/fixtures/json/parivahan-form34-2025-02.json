@@ -1,0 +1,49 @@
+{
+  "vehicle_information": {
+    "make": "Maruti Suzuki",
+    "model": "Swift VXi",
+    "year": 2021,
+    "vin": "MA3EUA12M0123456",
+    "odometer": 24500
+  },
+  "customer_information": {
+    "name": "Ramesh Kumar",
+    "address": "H.No 12-3-45, Banjara Hills, Hyderabad, Telangana",
+    "phone": "9876543210"
+  },
+  "dealer_lender_information": {
+    "dealer_name": "Regional Transport Office Hyderabad",
+    "dealer_address": "Khairatabad, Hyderabad, Telangana",
+    "lender_name": "State Bank of India",
+    "lender_type": "public sector bank"
+  },
+  "financial_terms": {
+    "contract_type": "loan",
+    "vehicle_price": 780000,
+    "down_payment": 100000,
+    "interest_rate": 9.25,
+    "apr": 9.6,
+    "loan_term_months": 60,
+    "monthly_payment": 14250,
+    "total_amount_financed": 680000,
+    "total_payable_amount": 855000,
+    "balloon_payment": null,
+    "taxes_and_fees": 18000
+  },
+  "lease_specific_terms": {
+    "residual_value": null,
+    "mileage_limit_per_year": null,
+    "excess_mileage_fee": null,
+    "wear_and_tear_policy": null
+  },
+  "loan_specific_terms": {
+    "amortization_type": "EMI",
+    "prepayment_penalty": "2% of outstanding principal",
+    "late_fee_rules": "Penal interest of 2% per month on overdue EMI"
+  },
+  "contract_metadata": {
+    "contract_date": "2025-02-10",
+    "contract_id": "parivahan-form34-2025-02",
+    "vendor_source": "Form 34 Parivahan Hypothecation Entry"
+  }
+}

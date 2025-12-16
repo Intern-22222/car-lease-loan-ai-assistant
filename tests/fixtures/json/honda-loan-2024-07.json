@@ -1,17 +1,17 @@
 {
-  "vehicle": {
+  "vehicle_information": {
     "make": "Honda",
     "model": "Amaze VX",
     "year": 2020,
     "vin": "JHMZX6589L0023456",
     "odometer": 16750
   },
-  "customer": {
+  "customer_information": {
     "name": "Arjun Varma",
     "address": "Plot No. 42, Rajendra Nagar Colony, Kukatpally, Hyderabad, Telangana",
     "phone": null
   },
-  "dealer": {
+  "dealer_lender_information": {
     "dealer_name": "Pride Honda Showroom",
     "dealer_address": "Kukatpally Main Road, Hyderabad, Telangana",
     "lender_name": "Honda Financial Services India",
@@ -30,13 +30,13 @@
     "balloon_payment": null,
     "taxes_and_fees": 13000.0
   },
-  "lease_terms": {
+  "lease_specific_terms": {
     "residual_value": null,
     "mileage_limit_per_year": null,
     "excess_mileage_fee": null,
     "wear_and_tear_policy": null
   },
-  "loan_terms": {
+  "loan_specific_terms": {
     "amortization_type": "EMI",
     "prepayment_penalty": "3% of outstanding principal + GST",
     "late_fee_rules": "2.5% penalty on overdue EMI; cheque bounce ₹590"

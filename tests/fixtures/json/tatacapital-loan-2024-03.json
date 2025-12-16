@@ -1,17 +1,17 @@
 {
-  "vehicle": {
+  "vehicle_information": {
     "make": "Tata",
     "model": "Nexon XM",
     "year": 2022,
     "vin": "TMAJU47A2PJ001234",
     "odometer": 5400
   },
-  "customer": {
+  "customer_information": {
     "name": "Ragini Shah",
     "address": "B-204, Shivalik Residency, Navrangpura, Ahmedabad, Gujarat",
     "phone": "+91-9099988877"
   },
-  "dealer": {
+  "dealer_lender_information": {
     "dealer_name": "Tata Motors Showroom Ahmedabad",
     "dealer_address": "CG Road, Navrangpura, Ahmedabad",
     "lender_name": "Tata Capital Financial Services",
@@ -30,13 +30,13 @@
     "balloon_payment": null,
     "taxes_and_fees": 22000.0
   },
-  "lease_terms": {
+  "lease_specific_terms": {
     "residual_value": null,
     "mileage_limit_per_year": null,
     "excess_mileage_fee": null,
     "wear_and_tear_policy": null
   },
-  "loan_terms": {
+  "loan_specific_terms": {
     "amortization_type": "EMI",
     "prepayment_penalty": "2% of principal prepaid + GST",
     "late_fee_rules": "Penalty interest 2.5% per month on overdue EMI"
