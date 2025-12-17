@@ -1,0 +1,39 @@
+name: CI Pipeline Skeleton
+
+# Controls when the workflow will run
+on:
+  push:
+    branches: [ main, master, dev ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-and-test:
+    # Use the latest Ubuntu runner provided by GitHub
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Check out the repository code so the runner can access it
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # 2. Set up the Python environment (matching the project version)
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      # 3. Install dependencies from your requirements.txt
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      # 4. Lint the code using flake8 to check for syntax errors
+      - name: Lint with flake8
+        run: |
+          pip install flake8
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings (useful for initial setup)
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
