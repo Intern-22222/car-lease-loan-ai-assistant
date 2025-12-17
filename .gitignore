@@ -1,0 +1,49 @@
+# Virtual envs
+venv/
+.venv/
+env/
+
+# Bytecode, caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Tests, coverage
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Editors
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets
+.env
+.env.*
+
+# Logs / tmp
+*.log
+logs/
+tmp/
+
+# Tooling caches
+.mypy_cache/
+.cache/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Optional large/generated data
+data/
+samples/
+ocr/output.txt
