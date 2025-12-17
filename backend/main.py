@@ -1,11 +1,15 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, UploadFile, File
+from pydantic import BaseModel
 
-app = FastAPI(title="Contract Analysis Engine", version="0.1.0")
+app = FastAPI()
 
-@app.get("/health")
-def health():
-    return {"status": "ok"}
+class OCRRequest(BaseModel):
+    file_id: str
 
-@app.get("/")
-def root():
-    return {"message": "Backend stub is running"}
+@app.post("/upload")
+async def upload(file: UploadFile = File(...)):
+    return {"file_id": "sample-123"}
+
+@app.post("/ocr")
+async def ocr(req: OCRRequest):
+    return {"status": "ok", "text": f"OCR text for {req.file_id}"}

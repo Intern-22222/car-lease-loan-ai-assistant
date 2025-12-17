@@ -1,4 +1,4 @@
-# Week 1 Verification Checklist
+# Week 2 Verification Checklist
 
 ## Infra
 - [ ] `infra/docker-compose.yml` defines `db` (Postgres) and `backend` services
