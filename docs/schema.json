@@ -1,0 +1,128 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Canonical Car Lease and Loan Contract Schema",
+  "type": "object",
+  "required": [
+    "vehicle",
+    "customer",
+    "lender",
+    "contract",
+    "financial"
+  ],
+  "properties": {
+    "vehicle": {
+      "type": "object",
+      "required": ["make", "model", "year", "vin"],
+      "properties": {
+        "make": {
+          "type": "string"
+        },
+        "model": {
+          "type": "string"
+        },
+        "year": {
+          "type": "integer",
+          "minimum": 1900
+        },
+        "vin": {
+          "type": "string",
+          "minLength": 17,
+          "maxLength": 17
+        },
+        "registration_number": {
+          "type": "string"
+        }
+      }
+    },
+
+    "customer": {
+      "type": "object",
+      "required": ["name", "address", "phone"],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string",
+          "pattern": "^[0-9+\\- ]{8,15}$"
+        }
+      }
+    },
+
+    "lender": {
+      "type": "object",
+      "required": ["lender_name", "lender_type"],
+      "properties": {
+        "lender_name": {
+          "type": "string"
+        },
+        "lender_type": {
+          "type": "string",
+          "enum": ["bank", "captive_finance", "credit_union"]
+        }
+      }
+    },
+
+    "contract": {
+      "type": "object",
+      "required": ["contract_type", "contract_date", "contract_id", "vendor_source"],
+      "properties": {
+        "contract_type": {
+          "type": "string",
+          "enum": ["loan", "lease", "hypothecation"]
+        },
+        "contract_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "contract_id": {
+          "type": "string"
+        },
+        "vendor_source": {
+          "type": "string"
+        }
+      }
+    },
+
+    "financial": {
+      "type": "object",
+      "required": [
+        "vehicle_price",
+        "loan_term_months",
+        "monthly_payment",
+        "total_payable_amount"
+      ],
+      "properties": {
+        "vehicle_price": {
+          "type": "number",
+          "minimum": 0
+        },
+        "loan_term_months": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "monthly_payment": {
+          "type": "number",
+          "minimum": 0
+        },
+        "total_payable_amount": {
+          "type": "number",
+          "minimum": 0
+        },
+        "interest_rate": {
+          "type": "number",
+          "minimum": 0
+        },
+        "apr": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    }
+  },
+
+  "additionalProperties": false
+}
