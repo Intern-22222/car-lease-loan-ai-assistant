@@ -3,9 +3,9 @@ services:
     image: postgres:15
     container_name: lease_assistant_db
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: lease_db
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - "5432:5432"
     volumes:
@@ -21,7 +21,8 @@ services:
     depends_on:
       - db
     environment:
-      DATABASE_URL: postgresql://user:password@db:5432/lease_db
+      # Connection string provided via the .env file
+      DATABASE_URL: ${DATABASE_URL}
 
 volumes:
   postgres_data:
