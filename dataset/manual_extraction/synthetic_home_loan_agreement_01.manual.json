@@ -1,0 +1,23 @@
+{
+  "contract_metadata": {
+    "contract_id": "synthetic_home_loan_agreement_01",
+    "source_file": "synthetic_home_loan_agreement_01.pdf",
+    "document_type": "Home Loan Agreement",
+    "lender_name": null,
+    "borrower_name": null
+  },
+  "extracted_fields": {
+    "loan_amount": "INR 15,00,000",
+    "interest_rate": "9.50% per annum (Fixed)",
+    "tenure": "180 months",
+    "repayment_schedule": null,
+    "emi_amount": "INR 15,650",
+    "security_type": null,
+    "security_value": null,
+    "prepayment_penalty": null,
+    "late_payment_penalty": null,
+    "default_clause": null,
+    "governing_law": null,
+    "jurisdiction": null
+  }
+}

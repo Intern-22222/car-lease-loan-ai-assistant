@@ -1,0 +1,17 @@
+{
+  "contract_id": "secured_loan_bank_guarantee_01",
+  "loan_amount": null,
+  "interest_rate": null,
+  "tenure": null,
+  "repayment_schedule": null,
+  "emi_amount": null,
+  "security_type": null,
+  "security_value": null,
+  "prepayment_penalty": null,
+  "late_payment_penalty": null,
+  "default_clause": null,
+  "governing_law": null,
+  "jurisdiction": null
+}
+
+

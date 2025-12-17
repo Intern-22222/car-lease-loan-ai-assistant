@@ -15,7 +15,12 @@
         "note":"Loan amount is referenced as being defined in the Schedule; however, the Schedule field 'Loan / Facility amount'   is blank in this document."
         },
         "interest_rate":{
-            
+            "value": null,
+        "evidence": {
+        "page_number": 14,
+        "clause_text": "Interest chargeable (In case of Floating Rate Loans): MCLR* _____% + Margin _____% = _____%; Interest chargeable (In case of Fixed Rate Loans) — Schedule",
+        "note": "Interest rate is defined by formula in the Schedule, but the actual percentage values are blank in this document."
         }
-    }
+        }
+    }   
 }

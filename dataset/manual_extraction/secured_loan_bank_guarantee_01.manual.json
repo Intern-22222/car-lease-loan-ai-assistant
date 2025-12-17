@@ -1,0 +1,23 @@
+{
+  "contract_metadata": {
+    "contract_id": "secured_loan_bank_guarantee_01",
+    "source_file": "secured_loan_bank_guarantee_01.pdf",
+    "document_type": "Secured Loan Agreement (Bank Guarantee)",
+    "lender_name": null,
+    "borrower_name": null
+  },
+  "extracted_fields": {
+        "loan_amount" : null,
+        "interest_rate" : null,
+        "tenure":null,
+        "repayment_schedule": null,
+        "emi_amount": null,
+        "security_type": null,
+        "security_value": null,
+        "prepayment_penalty": null,
+        "late_payment_penalty": null,
+        "default_clause": null,
+        "governing_law": null,
+        "jurisdiction": null
+  }
+}

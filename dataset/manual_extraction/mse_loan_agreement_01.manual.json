@@ -1,17 +1,17 @@
 {
   "contract_metadata": {
-    "contract_id": "synthetic_mse_loan_agreement_01",
-    "source_file": "synthetic_mse_loan_agreement_01.pdf",
+    "contract_id": "mse_loan_agreement_01",
+    "source_file": "mse_loan_agreement_01.pdf",
     "document_type": "MSE Loan Agreement",
     "lender_name": null,
     "borrower_name": null
   },
   "extracted_fields": {
-    "loan_amount": "INR 8,00,000",
-    "interest_rate": "11.25% per annum (Floating)",
-    "tenure": "60 months",
+    "loan_amount": null,
+    "interest_rate": null,
+    "tenure": null,
     "repayment_schedule": null,
-    "emi_amount": "INR 17,600",
+    "emi_amount": null,
     "security_type": null,
     "security_value": null,
     "prepayment_penalty": null,
