@@ -2,45 +2,33 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ Soundarya ]
   pull_request:
+    branches: [ Soundarya ]
 
 jobs:
-  python-lint:
-    runs-on: windows-latest
+  build-and-test:
+    runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install -r backend/requirements.txt
+          pip install -r requirements.txt
+          pip install pytest requests
 
-      - name: Ruff lint
+      - name: Run pytest
+        run: pytest -q tests/
+
+      - name: Run smoke test
+        env:
+          BASE_URL: http://127.0.0.1:8000
         run: |
-          ruff --version
-          ruff check app
-
-      - name: Black check
-        run: |
-          black --version
-          black --check app
-
-  docker-build:
-    runs-on: windows-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Docker
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build backend image
-        run: |
-          docker build -f backend/Dockerfile -t contract-backend:ci .
+          bash scripts/smoke_test.sh
