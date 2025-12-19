@@ -1,9 +1,8 @@
 # Python dependencies for Car Lease/Loan AI Assistant - OCR Module
 
-# OCR Dependencies
-paddlepaddle>=2.5.0
-paddleocr>=2.7.0
-pdf2image>=1.16.0
+# OCR Dependencies (Tesseract)
+pytesseract>=0.3.10
+PyMuPDF>=1.24.0  
 Pillow>=10.0.0
 
 # Testing
