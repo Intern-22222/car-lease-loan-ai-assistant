@@ -1,18 +1,69 @@
-## Problem Statement
-Car lease and loan contracts are long and difficult for users to understand. Many users are unaware of the interest rates, hidden penalties, and whether the deal offered by the dealer is fair. This lack of clarity makes negotiation difficult.
+Car Lease / Loan AI Assistant 
+📌Project Overview
 
-## Solution
-This project provides an AI-based assistant that allows users to upload car lease or loan contracts. The system extracts key contract details, summarizes them in a simple format, and helps users negotiate better deals.
+This project is an AI-assisted backend system that allows users to upload car lease or loan PDF contracts, extract text using OCR, and store the extracted content for further analysis (like identifying key contract terms in future stages).
 
-## SLA Fields to Extract
-The following key fields will be extracted from car lease or loan contracts:
 
-- Interest Rate (APR)
-- Lease Term (in months)
-- Monthly Payment Amount
-- Down Payment
-- Mileage Limit
-- Penalties / Late Fees
-- Early Termination Clause
+ **MILESTONE-1**
 
-These fields are fixed for the initial version of the project and will be used for contract analysis and negotiation assistance.
+## Week 1: Project Setup & Backend Foundation
+
+### Project Setup
+- Created a structured project folder:
+  - **backend/** – backend code
+  - **data/uploads/** – uploaded PDF files
+  - **data/sample_contracts/** – sample PDFs for testing
+  - **data/extracted_text/** – extracted text output files
+- Initialized the Git repository and pushed the code to GitHub.
+
+### Python Environment
+- Created and activated a virtual environment (**venv**).
+- Installed required packages:
+  - **Flask**
+  - **pdfplumber**
+- Managed dependencies using **requirements.txt**.
+
+### Backend Application
+- Built a basic Flask backend application.
+- Verified the backend runs successfully at:  
+  **http://127.0.0.1:5000/**
+
+---
+
+## Week 2: OCR Pipeline (Intern c - OCR & preprocessing engineer--Focus on OCR pipepline)
+
+### File Upload API
+- Created a **/upload** API endpoint-**used POSTMAN**.
+- Accepts PDF files via **POST** requests.
+- Saves uploaded PDFs into **data/uploads/**.
+
+### OCR Integration
+- Integrated **pdfplumber** to extract text from uploaded PDFs.
+- Successfully converted PDF contracts into readable text.
+
+### OCR Testing
+- Used **Postman** to upload PDF files.
+- Verified:
+  - PDF upload works correctly
+  - OCR extracts text accurately
+  - No backend errors during processing
+
+### Store Extracted Text
+- Saved extracted text into **.txt** files inside:
+  - **data/extracted_text/**
+- Each uploaded PDF generates a corresponding text file.
+
+### End-to-End Flow Verified
+- **Upload PDF → OCR Processing → Text Extraction → Text Saved**
+- Full OCR pipeline works successfully.
+
+## 🎯 Current Status
+- ✔ Backend running successfully
+- ✔ File upload API working
+- ✔ OCR pipeline functioning correctly
+- ✔ Text extracted and stored properly
+
+
+  **Intern C (OCR & preprocessing engineer--Focus on OCR pipepline) tasks completed**
+
+  ---
