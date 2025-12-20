@@ -54,10 +54,13 @@ pytest -s tests/test_ocr.py
 ```
 
 # Week 1
+```text
 •	docs/run_local.md – OCR environment setup guide
 •	ocr/test_ocr.py – Manual OCR prototype
 •	requirements.txt – Dependency list
+```
 # Week 2
+````text
 •	backend/app/ocr.py – Production OCR module
 o	Accepts raw file bytes
 o	Cleans extracted text
@@ -66,3 +69,4 @@ o	Handles errors safely
 o	Tests all PDFs
 o	Validates output type and length
 •	docs/OCR_Module.md – Technical OCR documentation
+````
