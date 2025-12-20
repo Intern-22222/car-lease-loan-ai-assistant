@@ -29,8 +29,9 @@ car-lease-loan-ai-assistant/
 ├── samples/                  # Sample PDF contracts
 ├── requirements.txt          # Python dependencies
 └── README.md
-
-Installation
+````
+# Installation
+```text
 1. Prerequisites
 •	Python 3.8+
 •	Tesseract OCR (installed and added to PATH)
@@ -50,12 +51,13 @@ python ocr/test_ocr.py
 2. Run Automated Tests (Week 2)
 Checks OCR output validity and length.
 pytest -s tests/test_ocr.py
+```
 
- Week 1
+# Week 1
 •	docs/run_local.md – OCR environment setup guide
 •	ocr/test_ocr.py – Manual OCR prototype
 •	requirements.txt – Dependency list
- Week 2
+# Week 2
 •	backend/app/ocr.py – Production OCR module
 o	Accepts raw file bytes
 o	Cleans extracted text
