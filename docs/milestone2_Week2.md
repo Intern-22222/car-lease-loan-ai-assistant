@@ -2,7 +2,7 @@
 
 ### Task 1: Database Setup
 - Installed PostgreSQL locally
-- Created database `car_ai_assistant_db`
+- Created database to store extracted contract text.
 - Created a test table `test_connection`
 - Inserted and verified a sample record with message "Hello World"
 
