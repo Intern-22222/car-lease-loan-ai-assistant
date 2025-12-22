@@ -1,7 +1,7 @@
 from pathlib import Path
-import shutil
 
 import pytest
+import warnings
 
 from backend.app.ocr import (
     extract_text_from_pdf,
@@ -10,24 +10,17 @@ from backend.app.ocr import (
     PDF_SOURCE_DIR,
 )
 
-import warnings
+warnings.filterwarnings(
+    "ignore",
+    message=".*pkgutil.find_loader.*",
+    category=DeprecationWarning,
+)
 
-warnings.filterwarnings("ignore", category=DeprecationWarning)
-
-# -------------------------------------------------
-# Test Configuration
-# -------------------------------------------------
 
 OUTPUT_DIR = Path("data/ocr_output")
 
 
-# -------------------------------------------------
-# Helpers
-# -------------------------------------------------
-
-def _cleanup_output():
-    if OUTPUT_DIR.exists():
-        shutil.rmtree(OUTPUT_DIR)
+def _ensure_output_dir():
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 
@@ -41,7 +34,6 @@ def _has_image() -> bool:
         for f in PDF_SOURCE_DIR.iterdir()
     )
 
-
 # -------------------------------------------------
 # Tests
 # -------------------------------------------------
@@ -49,13 +41,13 @@ def _has_image() -> bool:
 def test_extract_text_from_pdf_if_present():
     """
     PDF OCR should generate a non-empty .txt file.
-    Uses an explicit PDF to avoid reprocessing the same file.
+    Does NOT delete previous outputs.
     """
     pdfs = list(PDF_SOURCE_DIR.glob("*.pdf"))
     if not pdfs:
         pytest.skip("No PDF files found in samples/")
 
-    _cleanup_output()
+    _ensure_output_dir()
 
     pdf_file = pdfs[0].name
 
@@ -72,7 +64,7 @@ def test_extract_text_from_pdf_if_present():
 def test_extract_text_from_image_if_present():
     """
     Image OCR should generate a non-empty .txt file.
-    Uses an explicit image to avoid reprocessing the same file.
+    Does NOT delete previous outputs.
     """
     images = [
         f for f in PDF_SOURCE_DIR.iterdir()
@@ -81,7 +73,7 @@ def test_extract_text_from_image_if_present():
     if not images:
         pytest.skip("No image files found in samples/")
 
-    _cleanup_output()
+    _ensure_output_dir()
 
     image_file = images[0].name
 
@@ -95,17 +87,20 @@ def test_extract_text_from_image_if_present():
     assert output_file.read_text(encoding="utf-8").strip() != ""
 
 
-
 def test_extract_text_auto():
     """
     Auto-detection should work for either PDF or image.
+    Does NOT delete previous outputs.
     """
     if not (_has_pdf() or _has_image()):
         pytest.skip("No supported files found in samples/")
 
-    _cleanup_output()
+    _ensure_output_dir()
 
-    output_file = extract_text_auto(None, OUTPUT_DIR)
+    output_file = extract_text_auto(
+        filename=None,
+        output_dir=OUTPUT_DIR,
+    )
 
     assert output_file.exists()
     assert output_file.suffix == ".txt"

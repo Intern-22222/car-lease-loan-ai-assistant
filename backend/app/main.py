@@ -34,17 +34,15 @@ app = FastAPI(
 # Configuration
 # -------------------------------------------------
 
-OUTPUT_DIR = Path("data/ocr_output")
-
+OUTPUT_DIR = Path("data/ocr_output").resolve()
 
 # -------------------------------------------------
-# Health
+# Health Check
 # -------------------------------------------------
 
 @app.get("/health", tags=["System"])
 def health_check():
     return {"status": "ok"}
-
 
 # -------------------------------------------------
 # OCR Endpoint
@@ -61,13 +59,11 @@ def run_ocr(filename: Optional[str] = None):
     try:
         OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-        # Auto-detection
         if filename is None:
             output_file = extract_text_auto(
                 filename=None,
                 output_dir=OUTPUT_DIR,
             )
-
         else:
             suffix = Path(filename).suffix.lower()
 
@@ -76,13 +72,11 @@ def run_ocr(filename: Optional[str] = None):
                     pdf_filename=filename,
                     output_dir=OUTPUT_DIR,
                 )
-
             elif suffix in SUPPORTED_IMAGE_EXTENSIONS:
                 output_file = extract_text_from_image(
                     image_filename=filename,
                     output_dir=OUTPUT_DIR,
                 )
-
             else:
                 raise ValueError(f"Unsupported file type: {suffix}")
 

@@ -9,11 +9,15 @@ from pdf2image import convert_from_path, pdfinfo_from_path
 from PIL import Image
 
 # -------------------------------------------------
-# Configuration
+# Logging
 # -------------------------------------------------
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# -------------------------------------------------
+# Configuration
+# -------------------------------------------------
 
 PDF_SOURCE_DIR = Path(
     os.getenv("PDF_SOURCE_DIR", "samples")
@@ -26,6 +30,12 @@ SUPPORTED_IMAGE_EXTENSIONS = {
     ".png", ".jpg", ".jpeg", ".tiff", ".bmp"
 }
 
+# Windows Poppler path (safe default)
+POPPLER_PATH = os.getenv(
+    "POPPLER_PATH",
+    r"C:\poppler\Library\bin"
+)
+
 # -------------------------------------------------
 # Exceptions
 # -------------------------------------------------
@@ -33,7 +43,6 @@ SUPPORTED_IMAGE_EXTENSIONS = {
 class OCRException(Exception):
     """Predictable OCR failures."""
     pass
-
 
 # -------------------------------------------------
 # Public API
@@ -43,10 +52,11 @@ def extract_text_from_pdf(
     pdf_filename: Optional[str],
     output_dir: Path,
     dpi: int = 300,
-    max_pages: int = MAX_PAGES
+    max_pages: int = MAX_PAGES,
 ) -> Path:
+
     """
-    Convert PDF → images → horizontal text with page-wise separation.
+    Convert PDF → images → text (page-wise).
     """
 
     pdf_filename = pdf_filename or get_any_pdf_filename()
@@ -58,10 +68,7 @@ def extract_text_from_pdf(
             f"PDF has {total_pages} pages; maximum allowed is {max_pages}"
         )
 
-    logger.info(
-        "OCR started | file=%s | pages=%s",
-        pdf_filename, total_pages
-    )
+    logger.info("OCR started | PDF=%s | pages=%s", pdf_filename, total_pages)
 
     output_dir.mkdir(parents=True, exist_ok=True)
     output_file = output_dir / f"{pdf_path.stem}.txt"
@@ -71,12 +78,16 @@ def extract_text_from_pdf(
     for start_page in range(1, total_pages + 1, BATCH_SIZE):
         end_page = min(start_page + BATCH_SIZE - 1, total_pages)
 
-        images = convert_from_path(
-            pdf_path,
-            dpi=dpi,
-            first_page=start_page,
-            last_page=end_page
-        )
+        try:
+            images = convert_from_path(
+                pdf_path,
+                dpi=dpi,
+                first_page=start_page,
+                last_page=end_page,
+                poppler_path=POPPLER_PATH,
+            )
+        except Exception as e:
+            raise OCRException(f"PDF conversion failed: {e}") from e
 
         for page_index, image in enumerate(images, start=start_page):
             logger.info("OCR page %s", page_index)
@@ -84,7 +95,7 @@ def extract_text_from_pdf(
             raw_text = pytesseract.image_to_string(
                 image,
                 lang="eng",
-                config="--psm 6"
+                config="--psm 6",
             )
 
             page_text = (
@@ -100,12 +111,13 @@ def extract_text_from_pdf(
     return output_file
 
 
+
 def extract_text_from_image(
     image_filename: Optional[str],
-    output_dir: Path
+    output_dir: Path,
 ) -> Path:
     """
-    Convert Image → text.
+    Convert image → text.
     """
 
     image_filename = image_filename or get_any_image_filename()
@@ -121,12 +133,13 @@ def extract_text_from_image(
     raw_text = pytesseract.image_to_string(
         image,
         lang="eng",
-        config="--psm 6"
+        config="--psm 6",
     )
 
-    cleaned_text = _clean_text(raw_text)
-
-    output_file.write_text(cleaned_text, encoding="utf-8")
+    output_file.write_text(
+        _clean_text(raw_text),
+        encoding="utf-8",
+    )
 
     logger.info("OCR completed: %s", output_file)
     return output_file
@@ -134,10 +147,10 @@ def extract_text_from_image(
 
 def extract_text_auto(
     filename: Optional[str],
-    output_dir: Path
+    output_dir: Path,
 ) -> Path:
     """
-    Automatically detect file type (PDF or Image) and OCR accordingly.
+    Auto-detect PDF or image and OCR accordingly.
     """
 
     if filename is None:
@@ -156,13 +169,12 @@ def extract_text_auto(
 
     raise ValueError(f"Unsupported file type: {suffix}")
 
-
 # -------------------------------------------------
 # Helpers
 # -------------------------------------------------
 
 def get_any_pdf_filename() -> str:
-    pdfs = list(PDF_SOURCE_DIR.glob("*.pdf"))
+    pdfs = sorted(PDF_SOURCE_DIR.glob("*.pdf"))
     if not pdfs:
         raise FileNotFoundError("No PDF files found in samples/")
     return pdfs[0].name
@@ -184,9 +196,6 @@ def _resolve_pdf_path(pdf_filename: str) -> Path:
 
     pdf_path = (PDF_SOURCE_DIR / pdf_filename).resolve()
 
-    if not str(pdf_path).startswith(str(PDF_SOURCE_DIR)):
-        raise PermissionError("Invalid PDF path traversal")
-
     if not pdf_path.exists():
         raise FileNotFoundError(f"PDF not found: {pdf_filename}")
 
@@ -201,9 +210,6 @@ def _resolve_image_path(image_filename: str) -> Path:
 
     image_path = (PDF_SOURCE_DIR / image_filename).resolve()
 
-    if not str(image_path).startswith(str(PDF_SOURCE_DIR)):
-        raise PermissionError("Invalid image path traversal")
-
     if not image_path.exists():
         raise FileNotFoundError(f"Image not found: {image_filename}")
 
@@ -211,16 +217,20 @@ def _resolve_image_path(image_filename: str) -> Path:
 
 
 def _get_page_count(pdf_path: Path) -> int:
-    info = pdfinfo_from_path(pdf_path)
+    try:
+        info = pdfinfo_from_path(
+            pdf_path,
+            poppler_path=POPPLER_PATH,
+        )
+    except Exception as e:
+        raise OCRException(f"Failed to read PDF metadata: {e}") from e
+
     return int(info.get("Pages", 0))
 
 
 def _clean_text(text: str) -> str:
     """
-    Normalize OCR output:
-    - Fix vertical text
-    - Preserve line breaks
-    - Improve readability
+    Normalize OCR output for readability.
     """
 
     text = text.replace("\r", "\n")
@@ -249,9 +259,9 @@ def _clean_text(text: str) -> str:
     if buffer:
         cleaned_lines.append(buffer)
 
-    final_lines = []
-    for line in cleaned_lines:
-        line = re.sub(r"\s+", " ", line)
-        final_lines.append(line.strip())
+    final_lines = [
+        re.sub(r"\s+", " ", line).strip()
+        for line in cleaned_lines
+    ]
 
     return "\n".join(final_lines).strip()

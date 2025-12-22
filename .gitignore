@@ -43,7 +43,3 @@ tmp/
 # Notebooks
 .ipynb_checkpoints/
 
-# Optional large/generated data
-data/
-samples/
-ocr/output.txt
