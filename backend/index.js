@@ -1,7 +1,10 @@
 const express = require("express");
 const cors = require("cors");
 const app = express();
-const healthRoutes = require("./src/routes/health.routes");
+// const healthRoutes = require("./src/routes/health.routes");
+
+const uploadRoutes = require("./src/routes/upload.route");
+
 const errorHandler = require("./src/middlewares/error.middleware");
 app.use(cors());
 app.use(express.json());
@@ -13,7 +16,8 @@ app.get("/", (req, res) => {
   res.send("Backend API is running");
 });
 
-app.use("/api", healthRoutes);
+// app.use("/api", healthRoutes);
+app.use("/api",uploadRoutes);
 app.use(errorHandler);
 
 connectToDB();
