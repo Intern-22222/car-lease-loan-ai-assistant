@@ -72,6 +72,22 @@ def upload_file():
         "pdf_file": file.filename,
         "text_file": text_file_path
     })
+@app.route("/contracts/<file_name>", methods=["GET"])
+def get_extracted_text(file_name):
+    text_file = file_name.replace(".pdf", ".txt")
+    text_path = os.path.join("data/extracted_text", text_file)
+
+    if not os.path.exists(text_path):
+        return jsonify({"error": "Extracted text not found"}), 404
+
+    with open(text_path, "r", encoding="utf-8") as f:
+        text = f.read()
+
+    return jsonify({
+        "file_name": file_name,
+        "extracted_text": text
+    })
+
 
 # ---------- RUN APP ----------
 if __name__ == "__main__":
