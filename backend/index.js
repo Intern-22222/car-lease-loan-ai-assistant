@@ -6,6 +6,8 @@ const app = express();
 const uploadRoutes = require("./src/routes/upload.route");
 
 const errorHandler = require("./src/middlewares/error.middleware");
+
+const testHandler = require("./src/routes/ocr.routes")
 app.use(cors());
 app.use(express.json());
 const dotenv = require("dotenv").config();
@@ -17,7 +19,8 @@ app.get("/", (req, res) => {
 });
 
 // app.use("/api", healthRoutes);
-app.use("/api",uploadRoutes);
+app.use("/api", uploadRoutes);
+app.use("/api",testHandler)
 app.use(errorHandler);
 
 connectToDB();

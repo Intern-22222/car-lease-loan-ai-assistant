@@ -1,0 +1,60 @@
+ import React, { useState } from 'react'
+
+ const UploadPage = () => {
+   const [selectedFile,setSelectedFile] = useState(null);
+   const [ocrText,setOcrText] = useState("");
+//   const [isUploading,setIsUploading] = useState(false);
+//   const HandleUpdate=()=>{
+//     if(!selectedFile){
+//       alert("Please select a pdf first");
+//       return;
+//     }
+//     setIsUploading(true);
+//     const formData = new FormData();
+//     formData.append("file",selectedFile);
+//     fetch("http://localhost:3000/api/upload",{
+//       method:"POST",
+//       body : formData,
+//     })
+//     .then(response=>response.json())
+//     .then(data=>{
+//       console.log(data);
+//       if(!data.success){
+//         alert("OCR failed on server");
+//         return;
+//       }
+//       setOcrText(data.rawText);
+//       setIsUploading(false);
+//     })
+//     .catch(error=>{
+//       console.error("Upload error:",error);
+//       setIsUploading(false);
+//     })
+//   }
+//   return (
+//     <>
+//       <div>
+//         <h2>Upload PDF</h2>
+//         <br />
+//         <div>
+           Select a PDF to upload
+           <br />
+           <input
+             type="file"
+             accept="application/pdf"
+             className="border-2"
+             onChange={(event) => setSelectedFile(event.target.files[0])}
+//           />
+//           {selectedFile && <p>Selected: {selectedFile.name}</p>}
+
+//           <button onClick={HandleUpdate} disabled={isUploading}>Upload</button>
+//           {isUploading && <p>Uploaing... Please wait</p>}
+//           <h3>OCR Result</h3>
+//           {ocrText && <pre>{ocrText}</pre>}
+//         </div>
+//       </div>
+//     </>
+//   );
+// }
+
+// export default UploadPage
