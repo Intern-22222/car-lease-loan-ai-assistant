@@ -1,37 +1,32 @@
 """
-OCR Module - Week 2 Deliverable
+OCR Module - Backend Integration
 Reusable OCR processing module for the Car Lease/Loan AI Assistant backend.
+Uses Tesseract OCR for text extraction.
 
 Features:
 - Multi-page PDF support
 - Configurable DPI
 - Text cleanup (remove extra newlines, fix common OCR mistakes)
 - Error handling
+- Database-ready output structure
 """
 
 import os
 import re
-import tempfile
+import platform
 from pathlib import Path
 from typing import Optional, List
 
-from pdf2image import convert_from_path
-from paddleocr import PaddleOCR
-import logging
+import fitz  # PyMuPDF
+import pytesseract
+from PIL import Image
+import io
 
-# Suppress PaddleOCR debug logs
-logging.getLogger("ppocr").setLevel(logging.WARNING)
-
-# Singleton OCR instance for efficiency
-_ocr_instance: Optional[PaddleOCR] = None
-
-
-def get_ocr_instance() -> PaddleOCR:
-    """Get or create the PaddleOCR instance (singleton pattern)."""
-    global _ocr_instance
-    if _ocr_instance is None:
-        _ocr_instance = PaddleOCR(use_angle_cls=True, lang='en', show_log=False)
-    return _ocr_instance
+# Configure Tesseract path for Windows
+if platform.system() == 'Windows':
+    tesseract_path = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+    if os.path.exists(tesseract_path):
+        pytesseract.pytesseract.tesseract_cmd = tesseract_path
 
 
 def clean_text(text: str) -> str:
@@ -52,18 +47,45 @@ def clean_text(text: str) -> str:
         "l1": "li",      # Common OCR confusion
         "0O": "00",      # Zero/O confusion
         "|": "I",        # Pipe/I confusion
-        "rn": "m",       # rn -> m confusion
-        "  ": " ",       # Double spaces
     }
     
     for old, new in replacements.items():
         text = text.replace(old, new)
     
+    # Remove repeated character noise (checkboxes/borders read as TTT, EEE, etc.)
+    # Replace 2+ repetitions of same letter with empty string
+    text = re.sub(r'([A-Z])\1{1,}', '', text)
+    
+    # Remove short uppercase words that are noise (T, TT, ET, EET, TET, etc.)
+    text = re.sub(r'\b[TE]{1,4}\b', '', text)
+    
+    # Remove sequences like "I I I" or "[ ]" that are checkbox artifacts
+    text = re.sub(r'(\[_?\s*I?\s*\])', '', text)
+    text = re.sub(r'\[_I\]', '', text)
+    text = re.sub(r'\[I\s*\]', '', text)
+    text = re.sub(r'\[\s*\]', '', text)
+    
+    # Remove isolated brackets
+    text = re.sub(r'\[\s*_?\s*\]', '', text)
+    
+    # Remove standalone special chars like _I or I_ 
+    text = re.sub(r'\b_?I_?\b', '', text)
+    
+    # Clean up "rn" -> "m" confusion
+    text = re.sub(r'rn', 'm', text)
+    
     # Remove excessive newlines (more than 2 consecutive)
     text = re.sub(r'\n{3,}', '\n\n', text)
     
+    # Remove multiple spaces
+    text = re.sub(r' {2,}', ' ', text)
+    
     # Remove leading/trailing whitespace from each line
     lines = [line.strip() for line in text.split('\n')]
+    
+    # Remove empty lines
+    lines = [line for line in lines if line]
+    
     text = '\n'.join(lines)
     
     # Remove empty lines at start and end
@@ -79,7 +101,7 @@ def process_pdf(
     cleanup: bool = True
 ) -> str:
     """
-    Process a PDF file and extract text using OCR.
+    Process a PDF file and extract text using Tesseract OCR.
     
     Args:
         pdf_path: Path to the PDF file
@@ -97,37 +119,36 @@ def process_pdf(
     if not os.path.exists(pdf_path):
         raise FileNotFoundError(f"PDF not found: {pdf_path}")
     
-    # Convert PDF to images
-    images = convert_from_path(pdf_path, dpi=dpi)
+    # Open PDF with PyMuPDF
+    doc = fitz.open(pdf_path)
     
-    if not images:
+    if len(doc) == 0:
+        doc.close()
         raise ValueError(f"No pages found in PDF: {pdf_path}")
-    
-    # Get OCR instance
-    ocr = get_ocr_instance()
     
     # Process each page
     all_text: List[str] = []
+    zoom = dpi / 72  # 72 is default DPI
+    mat = fitz.Matrix(zoom, zoom)
     
-    with tempfile.TemporaryDirectory() as temp_dir:
-        for page_num, image in enumerate(images, 1):
-            # Save image to temp directory
-            temp_path = os.path.join(temp_dir, f"page_{page_num}.png")
-            image.save(temp_path, "PNG")
-            
-            # Run OCR
-            result = ocr.ocr(temp_path, cls=True)
-            
-            # Extract text from result
-            page_lines: List[str] = []
-            if result and result[0]:
-                for line in result[0]:
-                    if line and len(line) > 1:
-                        text = line[1][0]  # Get the text content
-                        page_lines.append(text)
-            
-            page_text = "\n".join(page_lines)
-            all_text.append(page_text)
+    for page_num, page in enumerate(doc, 1):
+        # Render page to image
+        pix = page.get_pixmap(matrix=mat)
+        
+        # Convert to PIL Image
+        img_data = pix.tobytes("png")
+        image = Image.open(io.BytesIO(img_data))
+        
+        # Run Tesseract OCR
+        page_text = pytesseract.image_to_string(
+            image,
+            lang='eng',
+            config='--oem 3 --psm 6'  # OEM 3: Default; PSM 6: Assume uniform block of text
+        )
+        
+        all_text.append(page_text.strip())
+    
+    doc.close()
     
     # Combine all pages
     final_text = "\n\n".join(all_text)
@@ -156,14 +177,20 @@ def process_pdf_to_dict(pdf_path: str, dpi: int = 300) -> dict:
     Returns:
         Dictionary with text, page_count, and character_count
     """
-    text = process_pdf(pdf_path, dpi=dpi)
+    if not os.path.exists(pdf_path):
+        raise FileNotFoundError(f"PDF not found: {pdf_path}")
     
-    # Count pages (approximation based on page markers in original processing)
-    images = convert_from_path(pdf_path, dpi=72)  # Low DPI for quick count
+    # Get page count first
+    doc = fitz.open(pdf_path)
+    page_count = len(doc)
+    doc.close()
+    
+    # Process PDF
+    text = process_pdf(pdf_path, dpi=dpi)
     
     return {
         "text": text,
-        "page_count": len(images),
+        "page_count": page_count,
         "character_count": len(text),
         "source_file": os.path.basename(pdf_path)
     }
@@ -178,7 +205,7 @@ def ocr_endpoint_handler(file_path: str) -> dict:
         file_path: Path to uploaded PDF file
         
     Returns:
-        OCR result dictionary
+        OCR result dictionary suitable for database storage
     """
     try:
         result = process_pdf_to_dict(file_path)
@@ -196,3 +223,44 @@ def ocr_endpoint_handler(file_path: str) -> dict:
             "success": False,
             "error": f"OCR processing failed: {str(e)}"
         }
+
+
+def save_ocr_to_db(ocr_result: dict, db_path: str = None) -> dict:
+    """
+    Save OCR result to database.
+    
+    Args:
+        ocr_result: Result from ocr_endpoint_handler
+        db_path: Optional database path (uses default if not provided)
+        
+    Returns:
+        Dictionary with save status and record ID
+    """
+    from backend.app.database import init_db, save_ocr_result
+    
+    if not ocr_result.get("success"):
+        return {
+            "saved": False,
+            "error": "Cannot save failed OCR result"
+        }
+    
+    data = ocr_result["data"]
+    
+    # Initialize database (creates table if not exists)
+    init_db(db_path)
+    
+    # Save to database
+    record_id = save_ocr_result(
+        source_file=data["source_file"],
+        extracted_text=data["text"],
+        page_count=data["page_count"],
+        character_count=data["character_count"],
+        db_path=db_path
+    )
+    
+    return {
+        "saved": True,
+        "record_id": record_id,
+        "message": f"OCR result saved to database with ID: {record_id}"
+    }
+
