@@ -32,31 +32,31 @@ This repository contains my internship work focused on building the OCR and text
 
 ## 📁 Project Structure
 
+```text
 carlease/
 │
 ├── data/
-│ └── (empty) # Reserved for processed/cleaned output
+│   └── (empty)                     # Reserved for processed / cleaned output
 │
 ├── Database/
-│ ├── ocr.db # SQLite database storing extracted text
-│ ├── db_helper.py # Database connection and insert logic
-│ └── init.py
+│   ├── ocr.db                      # SQLite database storing extracted text
+│   ├── db_helper.py                # Database connection and insert logic
+│   └── __init__.py
 │
 ├── ocr/
-│ ├── ocr_fun.py # Main OCR function (PDF → Image → Text)
-│ ├── text_processing.py # Noise reduction & text cleanup
-│ ├── test_ocr.py # Test script to run OCR pipeline
-│ └── init.py
+│   ├── ocr_fun.py                  # Main OCR function (PDF → Image → Text)
+│   ├── text_processing.py          # Noise reduction & text cleanup
+│   ├── test_ocr.py                 # Test script to run OCR pipeline
+│   └── __init__.py
 │
 ├── pdfs/
-│ └── test.pdf # Sample contract PDF for OCR testing
+│   └── test.pdf                    # Sample contract PDF for OCR testing
 │
 ├── .gitignore
 ├── README.md
-└── myenv/ # Virtual environment (ignored in Git)
+└── myenv/                          # Virtual environment (ignored in Git)
 
 
----
 
 ## ⚙️ How the OCR Pipeline Works
 
