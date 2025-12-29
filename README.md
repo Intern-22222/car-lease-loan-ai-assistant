@@ -80,8 +80,6 @@ Tesseract OCR
 
 Poppler (PDF to Image Conversion)
 
-Pillow / OpenCV
-
 SQLite
 
 Git & GitHub
