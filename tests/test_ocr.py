@@ -1,23 +1,31 @@
 import pytest
 import os
+import sys
+import glob
+
+# Allow importing from backend
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from backend.app.ocr import process_pdf
 
-# Helper to find a sample PDF for testing
-SAMPLE_PDF_PATH = "samples/contract_sample_01.pdf" # Ensure Intern A put a file here [cite: 52]
+# 1. Find ALL files (Case Insensitive search for Windows)
+# This looks for .pdf, .PDF, .Pdf, etc.
+files_lower = glob.glob("samples/*.pdf")
+files_upper = glob.glob("samples/*.PDF")
+SAMPLE_FILES = list(set(files_lower + files_upper))
 
-def test_ocr_extraction_length():
-    """
-    Verify output existence and minimal length (>100 chars).
+# DEBUG: Print what we found so you can see it in the terminal
+print(f"\n[DEBUG] Found {len(SAMPLE_FILES)} PDF files: {SAMPLE_FILES}")
+
+# 2. The '@' line is what makes it loop!
+# It says: "For every file in SAMPLE_FILES, run this function again"
+@pytest.mark.parametrize("pdf_path", SAMPLE_FILES)
+def test_ocr_multiple_files(pdf_path):
+    print(f"Processing: {pdf_path}")
     
-    """
-    if not os.path.exists(SAMPLE_PDF_PATH):
-        pytest.skip("Sample PDF not found in tests/fixtures/")
-        
-    with open(SAMPLE_PDF_PATH, "rb") as f:
-        pdf_bytes = f.read()
-        
-    result_text = process_pdf(pdf_bytes)
+    with open(pdf_path, "rb") as f:
+        file_bytes = f.read()
     
-    assert result_text is not None
-    assert len(result_text) > 100, "Extracted text is too short, OCR might have failed."
-    assert isinstance(result_text, str)
+    result = process_pdf(file_bytes)
+    
+    assert result is not None
+    assert len(result) > 100, f"Text too short in {pdf_path}"
