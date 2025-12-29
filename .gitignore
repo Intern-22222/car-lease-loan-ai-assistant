@@ -1,1 +1,3 @@
 myenv/
+data/
+__pycache__/
