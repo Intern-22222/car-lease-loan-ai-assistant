@@ -32,7 +32,6 @@ This repository contains my internship work focused on building the OCR and text
 
 ## 📁 Project Structure
 
-```text
 carlease/
 │
 ├── data/
@@ -56,4 +55,42 @@ carlease/
 ├── README.md
 └── myenv/                          # Virtual environment (ignored in Git)
 
+
+## ▶️ How to Run the OCR Module
+
+1. Ensure all required dependencies are installed (Tesseract, Poppler, Python packages).
+2. Place the input PDF file inside the `pdfs/` folder.
+3. Run the OCR test script using the command below:
+
+python ocr/test_ocr.py
+
+## Output
+
+Extracted and cleaned text is stored in the SQLite database:
+
+Database/ocr.db
+
+## 🛠️ Technologies Used
+
+Python
+
+Tesseract OCR
+
+Poppler (PDF to Image Conversion)
+
+Pillow / OpenCV
+
+SQLite
+
+Git & GitHub
+
+## 📌 Notes
+
+The data/ directory is intentionally left empty for future processed or cleaned outputs.
+
+The database file is lightweight and used only to store OCR results.
+
+Virtual environment (myenv/) and cache files are excluded using .gitignore.
+
+This OCR module acts as the foundation for future AI-based contract analysis and negotiation features.
 
