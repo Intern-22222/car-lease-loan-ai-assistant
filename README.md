@@ -16,7 +16,7 @@ This repository contains my internship work focused on building the OCR and text
 ## 🎯 Assigned Tasks (Intern C)
 
 ### ✅ Task 1: Integrate OCR Service
-- Implemented a complete OCR service as a reusable function
+- Implemented a reusable OCR service function
 - Handled all required OCR dependencies
 - Converted PDF pages into images
 - Extracted text from each page using OCR
@@ -57,47 +57,3 @@ carlease/
 └── myenv/                          # Virtual environment (ignored in Git)
 
 
-
-### ⚙️ How the OCR Pipeline Works
-
-1. `test.pdf` is read from the `pdfs/` folder  
-2. PDF pages are converted into images  
-3. OCR extracts text from each page  
-4. Noise reduction and layout handling are applied  
-5. Cleaned text is saved into `ocr.db` database  
-
----
-
-### ▶️ How to Run the OCR Module
-
-```bash
-
-python ocr/test_ocr.py
-
-Uses test.pdf as input
-
-Stores extracted text in Database/ocr.db
-
-### 🛠️ Technologies Used
-
-Python
-
-Tesseract OCR
-
-Poppler (PDF to image conversion)
-
-Pillow / OpenCV
-
-SQLite Database
-
-Git & GitHub
-
-### 📌 Notes
-
-data/ folder is intentionally empty (future use)
-
-Database file is small and used only for OCR output
-
-Virtual environment and cache files are excluded from Git
-
-This module serves as the foundation for AI-based contract analysis
