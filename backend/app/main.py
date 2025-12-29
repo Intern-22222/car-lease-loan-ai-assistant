@@ -75,6 +75,7 @@ def ocr_file(file_id: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="No file path stored for this contract")
 
     text = run_ocr(contract.s3_path)
+    print("DEBUG OCR TEXT LENGTH:", len(text))   # add this line
 
     contract.raw_text = text
     contract.text_path = None  # if you later save text to a .txt file, set path here
@@ -84,7 +85,8 @@ def ocr_file(file_id: str, db: Session = Depends(get_db)):
     db.refresh(contract)
 
     return {
-        "file_id": file_id,
-        "text_extracted": bool(text),
-        "text_preview": text[:300] if text else None,
+    "file_id": file_id,
+    "text_extracted": bool(text),
+    "full_text": text,  
     }
+
