@@ -75,24 +75,24 @@ o	Validates output type and length
 In Week 3, I created a standalone sandbox script using Tesseract OCR to process a contract PDF, extract text, and generate structured data.
 
 #    Task Completed in Week 3
-```text
-        Created a standalone sandbox Python script
-        Used Tesseract OCR for text extraction
-        Converted PDF contract into text
-        Saved the extracted text into a .txt file
-        Extracted SLA data from the text
-        Extracted Vehicle data from the text
-        Combined extracted data into a single JSON structure
-        Saved the final result into a .json file
-```
+````text
+Created a standalone sandbox Python script
+Used Tesseract OCR for text extraction
+Converted PDF contract into text
+Saved the extracted text into a .txt file
+Extracted SLA data from the text
+Extracted Vehicle data from the text
+Combined extracted data into a single JSON structure
+Saved the final result into a .json file
+````
 #    Detailed Steps Performed
 ```text
-        Took a PDF contract file as input
-        Converted the PDF pages into images
-        Applied Tesseract OCR to extract text
-        Saved the OCR output as a text (.txt) file
-        Parsed the text to identify SLA-related information
-        Parsed the text to identify vehicle-related information
-        Combined SLA data and vehicle data into one JSON object
-        Saved the combined output into a JSON file
+Took a PDF contract file as input
+Converted the PDF pages into images
+Applied Tesseract OCR to extract text
+Saved the OCR output as a text (.txt) file
+Parsed the text to identify SLA-related information
+Parsed the text to identify vehicle-related information
+Combined SLA data and vehicle data into one JSON object
+Saved the combined output into a JSON file
 ```        
