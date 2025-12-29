@@ -58,7 +58,7 @@ carlease/
 
 
 
-## ⚙️ How the OCR Pipeline Works
+### ⚙️ How the OCR Pipeline Works
 
 1. `test.pdf` is read from the `pdfs/` folder  
 2. PDF pages are converted into images  
@@ -68,7 +68,7 @@ carlease/
 
 ---
 
-## ▶️ How to Run the OCR Module
+### ▶️ How to Run the OCR Module
 
 ```bash
 
@@ -78,7 +78,7 @@ Uses test.pdf as input
 
 Stores extracted text in Database/ocr.db
 
-🛠️ Technologies Used
+### 🛠️ Technologies Used
 
 Python
 
@@ -92,7 +92,7 @@ SQLite Database
 
 Git & GitHub
 
-📌 Notes
+### 📌 Notes
 
 data/ folder is intentionally empty (future use)
 
