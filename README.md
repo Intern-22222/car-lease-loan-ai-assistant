@@ -32,6 +32,7 @@ This repository contains my internship work focused on building the OCR and text
 
 ## 📁 Project Structure
 
+```text
 carlease/
 │
 ├── data/
@@ -56,6 +57,7 @@ carlease/
 └── myenv/                          # Virtual environment (ignored in Git)
 
 
+```
 ## ▶️ How to Run the OCR Module
 
 1. Ensure all required dependencies are installed (Tesseract, Poppler, Python packages).
