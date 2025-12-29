@@ -1,0 +1,18 @@
+{
+    "metadata": {
+        "source_pdf": "Agreement for Vehicle.pdf",
+        "txt_file": "Agreement for Vehicle.txt",
+        "ocr_engine": "tesseract",
+        "processed_at": "2025-12-29T14:00:38.947058+00:00"
+    },
+    "sla_data": {
+        "tenure_months": 2,
+        "late_payment_penalty": 500,
+        "interest_rate": "2."
+    },
+    "vehicle_data": {
+        "fuel_type": "Electric",
+        "registration_number": "EN4000",
+        "chassis_number": "EBREACHOFSLAS"
+    }
+}

@@ -1,0 +1,604 @@
+
+--- Page 1 ---
+
+6/8/24, 11:03 AM about:blank
+Service Level Agreement for Vehicle Hiring Services - Vehicle-Day
+Basis
+
+1 AGREEMENT OVERVIEW
+This Agreement represents a Service Level Agreement (“SLA” or “Agreement’’) between the buyer and Cab
+& Taxi Hiring Service provider. The purpose of this agreement is to facilitate implementation of Vehicle
+Hiring Services - Vehicle-Day Basis from the buyer’s premises or any other premises designated by buyer.
+This Agreement outlines the scope of work, buyer’s obligations, special terms and conditions related to
+service delivery and payment of services for mutual understanding of the stakeholders. The Agreement shall
+remain valid till completion of scope of services or end of contractual duration (whichever is earlier) unless
+either superseded by a revised agreement mutually endorsed by the stakeholders or terminated by either of
+the parties thereof.
+The Services contracts placed through GeM shall be governed by following set of Terms and Conditions:
+
+1. General Terms and Conditions for Services;
+
+2. Service Specific STC of the Services contracts shall include the service level agreement (SLA) for the
+service;
+
+3. BID / Reverse Auction specific ATC.
+
+The above terms and conditions are in reverse order of precedence i.e. ATC shall supersede Service Specific
+STC which shall supersede GTC, whenever there are any conflicting provisions. The above set of terms and
+conditions along with scope of work and service level agreement as enumerated in the contract document
+shall be construed to be part of the Contract between Buyer and Service Provider.
+
+2 OBJECTIVES AND GOALS
+
+The objective of this Agreement is to record and ensure that all the commitments and obligations are in place
+to ensure consistent delivery of services to Buyer by Service Provider. The goals of this agreement are to:
+
+1. Provide clear reference to service ownership, accountability, roles and responsibilities of both the
+parties
+
+2. Present a clear, concise and measurable description of services offered to the buyer
+
+3. Establish terms and conditions for all the involved stakeholders, it also includes the actions to be taken
+in case of failure to comply with conditions specified
+
+4. To ensure that both the parties understand the consequences in case of termination of services due to
+any of the stated reasons
+
+This Agreement shall act as a reference document that both the parties have understood the above-mentioned
+terms and conditions and have mutually agreed to comply by the same. This Agreement can also be revised/
+modified on mutual written consent of both the stakeholders.
+
+3 PARTIES TO THE AGREEMENT
+
+The main stakeholders associated with this agreement are below-
+
+1. Buyer: Buyer is responsible to provide clear instructions, approvals and timely payments for the
+services availed from Service Provider.
+
+2. Service Provider: Service provider is responsible to provide all the required services in timely manner.
+Service provider may also include seller, any authorized agents, assignees, successors and nominees as
+described in the Agreement
+
+about:blank 1/10
+
+
+--- Page 2 ---
+
+6/8/24, 11:03 AM about:blank
+
+The responsibilities and obligations of the stakeholders have been outlined in this Agreement. The Agreement
+also encompasses service level/ penalties in case of non-adherence to the defined terms and conditions. It is
+assumed that all the stakeholders have read and understood the same before signing the document.
+4 SCOPE OF SERVICES
+Vehicle Hiring Services- Vehicle — Day basis.
+
+The scope of this Agreement is to hire vehicle on day basis , which includes hiring of vehicles (including
+driver and fuel requirements) for defined vehicle-days for local and outstation travel of individuals.
+Types of Cars: Buyers of this service will have the option to choose the type of vehicle as per their
+requirement, for which the following categories have been defined.
+
+Type of Car Definition Examples
+
+1. Maruti Suzuki WagonR
+2. Maruti Suzuki Celerio
+3. Maruti Suzuki Swift
+4. Hyundai i10
+This segment includes passenger cars with 5. Hyundai i120
+Hatchback compact design in a two-box configuration, and
+usually a length between 3401 to 3995 mm. 6. Tata Tiago
+7. Datsun Go
+8. Tata Bolt
+9. Hyundai Santro
+10.Tata Indigo
+1. Honda Amaze
+2. Maruti Suzuki Dzire
+3. Tata Tigor
+4. Hyundai Xcent
+This segment includes passenger cars with mid-
+Sedan size design in a three-box configuration, and 5. Ford Aspire
+usually a length between 3990 to 4500 mm.
+6. Volkswagen Ameo
+7. Tata Zest
+8. Nissan Sunny
+9. Toyota Etios
+Premium Sedan This segment includes passenger cars with 1. Maruti Suzuki Ciaz
+executive design in a three-box configuration,
+intended to provide passengers with increased 2. Honda City
+comfort, a higher level of equipment and
+increased perception of quality than regular 3. Volkswagen Vento
+sedans and usually a length between 4000 to 4600
+mm. 4. Toyota Corolla
+5. Hyundai Verna
+about:blank 2/10
+
+
+--- Page 3 ---
+
+6/8/24, 11:03 AM about:blank
+6. Skoda Rapid
+1. Maruti Suzuki Ertiga
+2. Maruti Suzuki VitaraBrezza
+3. | Mahindra Scorpio
+4. Maruti Suzuki XL6
+This segment includes passenger vehicles which
+combine elements of road-going passenger cars 5. Ford Ecosport
+SUV with features from off-road vehicles, such as
+raised ground clearance and four-wheel drive and 6. | Hyundai Creta
+length between 3995 to 4500 mm.
+7. Renault Duster
+8. Mahindra TUV300
+9. Mahindra XUV300
+10. Mahindra XUV 500
+1. Mahindra Bolero Camper
+This segment includes vehicles for transport of
+d ‘al with . ty of 2. Tata Xenon
+MUV passenger an materia with a seating capacity 0
+3 besides driver with an open loading capacity in 3. Mahindra Imperio
+the back for | to 1.25 MT , P
+4. Isuzu Dimax
+1. Toyota Innova
+2. Toyota InnovaCrysta
+3. Toyota Fortuner
+This segment includes SUV/MUVs intended to
+provide passengers with increased comfort, a 4. Ford Endeavour
+Premium SUV higher level of equipment and increased
+perception of quality than regular SUVs and 5. Jeep Compass
+length between 4300 to 4800 mm.
+6. Tata Hexa
+7. Tata Harrier
+8. Honda CR-V
+Luxury Sedan This segment includes passenger vehicles with 1. Toyota Camry
+luxury design in a three-box configuration,
+intended to provide top level of comfort and 2. Honda Accord
+highest perception of quality and length between
+4500 to 5200 mm. 3. Mercedes Benz E Class
+4. BMW 3 Series
+5. Audi A4
+6. Volvo S 90
+7. Jaguar XE
+8. Lexus ES
+9. Skoda Superb
+about:blank 3/10
+
+
+--- Page 4 ---
+
+6/8/24, 11:03 AM about:blank
+10. Skoda Octavia
+1. Mercedes Benz GLC
+2. BMW X3
+3. Audi Q5
+t incl M ith |
+This segment inc udes SUV/ UVs with luxury 4. Jeep Grand Cherokee
+design, intended to provide top level of comfort
+Luxury SUV and highest perception of quality and usually 5 LandR. Di S
+. rt
+length between 4600 to 5300 mm. ANC INOVEE AASCOVETY PO
+6. Jaguar F Pace
+7. Volvo XC 60
+8. Mitsubishi Montero
+1. Tata Nexon EV
+. . This segment includes vehicles that are either 2. Hyundai Kona Electric
+Electric Vehicles rtiall full d lectri
+partially or fully powered on electric power. 3. Mahindra e20plus
+4. TATA XPRES TEV XM+
+Outstation and local travel: For the purpose of this service, local travel would include areas covered within
+the city limits or up to 50 km of one-way travel, whichever is higher and outstation travel would include the
+areas covering outside the city limits or more than 50 kms of one-way travel, whichever is higher as per
+Buyer requirements. If the Buyer avails the services for a 24*7 requirement, the usage hours selected in the
+usage variant becomes null and void. It is the responsibility of the Service Provider to provide one driver per
+vehicle at all times as per the requirement, while complying with the Labour Laws.
+Type of Hiring: Buyers of this service can select any of the below mention option depending on their
+requirements, which are listed below:
+Per Vehicle-Day Basis- The Buyer shall specify his requirement in terms of Vehicle-Days required during the
+contract period. One Vehicle-Day means use of one Vehicle for One day as per the Usage Variant selected by
+the Buyer as indicated in the bid/contract. The Service Provider shall quote rate on Per Vehicle-Day basis.
+The Buyer may call for multiple vehicles as per his requirement and will consume total Vehicle-Days within
+the contract period.
+Usage Variants: Buyers of this service can select from a range of usage variants (bundled km/hour package)
+depending on their requirements, which are listed below:
+Contract Duration: In the marketplace, the buyer can only select a maximum contract duration of one (1)
+year. In case buyer desires to have contract for more than one Year , then Buyer has to go for Bidding where
+It can select contract period up to four (4) Years.
+KM travelled: The Buyer shall also specify the range of km travelled for the vehicle so as to guarantee
+quality. The Buyer may choose from ranges starting from 0 km up to | lakh km run by the vehicle.
+The Service Provider of such services shall quote hiring cost depending on the usage variants, type of
+vehicle, location, and other parameters selected by the Buyer.
+4.1 Service Details and Standards
+1. All vehicles provided shall have all the necessary permits/licenses/clearances including but not
+limited to fitness certificate, PUC, full comprehensive insurance, road permit, registration
+about:blank 4/10
+
+
+--- Page 5 ---
+
+6/8/24, 11:03 AM about:blank
+certificate,etc. as per the Motor Vehicles Act, RTO and other applicable laws and statutory bodies, for
+providing commercial vehicles for this service.
+
+2. All vehicles provided shall be fully air conditioned and shall be equipped with an emergency medical
+first aid kit, a fire extinguisher and Hand Sanitizer.
+
+3. All vehicles should be in excellent working condition (both internally and externally) at all the times.
+The Service Provider shall ensure that the vehicles deployed by him are cleaned thoroughly both
+internally and externally, boot kept clear of dust, rubbish, oil, bad odor and any personal belongings of
+the driver.
+
+4. All vehicles deployed shall arrive at designated location on time and with full or sufficient tank of fuel.
+
+5. The vehicle deployed shall be parked at the Buyer’s/ User’s premises after the duty hours if desired so
+by the Buyer/ User and cannot be taken-out without written permission from the Buyer/ User.
+
+6. The drivers of the vehicles must possess a valid driver license and must have a minimum 2 years of
+driving experience.
+
+7. The drivers of the vehicles must have a working mobile number for easy contact by the passenger. It
+must also have an active internet connection at all times where google maps can be accessed, to
+navigate the shortest and/ or fastest route possible avoiding traffic jams. The driver shall be reachable
+at all times during duty hours.
+
+8. The drivers of the vehicles deployed should maintain polite & courteous behavior towards the buyer/
+passenger. “Misbehavior” which may include, but not limited to, consumption of alcohol during or
+prior to duty, denial of duty during service hours as defined by Buyer/user, use of abusive language,
+theft, shall attract penalties as per provisions of the contract.
+
+4.2 Defined Timelines
+
+1. The Service Provider shall ensure that assigned vehicle and driver report within 24 Hours of
+confirmation of order or as mutually agreed with the Buyer.
+
+2. Buyer shall notify service provider of any change in schedule of hired car(s). The notification shall be
+provided 24 hours prior to change.
+
+3. Delay in arrival beyond 30 minutes, shall attract penalties.
+
+4.3 Service Assumptions
+
+1. The Service Provider shall not sublet any part of the Contract. The Service Provider may act as an
+aggregator of vehicles/ individual drivers. However, it is the Service Provider who shall be fully
+responsible and liable to deliver the services as per the contract.
+
+2. The time of service provided shall start from the point of pick up to the point of final drop off and the
+garage hours and km shall not be included.
+
+3. The Buyer shall be entitled to use the vehicle within the scope of service specified under this
+Agreement/contract and at no time during or after the completion of the contract, will the ownership of
+hired vehicle be transferred to the Buyer.
+
+4. The vehicle deployed for duty shall at no point of time carry any person other than personnel
+authorized by the Buyer.
+
+5. The drivers/ staff provided by the Service Provider shall not be deemed employees of the Buyer hence
+the compliance of the applicable labour laws and acts, Transport Motor workers Act and other relevant
+laws shall be the sole responsibility of the Service Provider.
+
+6. Buyer shall not be liable for any damages whatsoever to public property and /or any third person due to
+any accident arising out of and in the course of deployment of service provider’s vehicle.
+
+7. The Buyer shaill in no way be responsible for violation of traffic rules and /or infringement of any
+other law for the time being in force, either by the driver of the vehicle or by the Service Provider.
+
+8. During the contract period, if the vehicle is seized or detained or requisitioned by Police/Motor Vehicle
+Authority or any other authorities for whatsoever reasons that will be at the Service provider’s risk and
+shall arrange alternate vehicle.
+
+4.4 Limitations Of Service Delivery (If Any)
+about:blank 5/10
+
+
+--- Page 6 ---
+
+6/8/24, 11:03 AM about:blank
+
+1. Hiring for this service would mean hiring of vehicle on "Vehicle-Day" basis for both local and
+outstation travel. The service for the contract period shalll deemed to have completed once the Buyer
+has utilized the total vehicle-days within variation of 25% of contract value.
+
+5 SERVICE PROVIDER'S OBLIGATION
+
+1. Service Provider shall ensure the level of service required is of the highest professional standard and
+shall ensure full compliance to the terms and conditions of the contract.
+
+2. Service Provider shall ensure that proper inspection of vehicle has been done before deploying it to the
+Buyer/ Consignee location as per the contract.
+
+3. The Service Provider shall ensure that all maintenance works related to the assigned vehicle will be
+carried out in off duty hours. It shall be ensured that all electrical connections including lights (both
+brake and front), horn, turn indicators, air conditioning and other vehicle systems shall be periodically
+checked and maintained by Service Provider to avoid any inconvenience to the Buyer.
+
+4. The Service Provider shall provide at his own cost proper uniform and badges and photo identity cards
+to the drivers in compliance with the Motor Transport Workers Act.The Service Provider shall pay the
+toll charges, parking fee or entry taxes payable locally or outstation which shall later be reimbursed by
+the Buyer on actual basis as paid by the ServiceProvider.
+
+5. The Service Provider must ensure that all the necessary measures are taken by the driver to ensure
+passenger safety by avoiding negligent driving by their drivers such as over speeding, rash driving, and
+driving vehicle without brakes/defective brakes.
+
+6. The Service Provider shall take comprehensive insurance cover with third party unlimited liability risk
+of the vehicles provided to the Buyer.
+
+7. In an event that, for any reason, the drivers provided change their contact number during the tenure of
+the contract then Service Provider shall immediately notify the Buyer of the above change.
+
+8. The Service Provider shall be responsible for ensuring compliance with the provisions related to
+Labour Law [Central/State] and specially Minimum Wages Act, Payment of Wages Act, PF, ESI Act,
+Payment of Bonus Act, Contract Labour [R&A] Act, Workmen Compensation Act, Motor Vehicle Act,
+Motor Transport Workers Act, 1961 etc. and any other relevant acts as applicable at present or in future
+during the tenure of the contract and as may be enforced from time to time. Onus of compliance of all
+the applicable Laws/Acts/Rules shall rest with the Service Provider only and the Buyer shall not be
+liable for the same in any manner.
+
+9. The Service Provider shall not deploy or shall discontinue deploying the person(s), if desired by the
+Buyer and must ensure prompt replacement of the personnel without any additional cost to the Buyer.
+The personnel being deployed shall ordinarily be continued and should not be changed without written
+intimation and consultation with Buyer.
+
+10. A mandatory, detailed contingency plan(s) in the event of mechanical breakdown of each vehicle, for
+each area of operation shall be provided by the Service Provider.
+
+11. In an event that Service Provider fails to deliver or fails to carry out tasks as per schedule due to non-
+delivery of vehicle, break-down, servicing and repairs of vehicles, or if the vehicle is seized or detained
+or requisitioned by Police/Motor Vehicle Authority or any other authorities for whatsoever reasons, the
+Service Provider at his own cost shall make alternate arrangement by providing similar or higher class
+of vehicle(s) for which agreement is entered into, without any extra charges. Failure to do so will
+evoke penalty then Buyer shall have right to recover damages as per the provisions of the contract.
+
+12. The Service Provider shall be bound by the conditions with regard to police verification of the
+deployed staff and their medical fitness.
+
+13. The Service Provider shall deploy experienced drivers knowing the routes of the areas and familiar
+with the localities for carrying out the services. The Service Provider shall be personally responsible
+for any theft, misconduct and /or disobedience on the part of drivers so provided by him.
+
+6 BUYER'S OBLIGATIONS
+
+1. The location for reporting shall be provided by the Buyer to the Service Provider.
+
+2. The toll charges, parking fee or entry taxes payable locally or outstation shall be reimbursed by the
+Buyer to the Service Provider on actual basis as paid by the Service Provider.
+
+about:blank 6/10
+
+
+--- Page 7 ---
+
+6/8/24, 11:03 AM about:blank
+
+3. In the event of outstation travel, outstation night charges shall be paid to the Service Provider if the
+duty hours end between 10:30 pm and 6:00 am at an outstation location.
+
+4. The Buyer/ userr must immediately report to the designated representative of the Service Provider any
+problems, complaints, incidents or accidents that occur during the trip, including any form of
+inappropriate behavior/ improper uniform by the driver.
+
+5. It is fundamental that the driver does not under any circumstance directly or indirectly approach, solicit
+or accept work in any form the Buyer/ passenger. If the driver of the vehicle communicates directly
+with the Buyer/passenger (either by telephone, in writing or verbally, and either before, during or after
+a trip) to make alter or change the nature of service provided the Buyer must immediately inform the
+Service Provider.
+
+6. Buyer may validate the registration from e-vahan portal for authenticity of the vehicle proposed by the
+service provider
+
+7. Price Variation Clause:
+
+"It is advisable to include Price Variation Clause in the long term contracts to take care of the
+increase/decrease in prices of various ingredients which majorly affect the overall price of the service.
+Buyers are therefore advised to include the Price Variation Clause (PVC) in the bid document through
+ATC for long term contracts. The additional payment, if any, on account of PVC can be done offline till
+such time online functionality is developed on GeM."
+7 SERVICE TRACKING
+Tracking of services ensures quality of service delivery in time bound manner, effective service tracking
+helps in analyzing Service Provider’s performance as well as Buyer’s timely inputs for services and leads to
+immediate actions against the defaulters if any. Service tracking shall be mandatory for the both Buyer and
+Service Provider, non-tracking of the same may lead to a fine/ penalty on either party.
+7.1. Logbook
+
+1. The Service Provider shall maintain a separate duty slip for each vehicle, which will be signed by the
+authorized signatory of the Buyer/ passenger. Before each vehicle /car is allotted for duty, the odometer
+reading shall be noted down by the driver and subsequent entries for starting time/closing time, places
+visited etc. for each duty during service hours. After completion of duty, the driver shall again note
+down the odometer reading and get it checked and signed by the user of the vehicle deployed by the
+Buyer. On the basis of each vehicle’s duty slip, the Service Provider shall prepare bills enclosing
+therewith a consolidated statement of each vehicle’s running and original copies of duty slip.
+
+2. The Service Provider shall thereafter update the logbook on the GeM portal as per the logbook process
+flow.
+
+3. Once the Service Provider updates the logbook online, the Buyer shall either accept or reject these
+entries within the prescribed time lime. The Buyer will also record the any service non delivery or non-
+performance issues, and subsequent penalties Failure to take action on logbook entries updated by
+Service Provider shall be deemed as accepted.
+
+4. The Service Provider can raise an issue against the rejection of any entry by the Buyer within
+prescribed timelines of such rejection with the designated representative of the Buyer.
+
+7.2 Service Performance And Feedback
+
+1. The principal point of contact for the issues arising out of this Agreement shall be the Service Provider
+or a designated representative who shall be any employee of the Service Provider in administrative and
+managerial capacity and in a position of authority to resolve issues. Nonetheless, the service provider
+shall be solely responsible for maintaining the quality and level of service provided.
+
+2. The Service Provider shall maintain a compliant register in the vehicles for the complaints by the
+passenger travelling in the vehicle.
+
+8 PENALTIES AND FINE
+about:blank 7/10
+
+
+--- Page 8 ---
+
+6/8/24, 11:03 AM about:blank
+In case of noncompliance of the standards of the services to be provided as per this agreement, the buyer
+would be at liberty to levy such penalty and terminate the contract as per the conditions detailed out below:
+# Default Details Remarks
+Default u , Ist instance 24 instance 3"4 instance
+Amount of shares a After 3“ instance,
+Non Non deployment Amount of charges for vehicle hired by the buyer may
+deployment of for 30 min or vehicle hired by terminate the
+. . charges for . , Buyer from
+vehicle/driver more, no . ; Buyer from third |. contract or
+1 vehicle hired third party and . .
+(no replacement party anda continue to impose
+; by Buyer from ° a penalty of
+replacement providedupto2 |’. penalty of 10% 0 . the same penalty as
+; third party . . 15% of daily .
+provided) hours of daily vehicle . . imposed for
+- vehicle hiring qd:
+hiring cost cost 3° instance.
+After 3" instance,
+Non deployment the buyer may
+Non for 30 min or terminate the
+deployment of more Penalty of 10% Penalty of 15% contract or
+2. vehicle/driver ° Warning of daily vehicle of daily vehicle . .
+replacement . _ continue to impose
+(replacement . hiring cost hiring cost
+. provided up to 2 the same penalty as
+provided) .
+hours imposed for
+3° instance.
+Amount of Amount of After 3"4 instance,
+charges for charges for the buyer ma
+Breakdown of Amount of Bes TC vehicle hired by uy y
+. : vehicle hired by terminate the
+vehicle during No replacement charges for . , Buyer from
+; ; . . Buyer from third |. contract or
+3‘ trip (no provided up to 2. vehicle hired third party and . .
+party and a continue to impose
+replacement hours by Buyer from ° a penalty of
+. . penalty of 10% ° . the same penalty as
+provided) third party ; ; 15% of daily .
+of daily vehicle . . imposed for
+hiri t vehicle hiring |,
+ring Cos cost 3°° instance.
+Amount of Amount of After 3" instance,
+charges for charges for the buyer ma
+Breakdown of Bes Mt vehicle hired by uy y
+. . vehicle hired by terminate the
+vehicle during No replacement . , Buyer from
+: . . Buyer from third |, . contract or
+4 trip provided up to 2 Warning third party and . .
+party and a continue to impose
+(replacement hours ° a penalty of
+. penalty of 8% of |... . the same penalty as
+provided) . . 10% of daily.
+daily vehicle . - imposed for
+hiri t vehicle hiring |,
+ining COs cost 3" instance.
+After 3" instance,
+Delay in . Penalty of 5% of Penalty of 8% the buyer may
+. For 30 mins or . . . . . continue to impose
+5 arrival of Warning daily vehicle of daily vehicle
+. . more . i the same penalty as
+vehicle/ driver hiring cost hiring cost .
+imposed for
+3° instance.
+Misbehavior After 2™ instance,
+by driver/ . Penalty of Rs. Penalty of Rs. the SeIVICe
+6 unacceptable Any instance provider will have
+; 1000 2000/-
+behavior by to replace the
+driver driver
+about:blank 8/10
+
+
+--- Page 9 ---
+
+6/8/24, 11:03 AM about:blank
+After 1°‘ instance,
+the service
+provider will have
+Driver in to replace the
+7 intoxicated Any instance Penalty of Rs. driver. After 2
+2500/- .
+state cumulative
+instances, buyer
+may terminate the
+contract.
+; After 3" instance,
+Failure to ae
+address Deficiencies not the buyer may
+8 deficiencies addressed after PenaltyofRs. PenaltyofRs. Penalty of Rs. continue to impose
+. 24 hours of 500/- 800/- 1000/- the same penalty as
+pointed out at - . .
+: . inspection imposed for
+Inspection d:
+3° instance.
+9 PAYMENT TERMS
+This section provides details about the terms and conditions of payment towards the services, it may also
+include deduction of payment in case of faulty service.
+Some notable points under payment terms are-
+9.1 Payment Condition
+1. The payment shall be made as per the financial quotes submitted by the Service Provider and accepted
+by the Buyer.
+2. No advance payment shall be made to the Service Provider.
+3. The price quoted shall cover all aspects of service delivery, it shall be inclusive of all consumables
+required to provide the service.
+4. Nonetheless, any charges borne by the Service Provider with respect to toll charges, parking fee or
+entry taxes shall be reimbursed on actual basis upon submission of proof of payment.
+9.2 Payment Cycle
+1. Payment shall be made once the Service Provider submits the invoice for the same as per the
+prescribed process flow.
+2. The Buyer shall make the payment within prescribed timelines as per the payment process flow upon
+submission of invoice, logbook and service feedback.
+9.3. Payment Process
+1. Payment shall be made only after submission of invoices, logbook, service feedback, non-submission
+of the same may lead to delay/ deduction in payment.
+2. All the penalties/ fine/ interest (if applicable) will be settled before making the payments. Service
+Provider shall not have any objection on the same.
+3. Payment will be made through bank transfer only, in no circumstance cash/ cheque payment will be
+made.
+10 AMENDMENT OF CONTRACT
+about:blank 9/10
+
+
+--- Page 10 ---
+
+6/8/24, 11:03 AM about:blank
+During service delivery period some conditions may occur when the Buyer and/ or Service Provider may
+require to amend the Agreement, some of such conditions may be as followed-
+
+1. Amendment of the Contract after event of Force Majeure: In case of occurrence of any exceptional
+event/ circumstance which has affected either party directly to perform the agreed services, the
+Agreement can be amended. However, cause, evidence and nature of such effect shall be notified to the
+other party.
+
+2. Amendment in statutory variations: All statutory variations leading to increase in the cost of the
+contract will be debited to the buyer accounts.
+
+e Variation of the Contract as per both parties’ consent: Variation of the Contract shall be done as per
+mutual consent of both parties; no party shall be made liable to pay/ get any compensation for
+agreement amendment. The variation in the contract can be through the following, however, the
+variation put together shall not reduce or exceed 25% of contract value:
+
+1. Increase or decrease in the quantity of vehicles
+
+2. Increase or decrease in duration of contract
+11. TERMINATION OF CONTRACT
+The Agreement shall be come to an end either on completion of the Contract Period or shall be terminated for
+the following reasons:
+
+1. Mutual consent: The contract may be terminated based on mutual consent in case the services are no
+longer required. Termination based on mutual consent will not attract any penalties or shall not be
+liable for any extra payments other than payment of invoices raised till the time of termination
+including notice period.
+
+2. Breach of contractual obligations: Any incidents considered as the breach of contract will result in
+immediate termination of services. The Buyer shall have the right to terminate the Contract effective
+immediately by giving written notice to the Service Provider if, the Service Provider breaches a
+material provision of this Contract where that breach is not capable of remedy; or if the Service
+Provider breaches any provision of this Contract and fails to remedy the breach within 14 days after
+receiving notice requiring it to do so.
+
+e Breach of SLAs:The contract may also be terminated if 1) the cumulative penalties rise to 10% of the
+contract value ii) repeated breach of any SLA beyond 3 instances as per buyer discretion.
+
+However, termination of this Contract shall not affect any accrued rights or remedies of either party.
+Calculation Formula for the Service
+$total = $quantity*$cost
+$quantity = Number of Vehicle-Day(s)
+$cost = Vehicle hiring cost (Per Vehicle-Day) inclusive of GST
+about:blank 10/10
