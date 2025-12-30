@@ -76,6 +76,7 @@ Week 2 ✅
 
 
 ## 🚀 Milestone 2:
+
    Advanced Processing & Storage (Weeks 3 & 4)
 
 Goal: Improve OCR accuracy on noisy documents and implement persistent data storage.
