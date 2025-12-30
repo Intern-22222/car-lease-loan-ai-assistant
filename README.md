@@ -7,26 +7,41 @@ An AI assistant designed to review car lease and loan contracts by extracting te
 
 ## 📌 Internship Contribution
 
-**Intern C – OCR & Text Processing**
+**Intern C – OCR & Preprocessing Engineer**
 
-This repository contains my internship work focused on building the OCR and text processing pipeline.
+This repository contains my internship work focused on building the OCR, preprocessing, and text storage pipeline for car lease and loan contract documents.
 
 ---
 
-## 🎯 Assigned Tasks (Intern C)
+## 🧩 Project Milestones
 
-### ✅ Task 1: Integrate OCR Service
-- Implemented a reusable OCR service function
-- Handled all required OCR dependencies
-- Converted PDF pages into images
-- Extracted text from each page using OCR
-- Connected OCR output to a database for storage
+### ✅ Milestone 1: OCR Pipeline Development (Completed)
+**Role:** Intern C — OCR & Preprocessing Engineer  
+**Focus:** OCR pipeline (Tesseract / pdftoppm), PDF → Text
 
-### ✅ Task 2: Text Processing
-- Applied noise reduction on OCR output
-- Handled layout-related issues in extracted text
-- Performed validation checks
-- Prepared clean text for downstream AI processing
+- Designed and implemented an end-to-end OCR pipeline  
+- Converted PDF contract documents into images using **pdftoppm (Poppler)**  
+- Extracted text from images using **Tesseract OCR**  
+- Built reusable OCR functions for consistent PDF-to-text conversion  
+- Established the base for downstream AI-based contract analysis  
+
+---
+
+### ✅ Milestone 2: OCR Integration, Text Processing & Storage (Completed)
+**Role:** Intern C  
+**Focus:** OCR service integration, preprocessing, validation, and database storage  
+
+**Task 1: Integrate OCR Service**
+- Created a reusable OCR service function  
+- Handled and configured all required OCR dependencies  
+- Established database connectivity  
+- Stored extracted OCR text into a SQLite database  
+
+**Task 2: Text Processing**
+- Applied noise reduction techniques on raw OCR output  
+- Handled layout and formatting inconsistencies in extracted text  
+- Performed validation checks to ensure accuracy and completeness  
+- Prepared clean text for downstream AI processing and negotiation modules  
 
 ---
 
@@ -55,6 +70,7 @@ carlease/
 ├── .gitignore
 ├── README.md
 └── myenv/                          # Virtual environment (ignored in Git)
+
 
 
 ```
