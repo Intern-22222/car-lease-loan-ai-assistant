@@ -72,10 +72,10 @@ Week 2 ✅
     tests/test_ocr.py - Automated Pytest suite:
          Parametrized to test all PDFs in samples/.
          Validates output length and type.
-    docs/OCR_Module.md - Technical documentation.
+    docs/OCR_Module.md - Technical documentation.<br>
 
 
-## 🚀 Milestone 2:
+* **🚀 Milestone 2**:
 
    Advanced Processing & Storage (Weeks 3 & 4)
 
