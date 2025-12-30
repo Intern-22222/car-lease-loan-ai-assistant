@@ -117,12 +117,30 @@ car-lease-loan-ai-assistant/
 
  🛠️ How to Test Milestone 2
 
-1. Run the Full Pipeline
+## 🧪 verification Tools (Milestone 2)
+
+To ensure the Computer Vision (OpenCV) module is actually improving OCR quality, we created two specific test scripts.
+
+1. Visual Debugging Test (visual_test.py)
+Purpose: Generates "Before" vs. "After" images to visually verify that shadows, noise, and colors are being removed correctly.
+
+How to Run:
+    
+    python visual_test.py
+
+ 2. Accuracy Comparison Test (accuracy_test.py)
+Purpose:Quantifies the improvement by comparing the character count of OCR on the raw image vs. the cleaned image.
+
+How to Run:
+    
+    python accuracy_test.py
+
+3. Run the Full Pipeline
 This runs the OCR on sample files and saves the results to the database.
 
     python -m pytest -s tests/test_ocr.py
 
-2.Verify Database Storage
+4.Verify Database Storage
 Run this script to peek inside the ocr_data.db file and confirm the text was saved.
 
      python check_db.py
