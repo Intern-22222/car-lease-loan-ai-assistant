@@ -5,7 +5,7 @@ An AI assistant designed to review car lease and loan contracts by extracting te
 
 ---
 
-## 📌 Internship Contribution
+## 📌 Internship Contribution 
 
 **Intern C – OCR & Preprocessing Engineer**
 
@@ -22,7 +22,6 @@ This repository contains my internship work focused on building the OCR, preproc
 - Designed and implemented an end-to-end OCR pipeline  
 - Converted PDF contract documents into images using **pdftoppm (Poppler)**  
 - Extracted text from images using **Tesseract OCR**  
-- Built reusable OCR functions for consistent PDF-to-text conversion  
 - Established the base for downstream AI-based contract analysis  
 
 ---
