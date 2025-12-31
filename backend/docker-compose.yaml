@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: backend
+    restart : always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      # start_period: 30s
+    ports:
+      - "5000:3000"
+    env_file:
+      - .env
+    volumes:
+      - C:\intern222\car-lease-loan-ai-assistant\uploads:/app/uploads
+    networks:
+      - ainetwork
+
+networks:
+  ainetwork:
+    driver: bridge

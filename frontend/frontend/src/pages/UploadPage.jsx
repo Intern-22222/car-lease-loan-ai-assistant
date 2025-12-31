@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 const UploadPage = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [ocrText, setOcrText] = useState("");
@@ -11,7 +11,10 @@ const UploadPage = () => {
     tenure: "",
     emi: "",
   });
-
+  const [isloading, setIsLoading] = useState(false);
+  const MAX_FILE_SIZE = 10 * 1024 * 1024;
+  const [uploadStatus, setUploadStatus] = useState("idle");
+  const fileInputRef = useRef(null);
   const extractFieldsFromText = (text) => {
     let fields = {
       loanAmount: "",
@@ -43,6 +46,28 @@ const UploadPage = () => {
     }
     setExtractedFields(fields);
   };
+
+  const formatFileSize = (bytes) => {
+    if (bytes >= 1024 * 1024) {
+      return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+    }
+    return (bytes / 1024).toFixed(0) + " KB";
+  };
+  const copyToClipboard = async () => {
+    try {
+      if (!ocrText) {
+        showMessage("No OCR text to copy", "error");
+        return;
+      }
+
+      await navigator.clipboard.writeText(ocrText);
+
+      showMessage("OCR text copied!", "success");
+    } catch (error) {
+      showMessage("Copy failed. Please try manually.", "error");
+    }
+  };
+
   const showMessage = (text, type) => {
     setMessage(text);
     setMessageType(type);
@@ -58,7 +83,10 @@ const UploadPage = () => {
       showMessage("Please select a PDF first", "error");
       return;
     }
+    setIsLoading(true);
+    setUploadStatus("processing");
     setIsUploading(true);
+
     const formData = new FormData();
     formData.append("file", selectedFile);
     fetch("http://localhost:3000/api/upload", {
@@ -70,20 +98,32 @@ const UploadPage = () => {
         console.log(data);
         if (!data.success) {
           showMessage("OCR failed on server", "error");
+          setUploadStatus("error");
           return;
         }
         setOcrText(data.rawText);
         showMessage("OCR extracted successfully!", "success");
+        setUploadStatus("success");
         extractFieldsFromText(data.rawText);
         setIsUploading(false);
       })
       .catch((error) => {
         console.error("Upload error:", error);
+        console.log("Uplod failed with error object:", error);
         showMessage("Upload failed. Please try again.", "error");
+        setUploadStatus("error");
+        setIsLoading(false);
         setIsUploading(false);
       });
   };
-
+  const handleReset = () => {
+    setSelectedFile(null);
+    setOcrText("");
+    setExtractedFields({});
+    setUploadStatus("idle");
+    showMessage("Form cleared", "success");
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">
       {message && (
@@ -133,7 +173,11 @@ const UploadPage = () => {
                   <div className="flex text-sm text-gray-600 justify-center">
                     <label
                       htmlFor="file-upload"
+                      aria-label="Upload PDF document"
                       className="relative cursor-pointer bg-transparent rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none"
+                      focus:ring-2
+                      focus:ring-indigo-500
+                      focus:ring-offset-2
                     >
                       <span>Upload a PDF</span>
                       <input
@@ -142,9 +186,28 @@ const UploadPage = () => {
                         type="file"
                         accept="application/pdf"
                         className="sr-only"
-                        onChange={(event) =>
-                          setSelectedFile(event.target.files[0])
-                        }
+                        ref={fileInputRef}
+                        onChange={(event) => {
+                           
+                          const file = event.target.files[0];
+                          if (!file) return;
+
+                          if (file.type !== "application/pdf") {
+                            showMessage("Only PDF files are allowed", "error");
+                            return;
+                          }
+
+                          if (file.size > MAX_FILE_SIZE) {
+                            showMessage(
+                              "File too large. Max size is 10MB.",
+                              "error"
+                            );
+                            return;
+                          }
+
+                          setSelectedFile(file);
+                          event.target.value = "";
+                        }}
                       />
                     </label>
                     <p className="pl-1">or drag and drop</p>
@@ -177,8 +240,9 @@ const UploadPage = () => {
 
             <button
               onClick={HandleUpdate}
-              disabled={isUploading}
-              className={`w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200 ${
+              disabled={isUploading || !selectedFile}
+              aria-label="Upload PDF and extract OCR text"
+              className={`w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200 hover:cursor-pointer ${
                 isUploading ? "opacity-75 cursor-not-allowed" : ""
               }`}
             >
@@ -209,6 +273,23 @@ const UploadPage = () => {
               ) : (
                 "Extract Text"
               )}
+            </button>
+
+            {selectedFile && (
+              <div className="mt-3 text-sm text-gray-700">
+                <div className="font-medium">File : {selectedFile.name}</div>
+                <div className="text-gray-500">
+                  Size: {formatFileSize(selectedFile.size)}
+                </div>
+              </div>
+            )}
+            <button
+              onClick={handleReset}
+              disabled={isloading || isUploading || !selectedFile}
+              aria-label="Clear uploaded file and OCR results"
+              className=" px-4 py-2 rounded-xl border hover:cursor-pointer"
+            >
+              Reset
             </button>
           </div>
 
@@ -246,15 +327,78 @@ const UploadPage = () => {
             </div>
           </div>
 
+          <div className="mt-10">
+            <div className="flex justify-center gap-6 text-sm">
+              <span
+                className={
+                  uploadStatus === "idle"
+                    ? "font-semibold text-blue-600"
+                    : "text-gray-400"
+                }
+              >
+                Ready
+              </span>
+              <span className="text-gray-400">→</span>
+              <span
+                className={
+                  uploadStatus === "processing"
+                    ? "font-semibold text-orange-600"
+                    : "text-gray-400"
+                }
+              >
+                Processing
+              </span>
+              <span className="text-gray-400">→</span>
+              <span
+                className={
+                  uploadStatus === "success"
+                    ? "font-semibold text-green-600"
+                    : uploadStatus === "error"
+                    ? "font-semibold text-red-600"
+                    : "text-gray-400"
+                }
+              >
+                Result
+              </span>
+            </div>
+          </div>
           {ocrText && (
             <div className="mt-8">
               <div className="flex items-center justify-between mb-2">
+                <button
+                  onClick={copyToClipboard}
+                  disabled={isloading || isUploading}
+                  className="text-xs bg-indigo-600 text-white px-3 py-1 rounded-md shadow hover:bg-indigo-700 transition"
+                >
+                  Copy Text
+                </button>
+
                 <h3 className="text-sm font-medium text-gray-900">
                   OCR Result
                 </h3>
-                <span className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full font-medium">
+                {/* <span className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full font-medium">
                   Success
-                </span>
+                </span> */}
+                {uploadStatus === "processing" && (
+                  <span className="text-xs text-orange-700 bg-orange-100 px-2 py-1 rounded-full font-medium">
+                    Processing...
+                  </span>
+                )}
+                {uploadStatus === "success" && (
+                  <span className="text-xs text-green-700 bg-green-100 px-2 py-1 rounded-full font-medium">
+                    Success
+                  </span>
+                )}
+                {uploadStatus === "error" && (
+                  <span className="text-xs text-red-700 bg-red-100 px-2 py-1 rounded-full font-medium">
+                    Failed
+                  </span>
+                )}
+                {uploadStatus === "idle" && (
+                  <span className="text-xs text-gray-700 bg-gray-100 px-2 py-1 rounded-full font-medium">
+                    Ready
+                  </span>
+                )}
               </div>
               <div className="relative group">
                 <div className="absolute -inset-0.5 bg-linear-to-r from-indigo-500 to-purple-600 rounded-lg blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
