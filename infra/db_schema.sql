@@ -3,6 +3,7 @@
 CREATE TABLE contracts (
     id SERIAL PRIMARY KEY,
     filename VARCHAR(255) NOT NULL,
+    raw_text TEXT,  -- <--- NEW: We added this to store the OCR text
     upload_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     status VARCHAR(50) DEFAULT 'pending'
 );
