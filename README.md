@@ -1,5 +1,7 @@
-# Car Lease Contract Review Backend - Week 2 Implementation
-## Intern B: Document Upload API + OCR + Data Storage
+# Car Lease Contract Review Backend
+
+## Milestone 1 (week 2)
+## Intern B: Backend Engineer – Upload + OCR + DB
 
 **Implemented by**: Harshitha Javvadi
 
@@ -7,7 +9,7 @@
 
 ---
 
-## 🎯 Assigned Tasks (Week 2)
+## 1. Assigned Tasks (Week 2)
 
 | Day | Task | Status |
 |-----|------|--------|
@@ -15,11 +17,13 @@
 | **8** | `POST /ocr/{file_id}`: Trigger OCR worker (synchronous OK for PoC) | ✅ |
 | **9-10** | Persist extracted text to DB `contracts` table (`file_id`, `s3_path`, `raw_text`, `ingested_at`) | ✅ |
 
-**Acceptance Criteria**: Upload file → `/ocr` → DB record with `raw_text` stored → **PASS**
+**Acceptance**:  
+Upload + OCR flow works locally end‑to‑end:
+`upload file → /ocr → DB record with raw_text stored`.
 
----
 
-## 🏗️ Project Structure
+
+## 2. Project Structure
 
 backend/
 ├── app/                 
@@ -35,99 +39,229 @@ backend/
 
 
 
+## 3. Environment & Setup
+
+.env
+
+    DATABASE_URL=postgresql://user:password@localhost:5432/contract_db
+    STORAGE_BACKEND=local     # or 's3' in future
+    LOCAL_DATA_DIR=./data
+
+### Start Services
+```
+    # 1) Start Postgres
+    cd backend/infra
+    docker-compose up -d db
+
+    # 2) Install dependencies
+    cd ..
+    python -m venv .venv
+    source .venv/bin/activate          # Windows: .venv\Scripts\activate
+    pip install -r requirements.txt
+
+    # 3) Run FastAPI app
+    uvicorn app.main:app --reload
+```
+
+API docs: `http://127.0.0.1:8000/docs`
+
+
+## 4. API Endpoints
+   
+#### 4.1 Health Check
+
+* GET `/health`
+* Verifies backend is running.
+* Response: `{"status": "ok", "message": "Service is running"}`
+
+#### 4.2 Upload Contract
+
+* POST `/upload`
+* Input: multipart/form-data, field name `file` (PDF or image).
+* Behavior:
+    * Saves file into `LOCAL_DATA_DIR (data/)` with UUID filename.
+    * Creates a `contracts` row with `file_id`, `filename`, and `s3_path` (local path for now).
+* Response (JSON):
+ ``` 
+{
+  "file_id": "<uuid>",
+  "filename": "contract.pdf"
+}
+```
+
+#### 4.3 Run OCR and Store Text
+
+* POST `/ocr/{file_id}`
+* Input: `file_id` returned from `/upload`.
+* Behavior:
+    * Looks up the contract in DB.
+    * Uses stored `s3_path` to find the file on disk.
+    * Images: Tesseract OCR (via `pytesseract`).
+    * PDFs: Text extraction using PyMuPDF (`fitz`).
+    * Stores full extracted text in `contracts.raw_text`.
+    * Sets `ingested_at` to current time.
+* Response (JSON):
+
+ ```
+{
+  "file_id": "<uuid>",
+  "text_extracted": true,
+  "full_text": "Vehicle Sale Agreement ... (full contract text)"
+}
+```
+
+## 5. Database Model (Contracts Table)
+`app/models.py` defines the `Contract` ORM model, which maps to the `contracts` table:
+
+    class Contract(Base):
+        __tablename__ = "contracts"
+        id = Column(Integer, primary_key=True, index=True)
+      file_id = Column(String, unique=True, index=True, nullable=False)
+      filename = Column(String, nullable=False)
+      s3_path = Column(String, nullable=True)   # local path or S3 path
+      text_path = Column(String, nullable=True) # reserved for future .txt files
+      raw_text = Column(Text, nullable=True)    # OCR result
+      ingested_at = Column(DateTime, default=datetime.utcnow)
+    
+After running `/upload` and `/ocr/{file_id}`, a typical record looks like:
+```
+file_id     = "48365ed9-6d42-478c-9a13-24cd18995b4f"
+filename    = "Sample_contract.pdf"
+s3_path     = "data/48365ed9-6d42-478c-9a13-24cd18995b4f.pdf"
+raw_text    = "<full extracted contract text...>"
+ingested_at = "2025-12-29 13:50:00"
+```
+
+## 6. How This Meets Week 2 Acceptance
+   
+Upload: `POST /upload` accepts multipart files and saves them to `data/` based on env config (`STORAGE_BACKEND`, `LOCAL_DATA_DIR`).
+
+OCR Worker: `POST /ocr/{file_id}` runs OCR synchronously for both images and PDFs, using helper functions in `ocr.py`.
+
+DB Persistence:
+
+`file_id` and `s3_path` captured at upload.
+
+`raw_text` and `ingested_at` filled after OCR.
+
+Data is stored in contracts table via the SQLAlchemy Contract model.
+
+Result:
+The flow `upload file → /ocr/{file_id} → DB record with raw_text stored` works end-to-end locally, satisfying all Week 2 deliverables for milestone-1.
+
 ---
 
-## 🚀 Quick Start
+## Milestone 2 (week 2)
+## Intern B: Backend Engineer – Document Upload & Text Storage
 
-1. Start Postgres
-cd infra && docker-compose up -d db
+**uploading contract documents and saving their extracted plain‑text into the database.**
 
-2. Install dependencies
-cd .. && python -m venv .venv
-source .venv/bin/activate # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
+---
 
-3. Run API
+## 1.Responsibilities
+
+| **Component**            | **Description**                                                                                                                                       |
+|---------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Document Upload API**   | Provides an endpoint to upload **PDF or image** files (`multipart/form-data`). The uploaded files are stored in the backend under a local `data/` directory. |
+| **Data Storage**          | Performs **OCR / text extraction** on uploaded documents using Tesseract or PyMuPDF and saves the extracted **plain text** into the database for later LLM and analysis steps. |
+| **Base Foundation**       | Builds upon the Week‑2 setup using **FastAPI**, **SQLAlchemy**, and **Tesseract/PyMuPDF**.                                                            |
+| **Objective**             | Implement a backend workflow that connects file upload, text extraction, and database storage for further document analysis.                           |
+
+
+## 2. Environment & Running the Service
+
+.env (key variables)
+```
+DATABASE_URL=postgresql://user:password@localhost:5432/contract_db
+STORAGE_BACKEND=local
+LOCAL_DATA_DIR=./data
+```
+### Start backend
+```
+cd backend
+source .venv/bin/activate          # or venv\Scripts\activate on Windows
 uvicorn app.main:app --reload
+```
+Interactive API docs: `http://127.0.0.1:8000/docs`
 
+## 3. Document Upload API
 
-**API available at**: http://127.0.0.1:8000/docs
+* Endpoint: POST `/upload`
+* Purpose: Upload a contract document (`PDF` or `image`) and register it in the database.
+* Input: multipart/form-data, field name file
+* Accepted types: `.pdf, .png, .jpg, .jpeg, .tiff, .bmp`
+* Behaviour:
+    * Generates a UUID file_id.
+    * Saves the file under `LOCAL_DATA_DIR` (./data) with the UUID filename.
+    * Creates a row in the contracts table with:
+        * `file_id`
+        * `original filename`
+        * `s3_path` (used to store the local file path).
+* Example request:
+  `curl -F "file=@Sample_contract.pdf" http://127.0.0.1:8000/upload`
+* Example response:
+```
+json
+{
+  "file_id": "5bcd5f81-3b76-462e-b162-5672b1a1f910",
+  "filename": "Sample_contract.pdf"
+}
+```
+This completes the “Document Upload API” requirement.
 
----
+## 4. Text Extraction & Data Storage
+* Endpoint: POST `/ocr/{file_id}`
+* Purpose: Take an already‑uploaded document and save its plain text into the database.
+* Input: `file_id` obtained from POST `/upload`.
+* Behaviour:
+    * Looks up the contracts row by `file_id`.
+    *Reads the stored file from `s3_path` (local `data/` path).
+* Extracts text:
+    * For images: uses Tesseract OCR via `pytesseract`.
+    *For PDFs: uses PyMuPDF (`fitz`) to pull page text.
+* Writes the extracted text into:
+    * `contracts.raw_text` (full plain text).
+    * Updates `contracts.ingested_at` timestamp.
+* Returns the full extracted text to the client for verification.
+* Example request:
+`curl -X POST "http://127.0.0.1:8000/ocr/5bcd5f81-3b76-462e-b162-5672b1a1f910"`
+* Example response:
+```
+json
+{
+  "file_id": "5bcd5f81-3b76-462e-b162-5672b1a1f910",
+  "text_extracted": true,
+  "full_text": "Vehicle Sale Agreement\n\nThis agreement made at ..."
+}
+```
+This fulfils the “Data Storage: save plain text result into the database” requirement, since the same text is stored in the raw_text column.
 
-## 🔄 End-to-End Flow
-
-Upload PDF/Image → POST /upload
-
-↓
-
-File saved to data/ + DB record created 
-
-↓ (returns file_id)
-
-POST /ocr/{file_id}
-
-↓
-
-OCR extracts text → raw_text + ingested_at saved to DB
-
-↓
-
-Returns full extracted text
-
-
-### Demo Commands
-
-Upload contract : 
-curl -F "file=@sample_contract.pdf" http://127.0.0.1:8000/upload
-
-→ {"file_id": "abc123...", "filename": "sample_contract.pdf"}
-
-Extract text : 
-curl -X POST "http://127.0.0.1:8000/ocr/abc123..."
-
-→ {"file_id": "abc123...", "text_extracted": true, "full_text": "Vehicle Sale Agreement..."}
-
-
----
-
-## 📋 API Endpoints
-
-| Endpoint | Method | Description | Response |
-|----------|--------|-------------|----------|
-| `/health` | GET | Health check | `{"status": "ok"}` |
-| `/upload` | **POST** | Upload PDF/image | `{"file_id": "...", "filename": "..."}` |
-| `/ocr/{file_id}` | **POST** | Run OCR → Store text | `{"full_text": "Vehicle Sale Agreement...", ...}` |
-
-**Swagger UI**: http://127.0.0.1:8000/docs
-
----
 
 ## 🗄️ Database Schema
 
 **`contracts` table** (auto-created by SQLAlchemy):
-
+```
 CREATE TABLE contracts (
 id INTEGER PRIMARY KEY,
-
 file_id VARCHAR UNIQUE NOT NULL,
-
 filename VARCHAR NOT NULL,
-
 s3_path VARCHAR,
-
 raw_text TEXT,
-
 ingested_at TIMESTAMP
-
 );
+```
 
+### Demo Commands
 
-**Sample record after OCR**:
-file_id: "48365ed9-6d42-478c-9a13-24cd18995b4f"
-s3_path: "data/48365ed9-6d42-478c-9a13-24cd18995b4f.pdf"
-raw_text: "Vehicle Sale Agreement\nThis agreement made..." (2601 chars)
-ingested_at: "2025-12-29 13:50:00"
+Upload contract : 
+`curl -F "file=@sample_contract.pdf" http://127.0.0.1:8000/upload`
+
+→ {"file_id": "abc123...", "filename": "sample_contract.pdf"}
+
+Extract text : 
+`curl -X POST "http://127.0.0.1:8000/ocr/abc123..."`
+
+→ {"file_id": "abc123...", "text_extracted": true, "full_text": "Vehicle Sale Agreement..."}
 
 
 ---
@@ -162,38 +296,5 @@ ingested_at: "2025-12-29 13:50:00"
 | DB Storage | All files | `raw_text` populated | ✅ |
 | End-to-End | Upload → OCR → DB | Complete flow | ✅ |
 
-**DB Verification**:
-SELECT file_id, LENGTH(raw_text), ingested_at FROM contracts ORDER BY id DESC LIMIT 3;
-
-
 ---
 
-## 🔧 Environment Configuration
-
-**.env**:
-
-DATABASE_URL=postgresql://user:password@localhost:5432/contract_db
-
-STORAGE_BACKEND=local
-
-LOCAL_DATA_DIR=./data
-
-
-**Dependencies** (`requirements.txt`):
-fastapi uvicorn[standard] SQLAlchemy psycopg2-binary python-multipart
-python-dotenv pydantic Pillow pytesseract PyMuPDF
-
-
----
-
-## 🎉 Deliverables Completed
-
-| Deliverable | Status | Evidence |
-|-------------|--------|----------|
-| `backend/app/main.py` with `/upload` & `/ocr/{file_id}` | ✅ | [main.py](app/main.py) |
-| ORM models updated (`raw_text`, `ingested_at`) | ✅ | [models.py](app/models.py) |
-| End-to-end flow: upload → OCR → DB | ✅ | Curl outputs + DB query |
-
----
-
-*Last updated: Dec 29, 2025* 
