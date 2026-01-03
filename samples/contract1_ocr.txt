@@ -1,0 +1,6 @@
+Contract ID: 123
+Date: 2025-12-3O
+Amount: $5000
+Lessee: John Doe
+Lessor: ABC Leasing Compny
+Terms: Monthly payment due on the Ist of each month.
