@@ -43,3 +43,19 @@ This document tracks the completion of infrastructure, security, and automation 
 
 ---
 
+
+
+
+
+
+
+
+
+
+
+
+
+## Milestone 2: AI Integration & QC (Intern D)
+- [x] **Task 1: Test Workflow**: Created `/contract/{file_id}` stub and verified endpoint connectivity.
+- [x] **Task 1: Smoke Test**: Updated `scripts/smoke_test.sh` to check for integrated JSON results.
+- [x] **Task 2: Quality Check**: Established `docs/ocr_qc_checklist.md` for error auditing.
