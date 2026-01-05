@@ -1,0 +1,6 @@
+week1-infra-setup/
+├── infra/
+├── backend/
+├── .github/workflows/
+├── docs/
+└── PULL_REQUEST_TEMPLATE.md
