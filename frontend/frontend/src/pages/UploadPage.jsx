@@ -1,38 +1,57 @@
 import React, { useState, useRef } from "react";
+import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+
 const UploadPage = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [ocrText, setOcrText] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("");
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState("");
+
   const [extractedFields, setExtractedFields] = useState({
     loanAmount: "",
     interestRate: "",
     tenure: "",
     emi: "",
   });
-  const [isloading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const MAX_FILE_SIZE = 10 * 1024 * 1024;
   const [uploadStatus, setUploadStatus] = useState("idle");
   const fileInputRef = useRef(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const [confidence, setConfidence] = useState(null);
+  const [notes, setNotes] = useState([]);
+
+
   const extractFieldsFromText = (text) => {
+    text = text.replace(/\s+/g, " ").trim();
     let fields = {
       loanAmount: "",
       interestRate: "",
       tenure: "",
       emi: "",
     };
-    const amountMatch = text.match(/Loan Amount\s*INR\s*([\d,]+)/i);
+    const amountMatch = text.match(
+      /loan\s*amount\s*(?:inr|rs\.?)?\s*([\d,]+)/i
+    );
     if (amountMatch) {
       fields.loanAmount = "₹" + amountMatch[1];
     }
     const rateMatch =
-      text.match(/(?:interest|nterest|terest)\s*rate\s*([\d.]+)%/i) ||
-      text.match(/([\d.]+)%\s*per\s*annum/i);
+      text.match(/interest\s*rate\s*([\d.]+)\s*%/i) ||
+      text.match(/([\d.]+)\s*%\s*(?:per\s*annum)?/i);
+
     if (rateMatch) {
       fields.interestRate = rateMatch[1] + "%";
     }
-    const tenureMatch = text.match(/tenure\s*([\d]+)\s*months/i);
+    const tenureMatch =
+      text.match(/tenure\s*([\d]+)\s*months?/i) ||
+      text.match(/([\d]+)\s*(?:month|months)/i);
+
     if (tenureMatch) {
       fields.tenure = tenureMatch[1] + " months";
     }
@@ -40,6 +59,10 @@ const UploadPage = () => {
       text.match(/EMI\S*\s*INR\s*([\d.,]+)/i) ||
       text.match(/INR\s*([\d.,]+)\s*each/i) ||
       text.match(/EMI\S*[^0-9]*([\d.,]+)/i);
+    // const emiMatch =
+    //   text.match(/emi\s*(?:inr)?\s*([\d,.\s]+)/i) ||
+    //   text.match(/inr\s*([\d,.\s]+)\s*each/i);
+
     if (emiMatch) {
       const cleanValue = emiMatch[1].replace(/[,\.]/g, "");
       fields.emi = "₹" + cleanValue;
@@ -83,9 +106,10 @@ const UploadPage = () => {
       showMessage("Please select a PDF first", "error");
       return;
     }
-    setIsLoading(true);
-    setUploadStatus("processing");
     setIsUploading(true);
+    setIsLoading(true);
+    setIsProcessing(true);
+    setUploadStatus("processing");
 
     const formData = new FormData();
     formData.append("file", selectedFile);
@@ -101,318 +125,519 @@ const UploadPage = () => {
           setUploadStatus("error");
           return;
         }
-        setOcrText(data.rawText);
-        showMessage("OCR extracted successfully!", "success");
+        //setOcrText(data.rawText);
+        setOcrText(cleanOcrText(data.rawText));
+        setIsProcessing(false);
+        toast.success("OCR extracted successfully!");
+
+        //showToast("OCR extraction successful", "success");
+
         setUploadStatus("success");
-        extractFieldsFromText(data.rawText);
-        setIsUploading(false);
+
+        // extractFieldsFromText(data.rawText);
+        // setIsUploading(false);
+        // setIsLoading(false);
+
+          setExtractedFields({
+            loanAmount: data.extracted?.fields?.loan_amount ?? "",
+            interestRate: data.extracted?.fields?.interest_rate ?? "",
+            tenure: data.extracted?.fields?.tenure_months
+              ? data.extracted.fields.tenure_months + " months"
+              : "",
+            emi: data.extracted?.fields?.emi ?? "",
+          });
+
+          setConfidence(data.extracted?.confidence ?? null);
+          setNotes(data.extracted?.notes ?? []);
+          setIsProcessing(false);
+          setIsUploading(false);
+          setIsLoading(false);
       })
       .catch((error) => {
         console.error("Upload error:", error);
         console.log("Uplod failed with error object:", error);
-        showMessage("Upload failed. Please try again.", "error");
+        toast.error("Upload failed. Please try again.");
+
+        //showToast("OCR failed — please try again", "error");
+
         setUploadStatus("error");
         setIsLoading(false);
         setIsUploading(false);
+        setIsProcessing(false);
       });
   };
   const handleReset = () => {
+    console.log("Reset clicked....");
     setSelectedFile(null);
     setOcrText("");
-    setExtractedFields({});
+    setExtractedFields({
+      loanAmount: "",
+      interestRate: "",
+      tenure: "",
+      emi: "",
+    });
+
     setUploadStatus("idle");
-    showMessage("Form cleared", "success");
+    setIsUploading(false);
+    setIsProcessing(false);
+    setIsLoading(false);
+
+    setMessage("");
+    setMessageType("");
+    setToastMessage("");
+    setToastType("");
+
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
+
+  const showToast = (msg, type) => {
+    setToastMessage(msg);
+    setToastType(type);
+
+    setTimeout(() => {
+      setToastMessage("");
+      setToastType("");
+    }, 2500);
+  };
+
+  const cleanOcrText = (text) => {
+    if (!text) return "";
+
+    return text
+      .replace(/\r/g, "") // remove carriage returns
+      .replace(/[ \t]+/g, " ") // collapse multiple spaces
+      .replace(/\n\s+/g, "\n") // trim spaces at line start
+      .replace(/\s+\n/g, "\n") // trim spaces at line end
+      .trim(); // remove top/bottom blank space
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">
-      {message && (
+    <>
+      {toastMessage && (
         <div
-          className={`fixed top-6 right-6 px-4 py-3 rounded-lg shadow-lg text-white text-sm font-medium
-          ${messageType === "success" ? "bg-green-600" : "bg-red-600"}`}
+          className={`fixed top-4 right-4 px-4 py-2 rounded shadow-lg text-white 
+    ${toastType === "success" ? "bg-green-600" : "bg-red-600"}`}
         >
-          {message}
+          {toastMessage}
         </div>
       )}
 
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          PDF OCR Extractor
-        </h2>
-        <p className="mt-2 text-center text-sm text-gray-600">
-          Upload your document to extract text instantly
-        </p>
-      </div>
+      <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">
+        {message && (
+          <div
+            className={`fixed top-6 right-6 px-4 py-3 rounded-lg shadow-lg text-white text-sm font-medium
+          ${messageType === "success" ? "bg-green-600" : "bg-red-600"}`}
+          >
+            {message}
+          </div>
+        )}
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-xl">
-        <div className="bg-white py-8 px-4 shadow-xl shadow-gray-200 sm:rounded-xl sm:px-10 border border-gray-100">
-          <div className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Upload Document
-              </label>
-              <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-indigo-500 hover:bg-gray-50 transition-colors duration-200 relative group cursor-pointer">
-                <div className="space-y-1 text-center">
-                  {/* Icon */}
-                  <div className="mx-auto h-12 w-12 text-gray-400 group-hover:text-indigo-500 transition-colors">
-                    <svg
-                      stroke="currentColor"
-                      fill="none"
-                      viewBox="0 0 48 48"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
+        <div className="sm:mx-auto sm:w-full sm:max-w-md">
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            PDF OCR Extractor
+          </h2>
+          <p className="mt-2 text-center text-sm text-gray-600">
+            Upload your document to extract text instantly
+          </p>
+        </div>
+
+        <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-xl">
+          <div className="bg-white py-8 px-4 shadow-xl shadow-gray-200 sm:rounded-xl sm:px-10 border border-gray-100">
+            <div className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Upload Document
+                </label>
+                <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-indigo-500 hover:bg-gray-50 transition-colors duration-200 relative group cursor-pointer">
+                  <div className="space-y-1 text-center">
+                    {/* Icon */}
+                    <div className="mx-auto h-12 w-12 text-gray-400 group-hover:text-indigo-500 transition-colors">
+                      <svg
+                        stroke="currentColor"
+                        fill="none"
+                        viewBox="0 0 48 48"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </div>
+
+                    <div className="flex text-sm text-gray-600 justify-center">
+                      <label
+                        htmlFor="file-upload"
+                        aria-label="Upload PDF document"
+                        className="relative cursor-pointer bg-transparent rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none"
+                        // focus:ring-2
+                        // focus:ring-indigo-500
+                        // focus:ring-offset-2
+                      >
+                        <span>Upload a PDF</span>
+                        <input
+                          id="file-upload"
+                          name="file-upload"
+                          type="file"
+                          accept="application/pdf"
+                          className="sr-only"
+                          ref={fileInputRef}
+                          onChange={(event) => {
+                            const file = event.target.files[0];
+                            if (!file) return;
+
+                            if (file.type !== "application/pdf") {
+                              showMessage(
+                                "Only PDF files are allowed",
+                                "error"
+                              );
+                              return;
+                            }
+
+                            if (file.size > MAX_FILE_SIZE) {
+                              showMessage(
+                                "File too large. Max size is 10MB.",
+                                "error"
+                              );
+                              return;
+                            }
+
+                            setSelectedFile(file);
+                            event.target.value = "";
+                          }}
+                        />
+                      </label>
+                      <p className="pl-1">or drag and drop</p>
+                    </div>
+                    <p className="text-xs text-gray-500">PDF up to 10MB</p>
                   </div>
-
-                  <div className="flex text-sm text-gray-600 justify-center">
-                    <label
-                      htmlFor="file-upload"
-                      aria-label="Upload PDF document"
-                      className="relative cursor-pointer bg-transparent rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none"
-                      focus:ring-2
-                      focus:ring-indigo-500
-                      focus:ring-offset-2
-                    >
-                      <span>Upload a PDF</span>
-                      <input
-                        id="file-upload"
-                        name="file-upload"
-                        type="file"
-                        accept="application/pdf"
-                        className="sr-only"
-                        ref={fileInputRef}
-                        onChange={(event) => {
-                           
-                          const file = event.target.files[0];
-                          if (!file) return;
-
-                          if (file.type !== "application/pdf") {
-                            showMessage("Only PDF files are allowed", "error");
-                            return;
-                          }
-
-                          if (file.size > MAX_FILE_SIZE) {
-                            showMessage(
-                              "File too large. Max size is 10MB.",
-                              "error"
-                            );
-                            return;
-                          }
-
-                          setSelectedFile(file);
-                          event.target.value = "";
-                        }}
-                      />
-                    </label>
-                    <p className="pl-1">or drag and drop</p>
-                  </div>
-                  <p className="text-xs text-gray-500">PDF up to 10MB</p>
                 </div>
               </div>
-            </div>
 
-            {selectedFile && (
-              <div className="flex items-center p-3 bg-indigo-50 text-indigo-700 rounded-lg text-sm animate-fade-in">
-                <svg
-                  className="w-5 h-5 mr-2"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                  ></path>
-                </svg>
-                <span className="truncate font-medium">
-                  {selectedFile.name}
-                </span>
-              </div>
-            )}
-
-            <button
-              onClick={HandleUpdate}
-              disabled={isUploading || !selectedFile}
-              aria-label="Upload PDF and extract OCR text"
-              className={`w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200 hover:cursor-pointer ${
-                isUploading ? "opacity-75 cursor-not-allowed" : ""
-              }`}
-            >
-              {isUploading ? (
-                <>
+              {selectedFile && (
+                <div className="flex items-center p-3 bg-indigo-50 text-indigo-700 rounded-lg text-sm animate-fade-in">
                   <svg
-                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-5 h-5 mr-2"
                     fill="none"
+                    stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
                     <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                     ></path>
                   </svg>
-                  Processing...
-                </>
-              ) : (
-                "Extract Text"
+                  <span className="truncate font-medium">
+                    {selectedFile.name}
+                  </span>
+                </div>
               )}
-            </button>
 
-            {selectedFile && (
-              <div className="mt-3 text-sm text-gray-700">
-                <div className="font-medium">File : {selectedFile.name}</div>
-                <div className="text-gray-500">
-                  Size: {formatFileSize(selectedFile.size)}
+              <button
+                onClick={HandleUpdate}
+                disabled={isUploading}
+                aria-label="Upload PDF and extract OCR text"
+                className={`w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200 hover:cursor-pointer ${
+                  isUploading ? "opacity-75 cursor-not-allowed" : ""
+                }`}
+              >
+                {isUploading ? (
+                  <>
+                    <svg
+                      className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                    Processing...
+                  </>
+                ) : (
+                  "Extract Text"
+                )}
+              </button>
+
+              {selectedFile && (
+                <div className="mt-3 text-sm text-gray-700">
+                  <div className="font-medium">File : {selectedFile.name}</div>
+                  <div className="text-gray-500">
+                    Size: {formatFileSize(selectedFile.size)}
+                  </div>
+                </div>
+              )}
+              <button
+                onClick={handleReset}
+                // disabled={isLoading || isUploading}
+                aria-label="Clear uploaded file and OCR results"
+                className=" px-4 py-2 rounded-xl border hover:cursor-pointer"
+              >
+                Reset
+              </button>
+            </div>
+            <div style={{ marginTop: "20px" }}>
+              <Link
+                to="/history"
+                style={{
+                  padding: "10px 14px",
+                  borderRadius: "10px",
+                  backgroundColor: "#2563eb",
+                  color: "white",
+                  textDecoration: "none",
+                  marginTop:"10px"
+                }}
+              >
+                📜 View OCR History
+              </Link>
+            </div>
+
+            <div className="mt-10">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                Key Loan Details
+              </h3>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="bg-white shadow rounded-lg p-4 border">
+                  <p className="text-sm text-gray-500">Loan Amount</p>
+                  <p className="text-xl font-bold">
+                    {extractedFields.loanAmount || "—"}
+                    {/* {confidence !== null && (
+                      <div style={{ marginTop: "10px" }}>
+                        <strong>Confidence Score:</strong>{" "}
+                        {(confidence * 100).toFixed(1)}%
+                      </div>
+                    )} */}
+                    {confidence !== null && (
+                      <div
+                        style={{
+                          marginTop: "18px",
+                          padding: "14px 16px",
+                          borderRadius: "12px",
+                          backgroundColor: "#f8fafc",
+                          boxShadow: "0 2px 6px rgba(0,0,0,0.08)",
+                          border: "1px solid #e5e7eb",
+                        }}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            marginBottom: "8px",
+                          }}
+                        >
+                          <span
+                            style={{ fontSize: "20px", marginRight: "8px" }}
+                          >
+                            📊
+                          </span>
+                          <strong style={{ fontSize: "15px" }}>
+                            Confidence Score
+                          </strong>
+                        </div>
+
+                        <div
+                          style={{
+                            fontSize: "26px",
+                            fontWeight: "bold",
+                            color:
+                              confidence >= 0.7
+                                ? "#16a34a"
+                                : confidence >= 0.4
+                                ? "#ca8a04"
+                                : "#dc2626",
+                          }}
+                        >
+                          {(confidence * 100).toFixed(1)}%
+                        </div>
+                      </div>
+                    )}
+
+                    {/* {notes.length > 0 && (
+                      <div style={{ marginTop: "10px" }}>
+                        <strong>AI Reasoning Notes:</strong>
+                        <ul>
+                          {notes.map((note, index) => (
+                            <li key={index}>{note}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )} */}
+
+                    {notes.length > 0 && (
+                      <div
+                        style={{
+                          marginTop: "18px",
+                          padding: "14px 16px",
+                          borderRadius: "12px",
+                          backgroundColor: "#f9f9ff",
+                          boxShadow: "0 2px 6px rgba(0,0,150,0.08)",
+                          border: "1px solid #e0e7ff",
+                        }}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            marginBottom: "10px",
+                          }}
+                        >
+                          <span
+                            style={{ fontSize: "20px", marginRight: "8px" }}
+                          >
+                            🧠
+                          </span>
+                          <strong style={{ fontSize: "15px" }}>
+                            AI Reasoning Notes
+                          </strong>
+                        </div>
+
+                        {notes.map((note, index) => (
+                          <div
+                            key={index}
+                            style={{
+                              padding: "8px 10px",
+                              borderRadius: "8px",
+                              marginBottom: "6px",
+                              backgroundColor: "#eef2ff",
+                              color: "#4338ca",
+                              fontSize: "14px",
+                              lineHeight: "1.5",
+                              display: "flex",
+                            }}
+                          >
+                            <span style={{ marginRight: "8px" }}>✔️</span>
+                            <span>{note}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </p>
+                </div>
+                <div className="bg-white shadow rounded-lg p-4 border">
+                  <p className="text-sm text-gray-500">Interest Rate</p>
+                  <p className="text-xl font-bold">
+                    {extractedFields.interestRate || "—"}
+                  </p>
+                </div>
+                <div className="bg-white shadow rounded-lg p-4 border">
+                  <p className="text-sm text-gray-500">Tenure</p>
+                  <p className="text-xl font-bold">
+                    {extractedFields.tenure || "—"}
+                  </p>
+                </div>
+
+                <div className="bg-white shadow rounded-lg p-4 border">
+                  <p className="text-sm text-gray-500">Monthly EMI</p>
+                  <p className="text-xl font-bold">
+                    {extractedFields.emi || "—"}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-10">
+              <div className="flex justify-center gap-6 text-sm">
+                <span
+                  className={
+                    uploadStatus === "idle"
+                      ? "font-semibold text-blue-600"
+                      : "text-gray-400"
+                  }
+                >
+                  Ready
+                </span>
+                <span className="text-gray-400">→</span>
+                <span
+                  className={
+                    uploadStatus === "processing"
+                      ? "font-semibold text-orange-600"
+                      : "text-gray-400"
+                  }
+                >
+                  Processing
+                </span>
+                <span className="text-gray-400">→</span>
+                <span
+                  className={
+                    uploadStatus === "success"
+                      ? "font-semibold text-green-600"
+                      : uploadStatus === "error"
+                      ? "font-semibold text-red-600"
+                      : "text-gray-400"
+                  }
+                >
+                  Result
+                </span>
+              </div>
+            </div>
+            {ocrText && (
+              <div className="mt-8">
+                <div className="flex items-center justify-between mb-2">
+                  <button
+                    onClick={copyToClipboard}
+                    disabled={isLoading || isUploading}
+                    className="text-xs bg-indigo-600 text-white px-3 py-1 rounded-md shadow hover:bg-indigo-700 transition"
+                  >
+                    Copy Text
+                  </button>
+
+                  <h3 className="text-sm font-medium text-gray-900">
+                    OCR Result
+                  </h3>
+                  {/* <span className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full font-medium">
+                  Success
+                </span> */}
+                  {uploadStatus === "processing" && (
+                    <span className="text-xs text-orange-700 bg-orange-100 px-2 py-1 rounded-full font-medium">
+                      Processing...
+                    </span>
+                  )}
+                  {uploadStatus === "success" && (
+                    <span className="text-xs text-green-700 bg-green-100 px-2 py-1 rounded-full font-medium">
+                      Success
+                    </span>
+                  )}
+                  {uploadStatus === "error" && (
+                    <span className="text-xs text-red-700 bg-red-100 px-2 py-1 rounded-full font-medium">
+                      Failed
+                    </span>
+                  )}
+                  {uploadStatus === "idle" && (
+                    <span className="text-xs text-gray-700 bg-gray-100 px-2 py-1 rounded-full font-medium">
+                      Ready
+                    </span>
+                  )}
+                </div>
+                <div className="relative group">
+                  <div className="absolute -inset-0.5 bg-linear-to-r from-indigo-500 to-purple-600 rounded-lg blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
+                  <div className="relative bg-gray-900 rounded-lg p-4 max-h-96 overflow-auto custom-scrollbar">
+                    <pre className="text-sm text-gray-300 whitespace-pre-wrap font-mono leading-relaxed">
+                      {ocrText}
+                    </pre>
+                  </div>
                 </div>
               </div>
             )}
-            <button
-              onClick={handleReset}
-              disabled={isloading || isUploading || !selectedFile}
-              aria-label="Clear uploaded file and OCR results"
-              className=" px-4 py-2 rounded-xl border hover:cursor-pointer"
-            >
-              Reset
-            </button>
           </div>
-
-          <div className="mt-10">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">
-              Key Loan Details
-            </h3>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="bg-white shadow rounded-lg p-4 border">
-                <p className="text-sm text-gray-500">Loan Amount</p>
-                <p className="text-xl font-bold">
-                  {extractedFields.loanAmount || "—"}
-                </p>
-              </div>
-              <div className="bg-white shadow rounded-lg p-4 border">
-                <p className="text-sm text-gray-500">Interest Rate</p>
-                <p className="text-xl font-bold">
-                  {extractedFields.interestRate || "—"}
-                </p>
-              </div>
-              <div className="bg-white shadow rounded-lg p-4 border">
-                <p className="text-sm text-gray-500">Tenure</p>
-                <p className="text-xl font-bold">
-                  {extractedFields.tenure || "—"}
-                </p>
-              </div>
-
-              <div className="bg-white shadow rounded-lg p-4 border">
-                <p className="text-sm text-gray-500">Monthly EMI</p>
-                <p className="text-xl font-bold">
-                  {extractedFields.emi || "—"}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-10">
-            <div className="flex justify-center gap-6 text-sm">
-              <span
-                className={
-                  uploadStatus === "idle"
-                    ? "font-semibold text-blue-600"
-                    : "text-gray-400"
-                }
-              >
-                Ready
-              </span>
-              <span className="text-gray-400">→</span>
-              <span
-                className={
-                  uploadStatus === "processing"
-                    ? "font-semibold text-orange-600"
-                    : "text-gray-400"
-                }
-              >
-                Processing
-              </span>
-              <span className="text-gray-400">→</span>
-              <span
-                className={
-                  uploadStatus === "success"
-                    ? "font-semibold text-green-600"
-                    : uploadStatus === "error"
-                    ? "font-semibold text-red-600"
-                    : "text-gray-400"
-                }
-              >
-                Result
-              </span>
-            </div>
-          </div>
-          {ocrText && (
-            <div className="mt-8">
-              <div className="flex items-center justify-between mb-2">
-                <button
-                  onClick={copyToClipboard}
-                  disabled={isloading || isUploading}
-                  className="text-xs bg-indigo-600 text-white px-3 py-1 rounded-md shadow hover:bg-indigo-700 transition"
-                >
-                  Copy Text
-                </button>
-
-                <h3 className="text-sm font-medium text-gray-900">
-                  OCR Result
-                </h3>
-                {/* <span className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full font-medium">
-                  Success
-                </span> */}
-                {uploadStatus === "processing" && (
-                  <span className="text-xs text-orange-700 bg-orange-100 px-2 py-1 rounded-full font-medium">
-                    Processing...
-                  </span>
-                )}
-                {uploadStatus === "success" && (
-                  <span className="text-xs text-green-700 bg-green-100 px-2 py-1 rounded-full font-medium">
-                    Success
-                  </span>
-                )}
-                {uploadStatus === "error" && (
-                  <span className="text-xs text-red-700 bg-red-100 px-2 py-1 rounded-full font-medium">
-                    Failed
-                  </span>
-                )}
-                {uploadStatus === "idle" && (
-                  <span className="text-xs text-gray-700 bg-gray-100 px-2 py-1 rounded-full font-medium">
-                    Ready
-                  </span>
-                )}
-              </div>
-              <div className="relative group">
-                <div className="absolute -inset-0.5 bg-linear-to-r from-indigo-500 to-purple-600 rounded-lg blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
-                <div className="relative bg-gray-900 rounded-lg p-4 max-h-96 overflow-auto custom-scrollbar">
-                  <pre className="text-sm text-gray-300 whitespace-pre-wrap font-mono leading-relaxed">
-                    {ocrText}
-                  </pre>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
