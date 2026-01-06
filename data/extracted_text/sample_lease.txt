@@ -1,0 +1,29 @@
+CAR LOAN AGREEMENT
+This Car Loan Agreement (“Agreement”) is made on [Date] between:
+Lender: XYZ Finance Pvt. Ltd.
+Borrower: [ABC]
+1. Loan Details
+Loan Amount: ₹7,50,000
+Interest Rate (APR): 9.2%
+Loan Tenure: 60 months
+Monthly Payment Amount (EMI): ₹15,650
+Down Payment: ₹1,50,000
+2. Repayment Terms
+The borrower agrees to repay the loan amount along with interest in
+equal monthly installments for the full loan tenure.
+3. Penalties / Late Fees
+If the borrower fails to pay the monthly installments within 10 days
+of the due date, a late payment penalty of ₹750 shall be charged for
+each delayed payment.
+4. Early Termination Clause
+The borrower may close the loan before the end of the tenure by
+paying the outstanding principal amount along with a foreclosure
+charge of 2% of the remaining balance.
+5. Default
+Failure to pay EMIs for three consecutive months shall be treated
+as a default and may result in legal action.
+6. Governing Law
+This Agreement shall be governed by and interpreted under the laws
+of India.
+Borrower Signature: ___________
+Lender Signature: ___________
