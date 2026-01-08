@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dealer Conversation Simulator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h3>Conversations</h3>
+    <ul id="threadList"></ul>
+  </div>
+
+  <!-- Chat Area -->
+  <div class="chat">
+    <div class="chat-header" id="chatTitle">
+      Select a Conversation
+    </div>
+
+    <div class="messages" id="messages"></div>
+
+    <div class="input-box">
+      <input type="text" id="newMessage" placeholder="Type your message..." />
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
