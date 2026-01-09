@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dealer Conversation Simulator</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Top bar with global minimize / maximize -->
+    <div class="app-header">
+      <div class="app-title">Dealer Conversation Simulator</div>
+      <button id="toggleAll" class="chat-toggle-btn" aria-label="Minimize window">
+        ─
+      </button>
+    </div>
+
+    <!-- Entire chat UI (threads + chat window) -->
+    <div class="chat-container">
+      <!-- Sidebar: dealer threads -->
+      <aside class="sidebar">
+        <div class="sidebar-header">Dealer Threads</div>
+        <ul id="threadList" class="thread-list"></ul>
+      </aside>
+
+      <!-- Chat window -->
+      <section class="chat-window">
+        <div class="chat-header">
+          <div class="chat-header-left">
+            <div class="chat-title">Conversation</div>
+            <div id="chatSubTitle" class="chat-subtitle">
+              Select a thread to view conversation
+            </div>
+          </div>
+        </div>
+
+        <div id="chatMessages" class="chat-messages"></div>
+
+        <div class="chat-input">
+          <textarea
+            id="messageInput"
+            placeholder="Type a message..."
+            disabled
+          ></textarea>
+          <button id="sendButton" disabled>Send</button>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>

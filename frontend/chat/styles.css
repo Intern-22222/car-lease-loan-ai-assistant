@@ -1,0 +1,278 @@
+/* ===== Global Page Background ===== */
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at top left, #dbeafe, #eef2ff 30%, #f9fafb);
+  color: #111827;
+}
+
+/* Centered app shell */
+.app-shell {
+  width: 100%;
+  max-width: 1100px;
+}
+
+/* Top bar with global minimize/maximize */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  padding: 4px 8px;
+}
+
+.app-title {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* Container around sidebar + chat */
+.chat-container {
+  display: flex;
+}
+
+/* Button used to minimize/maximize whole window */
+.chat-toggle-btn {
+  border: none;
+  background: rgba(15, 23, 42, 0.25);
+  color: #111827;
+  border-radius: 999px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.2);
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.chat-toggle-btn:hover {
+  background: rgba(15, 23, 42, 0.35);
+  transform: translateY(-1px);
+}
+
+/* When minimized, hide the whole container (threads + chat) */
+.app-shell.minimized .chat-container {
+  display: none;
+}
+
+/* Make the two panels behave like a single centered card */
+.sidebar,
+.chat-window {
+  height: 90vh;
+}
+
+/* ===== Sidebar (Dealer Threads) with gradient background ===== */
+.sidebar {
+  width: 280px;
+  border-right: 1px solid #e5e7eb;
+  background: linear-gradient(180deg, #0f172a 0%, #1d4ed8 40%, #4f46e5 100%);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.35);
+  border-radius: 16px 0 0 16px;
+  color: #e5e7eb;
+}
+
+.sidebar-header {
+  padding: 16px 20px;
+  font-weight: 700;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.4);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 12px;
+  color: #e5e7eb;
+}
+
+/* Thread list */
+.thread-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.thread-item {
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.05s ease;
+}
+
+.thread-item:hover {
+  background: rgba(15, 23, 42, 0.45);
+  transform: translateX(2px);
+}
+
+.thread-item.active {
+  background: rgba(59, 130, 246, 0.45);
+}
+
+.thread-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #f9fafb;
+}
+
+.thread-meta {
+  font-size: 12px;
+  color: #cbd5f5;
+}
+
+/* ===== Chat window (right side) ===== */
+.chat-window {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
+  border-radius: 0 16px 16px 0;
+}
+
+/* Chat header */
+.chat-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e5e7eb;
+  background: linear-gradient(90deg, #2563eb, #4f46e5);
+  color: #ffffff;
+  font-weight: 600;
+  border-radius: 0 16px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.chat-header-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-title {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.chat-subtitle {
+  font-size: 12px;
+  margin-top: 4px;
+  opacity: 0.9;
+}
+
+/* Chat messages area */
+.chat-messages {
+  flex: 1;
+  padding: 16px 20px;
+  overflow-y: auto;
+  background: linear-gradient(180deg, #f9fafb 0%, #eff6ff 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Message rows & bubbles */
+.message-row {
+  display: flex;
+}
+
+.message-row.user {
+  justify-content: flex-end;
+}
+
+.message-row.dealer {
+  justify-content: flex-start;
+}
+
+.message-bubble {
+  max-width: 60%;
+  padding: 8px 12px;
+  border-radius: 16px;
+  font-size: 14px;
+  line-height: 1.4;
+  position: relative;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.15);
+}
+
+.message-row.user .message-bubble {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+
+.message-row.dealer .message-bubble {
+  background: #e5e7eb;
+  color: #111827;
+  border-bottom-left-radius: 4px;
+}
+
+.message-time {
+  margin-top: 2px;
+  font-size: 11px;
+  color: #9ca3af;
+  text-align: right;
+}
+
+/* ===== Input area ===== */
+.chat-input {
+  border-top: 1px solid #e5e7eb;
+  padding: 10px 14px;
+  background: #ffffff;
+  display: flex;
+  gap: 8px;
+  border-radius: 0 0 16px 0;
+}
+
+.chat-input textarea {
+  flex: 1;
+  resize: none;
+  border: 1px solid #d1d5db;
+  border-radius: 999px;
+  padding: 10px 14px;
+  font-size: 14px;
+  height: 42px;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.chat-input textarea:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+.chat-input button {
+  background: linear-gradient(135deg, #2563eb, #4f46e5);
+  border: none;
+  color: #ffffff;
+  border-radius: 999px;
+  padding: 0 18px;
+  font-size: 14px;
+  cursor: pointer;
+  font-weight: 500;
+  box-shadow: 0 4px 10px rgba(79, 70, 229, 0.35);
+  transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.1s ease;
+}
+
+.chat-input button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(79, 70, 229, 0.45);
+}
+
+.chat-input button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 3px 8px rgba(79, 70, 229, 0.3);
+}
+
+.chat-input button:disabled {
+  opacity: 0.5;
+  cursor: default;
+  box-shadow: none;
+}
