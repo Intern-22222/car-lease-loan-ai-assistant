@@ -32,7 +32,5 @@ Chat window for messages
 Styled UI similar to a modern chat application
 Added JavaScript functionality to:
 Switch between threads
-
 Send new messages
-
 Simulate dealer replies
