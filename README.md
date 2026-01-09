@@ -297,3 +297,97 @@ Extract text :
 | End-to-End | Upload → OCR → DB | Complete flow | ✅ |
 
 ---
+
+## Milestone 3 (Week 2)
+## Intern B : Implement the message threading feature so users can simulate or track dealer conversations.
+
+---
+
+
+
+## 1. Goal
+
+Build a **simple chat interface** where users can:
+
+- See multiple dealer conversations as **threads**
+- Click a thread to view its messages
+- Type and send new messages
+- Minimize / maximize the whole chat window
+
+---
+
+## 2. Files
+
+```text
+frontend/
+└── chat/
+    ├── index.html   # Page layout
+    ├── styles.css   # Look & feel (colors, layout)
+    └── main.js      # Thread data + chat behaviour
+```
+
+---
+
+## 3. Data Model (main.js)
+
+Messages are grouped into threads:
+
+```js
+const threads = [
+  {
+    id: "thread-1",
+    title: "Dealer A - New Lease Offer",
+    lastUpdated: "2026-01-09 10:15",
+    messages: [
+      { id: "m1", sender: "user",   text: "...", timestamp: "..." },
+      { id: "m2", sender: "dealer", text: "...", timestamp: "..." }
+    ]
+  },
+  // more threads...
+];
+```
+
+This structure keeps conversations organized and makes rendering easy.
+
+---
+
+## 4. UI Behaviour
+
+**HTML + CSS**
+
+- Left side: **Dealer Threads** list (titles + last updated).
+- Right side: **Chat Window** with:
+  - Header: shows “Conversation” and selected thread title.
+  - Messages area: chat bubbles for user/dealer.
+  - Input area: textarea + Send button.
+- Top bar: **Dealer Conversation Simulator** title + **Minimize/Maximize** button.
+
+**JavaScript**
+
+- `renderThreadList()` – shows all threads in the sidebar.
+- `setActiveThread(id)` – when a thread is clicked:
+  - marks it active
+  - updates header subtitle
+  - renders its messages
+- `renderMessages(thread)` – draws left/right bubbles from `thread.messages`.
+- `sendMessage()` – adds a new user message to the active thread and re‑renders.
+- Global toggle button – hides/shows the entire chat area (threads + messages).
+
+---
+
+## 5. How to Run
+
+1. Go to the folder:
+
+   ```bash
+   cd frontend/chat
+   ```
+
+2. Open `index.html` in a browser.
+
+3. Try:
+
+   - Clicking different dealer threads on the left.
+   - Typing a message and pressing **Send** or **Enter**.
+   - Clicking the **─ / +** button to minimize or maximize the whole window.
+
