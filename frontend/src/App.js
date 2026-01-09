@@ -1,7 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './pages/Login';
-import Dashboard from './pages/Dashboard'; // Import the new page!
+import Dashboard from './pages/Dashboard'; // The new Summary View
+import Upload from './pages/Upload';       // The new Upload Page
 
 function App() {
   return (
@@ -9,8 +10,8 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/" element={<Login />} />
-          {/* Now we use the real Dashboard component */}
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/upload" element={<Upload />} />
         </Routes>
       </div>
     </Router>
