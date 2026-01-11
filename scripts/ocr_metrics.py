@@ -1,7 +1,6 @@
 import textdistance
 
 def cer(gt, ocr):
-    # Character Error Rate
     distance = textdistance.levenshtein.distance(list(gt), list(ocr))
     return 1 - (distance / len(gt))
 

@@ -1,5 +1,5 @@
 $BASE_URL = "http://localhost:8000"
-$SAMPLE_FILE = "samples\sample.pdf"
+$SAMPLE_FILE = "samples\contract1.pdf"
 
 Write-Host "[smoke] Uploading sample file..."
 $response = Invoke-WebRequest -Uri "$BASE_URL/upload" -Method POST -InFile $SAMPLE_FILE -ContentType "multipart/form-data"

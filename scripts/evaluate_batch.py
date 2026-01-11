@@ -6,14 +6,11 @@ Compares ground truth vs OCR text using CER, WER, and Field Accuracy.
 from pathlib import Path
 from ocr_metrics import cer, wer, field_accuracy
 
-# Folder containing your sample files
 SAMPLES_DIR = Path("samples")
 
-# Define key fields to check in OCR text
 KEY_FIELDS = ["2025-12-30", "Contract ID: 123", "$5000"]
 
 def evaluate_all():
-    # Loop through all ground truth files
     for gt_file in SAMPLES_DIR.glob("*_gt.txt"):
         base_name = gt_file.stem.replace("_gt", "")
         ocr_file = SAMPLES_DIR / f"{base_name}_ocr.txt"
