@@ -164,14 +164,12 @@ Run this script to peek inside the ocr_data.db file and confirm the text was sav
 
 
 
-## Milestone 3 – Contract Comparison Dashboard & Insights View
+## 🚀 Milestone 3 – Contract Comparison Dashboard & Insights View
 
 ### Overview
 Milestone 3 focuses on building the **user interface layer** for comparing multiple car lease/loan contracts and providing actionable insights. This milestone implements a **contract comparison dashboard** and an **insights view** that allow users to upload multiple lease contract PDFs, extract key SLA parameters, and compare them side-by-side.
 
 The goal is to improve transparency, simplify decision-making, and support negotiation readiness for users.
-
----
 
 ### Features Implemented
 
@@ -195,14 +193,12 @@ From each uploaded contract, the system extracts the following fields:
 
 > Extraction is currently regex-based for prototyping and will be replaced by LLM-based extraction in the next milestone.
 
----
 
 ### 3. Contract Comparison Dashboard
 - Displays **side-by-side comparison** of all uploaded contracts.
 - Each contract is shown as a column and each SLA parameter as a row.
 - Enables quick visual comparison similar to e-commerce product comparison platforms.
 
----
 
 ### 4. Insights View
 For each contract, the system provides:
@@ -214,7 +210,6 @@ For each contract, the system provides:
   - High penalties or late fees
 - Highlights potential risks and unclear clauses to support better decision-making.
 
----
 
 ### Technical Implementation
 
@@ -223,24 +218,18 @@ For each contract, the system provides:
 - **Data Handling:** Pandas DataFrames  
 - **Extraction Layer:** Regex-based (LLM-ready architecture)  
 
-**End-to-End Flow:**
-
-
-
 ---
 
 ### How to Run (Milestone 3 UI)
 
 1. Install dependencies:
-```bash
-pip install streamlit pandas pdfplumber
-
+     pip install streamlit pandas pdfplumber
 
 Run the application:
-  streamlit run streamlit_app.py
+     streamlit run streamlit_app.py
 
-Deliverables for Milestone 3:
-Working contract comparison dashboard
-Insights view with red flags and highlights
-Multi-PDF upload support
-Real-time extraction and rendering of SLA parameters
+✅Deliverables for Milestone 3:
+1.Working contract comparison dashboard
+2.Insights view with red flags and highlights
+3.Multi-PDF upload support
+4.Real-time extraction and rendering of SLA parameters
