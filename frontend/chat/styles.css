@@ -276,3 +276,24 @@ body {
   cursor: default;
   box-shadow: none;
 }
+
+.suggestion-btn {
+  display: block;
+  width: 100%;
+  margin-top: 4px;
+  padding: 6px 10px;
+  font-size: 12px;
+  text-align: left;
+  border-radius: 999px;
+  border: none;
+  background: #bfdbfe;
+  color: #1e3a8a;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.05s ease;
+}
+
+.suggestion-btn:hover {
+  background: #93c5fd;
+  transform: translateY(-1px);
+}
+
