@@ -1,40 +1,41 @@
-# Car Lease/Loan Contract Review AI Assistant
+# Car Lease/Loan Contract AI Assistant
 
-AI assistant to review car lease/loan contracts, extract key terms, compare market prices & assist with negotiation using LLMs and public vehicle data.
+An advanced AI-powered assistant to review car lease/loan contracts using **Computer Vision**, **OCR**, and automated processing.
 
-## 🚀 Features
+![Milestone 2 Complete](https://img.shields.io/badge/Milestone-2_Complete-green)
+![Python](https://img.shields.io/badge/Python-3.8%2B-blue)
 
-- **OCR Processing**: Extract text from PDF contracts using PaddleOCR
-- **Multi-page Support**: Process contracts of any length
-- **Text Cleanup**: Automatic correction of common OCR mistakes
-- **API Ready**: Backend-integrated OCR endpoint
+## 🚀 Key Features
+
+### 👁️ Advanced OCR & Computer Vision
+- **Hybrid Extraction**: Uses `pdfplumber` for digital PDFs and `Tesseract` + `OpenCV` for scanned documents.
+- **Image Preprocessing**:
+  - **Adaptive Thresholding**: Handles shadows and uneven lighting.
+  - **Noise Reduction**: Removes coffee stains and scan artifacts.
+  - **Deskewing**: Straightens crooked scans.
+- **Persistent Storage**: Automatically saves all extracted data to a local SQLite database.
+
+---
 
 ## 📁 Project Structure
 
 ```
 car-lease-loan-ai-assistant/
-├── docs/
-│   └── run_local.md          # Local development setup guide
-├── ocr/
-│   └── test_ocr.py           # Basic OCR test script
 ├── backend/
 │   └── app/
-│       └── ocr.py            # Reusable OCR module
-├── tests/
-│   └── test_ocr.py           # Unit tests
-├── data/
-│   └── sample_ocr.txt        # Example OCR output
-├── requirements.txt          # Python dependencies
+│       ├── ocr.py            # Hybrid OCR Engine (Tesseract + pdfplumber)
+│       ├── preprocessing.py  # OpenCV Image Cleanup Module (M2)
+│       └── database.py       # SQLite Database Operations
+├── docs/                     # Documentation
+│   └── Milestone2_Processing.md
+├── visual_test.py            # Debug tool: Before/After preprocessing images
+├── accuracy_test.py          # Tool: Measure OCR improvement
+├── check_db.py               # Tool: View database records
+├── requirements.txt          # Project dependencies
 └── README.md
 ```
 
-## 🛠️ Installation
-
-### Prerequisites
-- Python 3.8+
-- Poppler (for PDF processing)
-
-### Quick Start
+## 🛠️ Installation & Setup
 
 1. **Clone the repository**
    ```bash
@@ -42,58 +43,39 @@ car-lease-loan-ai-assistant/
    cd car-lease-loan-ai-assistant
    ```
 
-2. **Install Python dependencies**
+2. **Install Dependencies**
    ```bash
    pip install -r requirements.txt
    ```
+   *Includes `opencv-python`, `sqlalchemy`, `pytesseract`.*
 
-3. **Install Poppler** (see [docs/run_local.md](docs/run_local.md) for detailed instructions)
+3. **Install Tesseract OCR**
+   - **Windows**: [Download Backend](https://github.com/UB-Mannheim/tesseract/wiki) and install to default path.
+   - **Linux**: `sudo apt install tesseract-ocr`
+   - **Mac**: `brew install tesseract`
 
-## 📖 Usage
+## 🧪 Verification Tools
 
-### Basic OCR Test
-```bash
-python ocr/test_ocr.py path/to/your/contract.pdf
-```
+We built specific tools to verify the improvements in Milestone 2:
 
-### Using the OCR Module in Code
-```python
-from backend.app.ocr import process_pdf
+| Tool | Command | Description |
+|------|---------|-------------|
+| **Visual Debugger** | `python visual_test.py` | Generates "Before vs After" images in `visual_output/` folder. |
+| **Accuracy Test** | `python accuracy_test.py` | Compares character counts between raw and cleaned OCR. |
+| **Database Viewer** | `python check_db.py` | lists all saved contracts in the local database. |
 
-text = process_pdf("contract.pdf", dpi=300)
-print(text)
-```
+## 📋 Deliverables Progress
 
-### Run Unit Tests
-```bash
-python -m pytest tests/test_ocr.py -v
-```
+### ✅ Milestone 2: Advanced Processing & Sotrage
+- [x] OpenCV Preprocessing Module (`preprocessing.py`)
+- [x] SQLite Database Integration (`database.py`)
+- [x] Verification Scripts (`visual_test.py`, `accuracy_test.py`)
+- [x] Technical Documentation
 
-## 📋 Week 1 & 2 Deliverables
-
-### Week 1 ✅
-- [x] `docs/run_local.md` - Installation guide for PaddleOCR & Poppler
-- [x] `ocr/test_ocr.py` - Basic OCR test script
-- [x] `data/sample_ocr.txt` - Example OCR output
-
-### Week 2 ✅
-- [x] `backend/app/ocr.py` - Reusable OCR module with:
-  - Multi-page PDF support
-  - Configurable DPI (default 300)
-  - Text cleanup (remove newlines, fix OCR mistakes)
-- [x] `tests/test_ocr.py` - Unit tests verifying:
-  - Output existence
-  - Minimum length (>100 chars)
-  - Error handling
-
-## 🔧 Configuration
-
-| Parameter | Default | Description |
-|-----------|---------|-------------|
-| `dpi` | 300 | Image quality for OCR (higher = better, slower) |
-| `cleanup` | True | Apply text cleanup heuristics |
-| `lang` | 'en' | OCR language |
+### ✅ Milestone 1: Foundation
+- [x] Basic Tesseract & pdfplumber setup
+- [x] Unit Tests
+- [x] Local Environment Setup
 
 ## 📜 License
-
 MIT License
