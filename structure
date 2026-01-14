@@ -1,0 +1,13 @@
+week1-infra-setup/
+├── infra/
+│   └── docker-compose.yml
+├── backend/
+│   ├── main.py
+│   └── requirements.txt
+├── .github/
+│   └── workflows/
+│       └── ci.yml
+├── docs/
+│   └── verification_checklist.md
+├── PULL_REQUEST_TEMPLATE.md
+└── README.md

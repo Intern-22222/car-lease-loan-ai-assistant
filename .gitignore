@@ -18,3 +18,5 @@ __pycache__/
 .DS_Store
 
 .env
+uploads/
+temp/
