@@ -1,0 +1,221 @@
+Car Lease
+Agreement
+Template
+Prepared for Prepared by
+[Recipient Name] [Sender Name]
+[Company Name] [Company Name]
+Car Lease Agreement Template
+1 . Introduction
+This Car Lease Agreement (the "Agreement") is entered into on this [__ day of _____,
+20] by and between [Lessor's Full Name], hereinafter referred to as the "Lessor," and
+[Lessee's Full Name], hereinafter referred to as the "Lessee."
+This Agreement sets forth the terms and conditions upon which the Lessor agrees to
+lease the vehicle described herein to the Lessee, and the Lessee agrees to lease the
+said vehicle from the Lessor. The parties hereto mutually agree to abide by all the
+terms and conditions stipulated within this Agreement.
+2. Description of Vehicle
+❖ Vehicle Make: [e.g., Toyota, Ford, etc.]
+❖ Vehicle Model: [e.g., Camry, F-150, etc.]
+❖ Vehicle Year: [Year of Manufacture, e.g., 2023]
+❖ Vehicle Identification Number (VIN): [Insert VIN]
+❖ Color: [e.g., Blue, Red, etc.]
+❖ Odometer Reading at Start of Lease: [e.g., 10,000 miles]
+❖ Other Relevant Details: [e.g., License plate number, any special features or
+add-ons]
+The above-described vehicle (the "Leased Vehicle") is the subject of this Agreement
+and shall be provided by the Lessor for use by the Lessee based on the terms and
+conditions set forth in this Agreement.
+3. Lease Term
+Start Date of Lease: [Insert start date, e.g., January 1, 2023]
+End Date of Lease: [Insert end date, e.g., December 31, 2023]
+The lease term will be for a period of [Specify duration, e.g., "12 months"],
+commencing on the Start Date and concluding on the End Date, unless otherwise
+terminated or extended in accordance with the provisions of this Agreement.
+Renewal Options:
+Upon the expiration of this Agreement, the Lessee may have the option to renew the
+lease for an additional term, subject to agreement on the terms and conditions by
+both parties. The option for renewal, if exercised, should be communicated in writing
+to the Lessor no less than [e.g., "30 days"] before the expiration of the current term.
+4. Monthly Payments
+Monthly Lease Amount: $[Specify amount, e.g., "500.00"].
+Due Date:
+Payments are due on the [specify day, e.g., "1st"] day of each month. If the said date
+falls on a weekend or public holiday, the immediate next business day will be
+considered the due date.
+Payment Method:
+Payments should be made by [Specify preferred method, e.g., "bank transfer, check,
+etc."] to the following account/details:
+● Bank Name: [Insert Bank Name]
+● Account Name: [Insert Account Name]
+● Account Number: [Insert Account Number]
+● Routing Number (if applicable): [Insert Routing Number]
+Late Fees:
+If any lease payment is not received by the Lessor within [e.g., "5 days"] of the due
+date, a late fee of $[Specify late fee amount, e.g., "50.00"] will be applied. Continued
+delays may result in further actions as stipulated in the Termination and Penalties
+section of this Agreement.
+5. Security Deposit
+Deposit Amount: $[Specify amount, e.g., "1,000.00"].
+The Lessee agrees to pay a security deposit, as mentioned above, which will be held
+by the Lessor as a guarantee for the performance of the Lessee's obligations under
+this Agreement, including any potential damages to the Leased Vehicle.
+Conditions for Return:
+The security deposit will be returned to the Lessee at the end of the lease term,
+minus any amounts required to cover unpaid rents, fees, or repairs not considered
+regular wear and tear.
+Interest:
+[If applicable in your jurisdiction or agreed upon. E.g., "Any interest earned on the
+security deposit will be retained by the Lessor."]
+Deductions: The Lessor will provide an itemized list of any deductions made from the
+security deposit, along with the balance amount, within [Specify time, e.g., "30 days"]
+of the termination of this lease.
+6. Maintenance and Repairs
+Responsibility:
+Maintenance and repairs of the Leased Vehicle shall be divided as follows:
+Regular Maintenance:
+● The Lessee is responsible for the regular maintenance of the Leased Vehicle.
+This includes, but is not limited to, regular oil changes, tire rotations, brake
+checks, and any other routine maintenance recommended by the vehicle
+manufacturer.
+Unexpected Repairs:
+● Minor Repairs: For repairs costing less than $[Specify amount, e.g., "200"], the
+Lessee is responsible for the full cost.
+● Major Repairs: For repairs costing more than the aforementioned amount, the
+Lessor will cover [Specify percentage, e.g., "50%"] of the cost, and the Lessee
+will cover the remainder. The Lessee is required to notify the Lessor prior to
+authorizing any major repairs.
+Wear and Tear:
+● Normal wear and tear are expected over the duration of the lease term.
+However, excessive or abnormal wear and tear will be evaluated upon the
+termination of the lease, and any repairs deemed outside the scope of normal
+wear and tear will be charged to the Lessee.
+Authorized Repair Shops:
+● The Lessee agrees to use only [Specify, e.g., "authorized dealerships or repair
+shops approved by the Lessor"] for any maintenance or repair work.
+Unauthorized repairs may result in penalties as stipulated in this Agreement.
+7. Mileage Limitations
+Annual Mileage Limit:
+[Specify annual mileage, e.g., "12,000 miles"].
+Total Lease Term Mileage Limit:
+[Specify total mileage for the entire lease term, e.g., "36,000 miles for a 3-year
+lease"].
+The Lessee agrees not to exceed the specified mileage limits.
+If the odometer reading on the Leased Vehicle at the end of the lease term surpasses
+the Total Lease Term Mileage Limit, the Lessee will be responsible for an excess
+mileage charge.
+Excess Mileage Charge: $[Specify charge per mile, e.g., "0.25"] per mile for every mile
+over the allowed limit.
+The Lessee acknowledges and understands that the vehicle's odometer reading will
+be taken at the start and end of the lease term to determine any excess mileage.
+8. Insurance Requirements
+The Lessee agrees to maintain continuous insurance coverage for the duration of the
+lease term on the Leased Vehicle with the following minimum limits:
+Liability Insurance:
+● Bodily Injury: $[Specify amount, e.g., "100,000"] per person and $[Specify
+amount, e.g., "300,000"] per accident.
+● Property Damage: $[Specify amount, e.g., "50,000"] per accident.
+Collision and Comprehensive Insurance:
+● Deductible not to exceed $[Specify deductible amount, e.g., "500"].
+Uninsured/Underinsured Motorist Coverage:
+(Optional based on your requirements) $[Specify amount, e.g., "50,000"] per person
+and $[Specify amount, e.g., "100,000"] per accident.
+The Lessee shall name the Lessor as an additional insured party and shall furnish
+proof of the insurance policy to the Lessor before taking possession of the Leased
+Vehicle. In case of cancellation, non-renewal, or modification of the insurance policy,
+the Lessee shall notify the Lessor immediately.
+The Lessor reserves the right to repossess the Leased Vehicle if there's a lapse in the
+required insurance coverage or if the Lessee fails to provide proof of insurance.
+9. Options to Purchase
+Upon the termination or end of the lease term, the Lessee may have the option to
+purchase the Leased Vehicle from the Lessor under the following terms:
+Purchase Price:
+The purchase price of the Leased Vehicle will be $[Specify amount, e.g., "15,000.00"],
+minus any payments already made during the lease term.
+Notice Requirement:
+Should the Lessee decide to exercise the option to purchase the Leased Vehicle,
+written notice must be provided to the Lessor no less than [Specify time, e.g., "30
+days"] before the end of the lease term.
+Financing: The Lessee is responsible for arranging any necessary financing for the
+purchase. If the Lessee requires financing and is unable to secure it, this will not
+serve as grounds to void or alter the purchase option.
+Transfer of Ownership: Upon receipt of the full purchase price, the Lessor agrees to
+transfer ownership of the Leased Vehicle to the Lessee, free from any liens or
+encumbrances, and provide all necessary documentation for the transfer of the title.
+Condition: The vehicle is sold "as is" at the time of purchase, with no warranties
+expressed or implied by the Lessor, unless otherwise specified in writing.
+10. Termination and Penalties
+Voluntary Early Termination by Lessee:
+The Lessee has the option to terminate this lease before its end date by providing
+[e.g., "30 days"] written notice to the Lessor. In such cases, the Lessee will be
+responsible for:
+● Paying all outstanding monthly lease payments up to the termination date.
+● An early termination fee of $[Specify amount, e.g., "1,000.00"].
+● Any other charges or fees specified elsewhere in this Agreement related to
+early termination.
+Involuntary Termination by Lessor:
+The Lessor may terminate this lease agreement under the following conditions:
+● Failure by the Lessee to make timely monthly payments.
+● Breach of any other terms and conditions outlined in this Agreement by the
+Lessee.
+● Loss or damage to the Leased Vehicle where it is deemed a total loss.
+In the case of involuntary termination, the Lessee will be liable for:
+● Any unpaid monthly lease payments.
+● The cost of repairs or replacement of the Leased Vehicle if not covered by
+insurance.
+● Any additional penalties or charges as stipulated in this Agreement.
+Return of the Vehicle:
+Upon termination, the Lessee agrees to return the Leased Vehicle to the Lessor in a
+condition consistent with normal wear and tear, barring any specific alterations or
+damages. Failure to do so will result in additional charges to restore the vehicle to its
+original condition.
+11. State-Specific Provisions
+This Car Lease Agreement may be subject to specific laws and regulations of the
+state in which it is executed. The parties agree to comply with any state-specific
+provisions or disclosures required by applicable law.
+If any provisions within this Agreement conflict with state laws, the state laws shall
+prevail, and the affected provisions will be modified to comply with such laws while
+preserving the intent of the Agreement to the fullest extent permitted by law.
+12. Dispute Resolution
+Negotiation and Mediation:
+In the event of any dispute or disagreement arising out of or related to this
+Agreement, the parties agree to first attempt to resolve the dispute amicably through
+good-faith negotiations and, if necessary, mediation.
+Arbitration:
+If negotiations and mediation fail to resolve the dispute, both parties agree to submit
+the matter to binding arbitration in accordance with the rules and regulations of a
+mutually agreed-upon arbitration service or, in the absence of agreement, as
+determined by the American Arbitration Association. The decision rendered by the
+arbitrator(s) shall be final and binding, and judgment upon the award may be entered
+in any court with jurisdiction.
+Court Proceedings:
+In the event that arbitration is unsuccessful or not deemed appropriate, any disputes
+shall be resolved in a court of competent jurisdiction in the state where this
+Agreement is executed.
+Legal Costs:
+Each party shall be responsible for their own legal costs and attorney's fees incurred
+during any dispute resolution process.
+13. Miscellaneous Terms
+13.1 Entire Agreement:
+This Car Lease Agreement constitutes the entire agreement between the parties and
+supersedes all prior understandings, representations, and agreements.
+13.2 Amendments:
+Any modifications or amendments to this Agreement must be in writing and signed by
+both parties.
+13.3 Governing Law:
+This Agreement shall be governed by and construed in accordance with the laws of
+the state in which it is executed.
+13.4 Severability:
+If any provision of this Agreement is deemed invalid or unenforceable by a court of
+competent jurisdiction, the remaining provisions shall remain in full force and effect.
+13.5 Waiver:
+The failure of either party to enforce any provision of this Agreement shall not
+constitute a waiver of that provision or the right to enforce it at a later time.
+13.6 Headings:
+The headings in this Agreement are for convenience only and shall not affect the
+interpretation of its provisions.
+14. Signatures
+The parties hereto have executed this Car Lease Agreement as of the Effective Date
+first mentioned above.
+[NAME OF LESSOR] [NAME OF LESSEE]
+Signature:_________________________ Signature:_________________________
+Date:_____________________________ Date:_____________________________
