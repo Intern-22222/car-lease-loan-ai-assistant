@@ -20,3 +20,11 @@ sqlalchemy>=2.0.0
 
 # Utilities
 python-dotenv>=1.0.0
+requests>=2.31.0
+
+# Milestone 3+4: Unified Web Server
+flask>=3.0.0
+flask-cors>=4.0.0
+
+# Milestone 3: AI Chatbot (Google Gemini)
+google-generativeai>=0.3.0

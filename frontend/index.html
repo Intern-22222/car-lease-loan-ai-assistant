@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Car Negotiation Assistant</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar: Vehicle Info & Market Data -->
+        <aside class="sidebar">
+            <div class="brand">
+                <h2>AutoNegotiator</h2>
+            </div>
+            
+            <div class="card vehicle-info">
+                <h3>Vehicle Details</h3>
+                <div class="input-group">
+                    <input type="text" id="vinInput" placeholder="Enter VIN to start..." value="1HGCG5655WA036874"> <!-- Test VIN -->
+                    <button id="loadCarBtn">Analyze VIN</button>
+                </div>
+                <div id="vehicleDetails" class="details-list hidden">
+                    <p><strong>Year:</strong> <span id="valYear">-</span></p>
+                    <p><strong>Make:</strong> <span id="valMake">-</span></p>
+                    <p><strong>Model:</strong> <span id="valModel">-</span></p>
+                    <p><strong>Trim:</strong> <span id="valTrim">-</span></p>
+                    <p><strong>Body:</strong> <span id="valBody">-</span></p>
+                    <p><strong>Doors:</strong> <span id="valDoors">-</span></p>
+                </div>
+            </div>
+
+            <div class="card engine-specs hidden" id="engineCard">
+                <h3>Engine & Drivetrain</h3>
+                <div class="details-list">
+                    <p><strong>Engine:</strong> <span id="valEngine">-</span></p>
+                    <p><strong>Horsepower:</strong> <span id="valHP">-</span></p>
+                    <p><strong>Fuel:</strong> <span id="valFuel">-</span></p>
+                    <p><strong>Transmission:</strong> <span id="valTrans">-</span></p>
+                    <p><strong>Drive Type:</strong> <span id="valDrive">-</span></p>
+                </div>
+            </div>
+
+            <div class="card market-value hidden" id="marketCard">
+                <h3>Market Value</h3>
+                <div class="price-display">
+                    <span class="currency">$</span>
+                    <span id="marketPrice">0</span>
+                </div>
+                <div class="price-range">
+                    <p>Fair Range: <span id="rangeLow">0</span> - <span id="rangeHigh">0</span></p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <main class="chat-interface">
+            <header class="chat-header">
+                <div class="chat-status">
+                    <div class="status-dot"></div>
+                    <span id="chatStatusText">Ready to assist</span>
+                </div>
+            </header>
+            
+            <div class="chat-history" id="chatHistory">
+                <div class="message bot-message">
+                    Hello! I'm your AI negotiation assistant. Enter a VIN on the left to get started, and I'll help you evaluate the dealer's offer.
+                </div>
+            </div>
+
+            <div class="chat-input-area">
+                <input type="text" id="userMessage" placeholder="Type your message... (e.g. 'The dealer offered $45k')" disabled>
+                <button id="sendBtn" disabled>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
