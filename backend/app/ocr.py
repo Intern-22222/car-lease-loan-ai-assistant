@@ -312,6 +312,60 @@ def process_pdf_to_dict(pdf_path: str, dpi: int = 300) -> dict:
     }
 
 
+def process_image(image_path: str, preprocess: bool = True) -> str:
+    """
+    Process a single image file (JPG, PNG) using Tesseract.
+    """
+    if not os.path.exists(image_path):
+        return ""
+        
+    try:
+        image = Image.open(image_path)
+        
+        # Apply preprocessing
+        if preprocess and HAS_OPENCV:
+            image = preprocess_image(image)
+            
+        text = pytesseract.image_to_string(
+            image,
+            lang='eng',
+            config='--oem 3 --psm 6'
+        )
+        return text.strip()
+    except Exception as e:
+        print(f"Image processing error: {e}")
+        return ""
+
+
+def process_generic_file(file_path: str) -> dict:
+    """
+    Process any supported file (PDF, JPG, PNG) and return structured result.
+    """
+    ext = os.path.splitext(file_path)[1].lower()
+    text = ""
+    method = "unknown"
+    page_count = 1
+    
+    if ext == '.pdf':
+        res = process_pdf_to_dict(file_path)
+        return res
+    elif ext in ['.jpg', '.jpeg', '.png', '.bmp', '.tiff']:
+        text = process_image(file_path)
+        method = "tesseract_image"
+        # Cleanup
+        text = clean_text(text)
+    else:
+        raise ValueError(f"Unsupported file type: {ext}")
+        
+    return {
+        "text": text,
+        "page_count": 1,
+        "character_count": len(text),
+        "source_file": os.path.basename(file_path),
+        "extraction_method": method
+    }
+
+
 def ocr_endpoint_handler(file_path: str) -> dict:
     """
     Handler for /ocr backend endpoint.

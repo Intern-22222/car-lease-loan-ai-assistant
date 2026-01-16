@@ -55,15 +55,76 @@ def chat_endpoint():
             vehicle_details: {year, make, model, trim},
             market_value: {price, currency}
         }
+        session_id: (optional) unique session identifier for history
     """
     data = request.get_json() or {}
     message = data.get('message', '')
     context = data.get('context', {})
+    session_id = data.get('session_id', 'default')
     
     if not message:
         return jsonify({"success": False, "error": "Message is required"}), 400
     
-    result = chat_negotiation(message, context)
+    result = chat_negotiation(message, context, session_id)
+    return jsonify(result)
+
+@app.route('/api/chat/history', methods=['GET'])
+def chat_history_endpoint():
+    """Get chat history for a session."""
+    session_id = request.args.get('session_id', 'default')
+    from backend.app.api import get_chat_history
+    result = get_chat_history(session_id)
+    return jsonify(result)
+
+@app.route('/api/chat/clear', methods=['POST'])
+def chat_clear_endpoint():
+    """Clear chat history for a session."""
+    data = request.get_json() or {}
+    session_id = data.get('session_id', 'default')
+    from backend.app.api import clear_chat_history
+    result = clear_chat_history(session_id)
+    return jsonify(result)
+
+
+# ============================================
+# VIN Insights (Market Position, Days on Market, Similar Listings)
+# ============================================
+@app.route('/api/vin_insights', methods=['GET'])
+def vin_insights_endpoint():
+    """
+    Get comprehensive VIN insights for negotiation.
+    Returns: days on market, similar listings, market position, negotiation tips.
+    """
+    vin = request.args.get('vin', '')
+    if not vin:
+        return jsonify({"success": False, "error": "VIN is required"}), 400
+    
+    from backend.app.valuation import get_vin_insights
+    result = get_vin_insights(vin)
+    return jsonify(result)
+
+
+# ============================================
+# Document Analysis (OCR + AI)
+# ============================================
+@app.route('/api/document/analyze', methods=['POST'])
+def analyze_document_endpoint():
+    """
+    Analyze uploaded document (image/PDF) with optional user prompt.
+    Multipart form data: 'file' (required), 'prompt' (optional)
+    """
+    if 'file' not in request.files:
+        return jsonify({"success": False, "error": "No file part"}), 400
+        
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({"success": False, "error": "No selected file"}), 400
+    
+    # Get optional prompt from form data
+    user_prompt = request.form.get('prompt', None)
+        
+    from backend.app.api import analyze_document
+    result = analyze_document(file, user_prompt)
     return jsonify(result)
 
 
@@ -90,6 +151,9 @@ if __name__ == '__main__':
     print("\n📡 API Endpoints:")
     print("   GET/POST /api/market_value?vin=<VIN>  - Get car value")
     print("   POST     /api/chat                    - Chat with AI")
+    print("   GET      /api/chat/history            - Get chat history")
+    print("   POST     /api/chat/clear              - Clear chat history")
     print("\n" + "="*50 + "\n")
     
     app.run(debug=True, port=5000)
+
