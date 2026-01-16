@@ -1,26 +1,58 @@
 version: "3.9"
 
 services:
-  postgres:
+  # 1. Database Service (Milestone 1)
+  db:
     image: postgres:15
-    container_name: postgres_db
+    container_name: lease_assistant_db
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
-      POSTGRES_DB: testdb
+      POSTGRES_USER: ${POSTGRES_USER:-admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-admin_pass}
+      POSTGRES_DB: ${POSTGRES_DB:-lease_db}
     ports:
       - "5432:5432"
-
-  backend:
-    image: python:3.11-slim
-    container_name: backend_app
-    working_dir: /app
     volumes:
-      - ../backend:/app
-    command: >
-      sh -c "pip install -r requirements.txt &&
-             uvicorn main:app --host 0.0.0.0 --port 8000"
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - lease_network
+
+  # 2. Backend API Service (Milestone 1 & 2)
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile # Ensure you have a Dockerfile in your backend folder
+    container_name: lease_assistant_api
     ports:
       - "8000:8000"
     depends_on:
-      - postgres
+      - db
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-admin}:${POSTGRES_PASSWORD:-admin_pass}@db:5432/${POSTGRES_DB:-lease_db}
+    volumes:
+      - ./backend:/app
+    networks:
+      - lease_network
+
+  # 3. Streamlit Frontend Service (Milestone 3 Improvements)
+  frontend:
+    image: python:3.9-slim
+    container_name: lease_assistant_frontend
+    working_dir: /app
+    volumes:
+      - .:/app
+    ports:
+      - "8501:8501"
+    command: >
+      sh -c "pip install streamlit pandas plotly && 
+             streamlit run frontend/improvement_chatbot.py --server.port=8501 --server.address=0.0.0.0"
+    depends_on:
+      - backend
+    networks:
+      - lease_network
+
+networks:
+  lease_network:
+    driver: bridge
+
+volumes:
+  postgres_data:

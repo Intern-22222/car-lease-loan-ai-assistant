@@ -1,0 +1,22 @@
+{
+  "system_prompt": "You are a legal document expert. Extract all financial fees from the car lease contract.",
+  "user_instructions": "Identify 'junk fees' (non-standard dealer add-ons). Return ONLY a JSON object with this structure:",
+  "json_schema": {
+    "format_example": {
+      "fees": [
+        {
+          "name": "Documentation Fee",
+          "amount": 150,
+          "type": "standard"
+        },
+        {
+          "name": "Window Etching",
+          "amount": 300,
+          "type": "junk"
+        }
+      ],
+      "total_hidden_charges": 450
+    },
+    "constraints": "Do not include conversational text. If no fees are found, return an empty list."
+  }
+}

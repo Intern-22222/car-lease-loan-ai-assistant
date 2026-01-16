@@ -6,8 +6,9 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the backend code
-COPY backend/ /app/backend/
+# Copy only the contents of the backend folder into the current directory (/app)
+COPY backend/ .
 
 # Run the FastAPI app using uvicorn
-CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Since main.py is now directly in /app, the module is just 'main'
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

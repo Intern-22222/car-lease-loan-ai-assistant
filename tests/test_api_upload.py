@@ -1,6 +1,12 @@
-from fastapi.testclient import TestClient
-from backend.main import app  # Import your FastAPI app
+import sys
+import os
+
+# Add the project root to the sys.path so 'backend' can be found
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 import pytest
+from fastapi.testclient import TestClient
+from backend.main import app  # Now this import will be successful
 
 client = TestClient(app)
 
@@ -26,7 +32,6 @@ def test_trigger_ocr():
     
     assert response.status_code == 200
     assert "status" in response.json()
-    # FIX: Updated to match the new 'OCR and Extraction' message
     assert response.json()["message"] == f"OCR and Extraction started for {file_id}"
 
 def test_integrated_results():
