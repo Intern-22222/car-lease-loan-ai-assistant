@@ -1,13 +1,40 @@
+# ====================
+# Python
+# ====================
+
 # Python cache
 __pycache__/
 *.pyc
 
-
 # Virtual environment
 env/
+venv/
 
 # Pytest cache
 .pytest_cache/
 
 # Local config / env files
 *.env
+
+# Temporary uploads
+backend/temp_uploads/
+
+# ====================
+# Node / Frontend
+# ====================
+
+# Node modules
+frontend/node_modules/
+
+# Build/dist folder
+frontend/dist/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Optional: OS files
+.DS_Store
+Thumbs.db
