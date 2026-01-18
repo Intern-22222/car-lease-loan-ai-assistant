@@ -1,0 +1,181 @@
+.sidebar {
+  width: 280px; 
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 24px 16px; 
+  background-color: #080A0C;
+  box-sizing: border-box; /* Ensures search bar stays inside */
+}
+
+.sidebar-header {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Logo with background matching delete button style */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.4rem; /* Increased for better visibility */
+  font-weight: 700;
+  color: #fff;
+  padding: 4px; 
+  width: fit-content; 
+  margin-bottom: 8px; 
+}
+
+.logo-icon {
+  color: var(--primary); /* Uses #21CAB9 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(33, 202, 185, 0.15); /* Background style like buttons */
+  padding: 6px; /* Increased padding so icon isn't cramped */
+  border-radius: 12px; 
+}
+
+.new-chat-btn {
+  width: 100%;
+  background: var(--primary); /* #21CAB9 */
+  color: #050505; 
+  border: none;
+  padding: 12px;
+  border-radius: 12px; 
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: opacity 0.2s, transform 0.1s;
+}
+
+.new-chat-btn:hover { opacity: 0.9; }
+.new-chat-btn:active { transform: scale(0.98); }
+
+.search-container {
+  position: relative;
+  margin-bottom: 24px;
+  width: 100%; 
+  box-sizing: border-box;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px; 
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-dim);
+  pointer-events: none;
+}
+
+.search-container input {
+  width: 100%;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px 10px 36px; 
+  color: var(--text-main);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box; /* CRITICAL for width */
+}
+
+.search-container input:focus {
+  border-color: var(--text-dim);
+  box-shadow: 0 0 0 2px rgba(139, 148, 158, 0.1);
+}
+
+.history-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-right: 4px; 
+}
+
+.history-list::-webkit-scrollbar { width: 4px; }
+.history-list::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 10px;
+}
+
+.history-item {
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.history-item:hover { background: var(--bg-card); }
+
+/* Active state with your specific #21CAB9 teal */
+.history-item.active {
+  background: rgba(33, 202, 185, 0.12); 
+  border: 1px solid rgba(33, 202, 185, 0.3);
+}
+
+.item-info {
+  flex: 1;
+  min-width: 0; 
+}
+
+.item-car {
+  margin: 0;
+  font-weight: 600; /* Bolder for easier recognition */
+  font-size: 14px;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* User-friendly Highlight: Active item text becomes teal */
+.history-item.active .item-car {
+  color: var(--primary);
+}
+
+.item-file, .item-date {
+  margin: 2px 0 0 0;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.delete-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  opacity: 0;
+  transition: all 0.2s;
+  margin-left: 8px;
+}
+
+.history-item:hover .delete-btn { opacity: 1; }
+.delete-btn:hover {
+  color: #ff4d4d;
+  background: rgba(255, 77, 77, 0.1);
+}
+
+.sidebar-footer {
+  margin-top: auto; 
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--text-dim);
+  text-align: center;
+}

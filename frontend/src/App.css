@@ -1,0 +1,87 @@
+
+:root {
+  --bg-dark: #0d1117;
+  --bg-sidebar: #0d1117; /* Sidebar and Main have same bg */
+  --bg-card: #161b22;
+  --primary: #21CAB9; /* The specific teal color from your image */
+  --text-main: #ffffff;
+  --text-dim: #8b949e;
+  --border: #21262d; /* Subtle dark border */
+}
+
+* {
+  box-sizing: border-box; /* Prevents elements from leaking out */
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  font-family: 'Inter', sans-serif; /* Clean font as seen in image */
+}
+
+
+
+.app-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  position: relative;
+  background-color: #0d1117;
+}
+
+.main-layout-wrapper {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: filter 0.3s ease;
+}
+
+/* The Blur Effect */
+.blur-active {
+  filter: blur(2px);
+  pointer-events: none; /* Prevents clicking background when summary is open */
+}
+
+/* Semi-transparent backdrop for better focus */
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 999;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-layout {
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
+
+
+@media (max-width: 768px) {
+  .app-container {
+    flex-direction: column; /* Stack vertically instead of side-by-side */
+  }
+
+  .sidebar {
+    display: none; /* Hide sidebar by default on mobile */
+    /* You would then add a button to toggle this 'display: block' */
+  }
+
+  .main-content {
+    width: 100%;
+    padding: 10px;
+  }
+}

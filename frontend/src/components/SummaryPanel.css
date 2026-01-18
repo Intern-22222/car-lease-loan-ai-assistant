@@ -1,0 +1,204 @@
+
+.summary-main::-webkit-scrollbar {
+  width: 5px; /* Very slim scrollbar */
+}
+
+.summary-main::-webkit-scrollbar-track {
+  background: #15181e; /* Match panel background */
+}
+
+.summary-main::-webkit-scrollbar-thumb {
+  background: #30363d; /* Dark grey thumb */
+  border-radius: 10px;
+}
+
+.summary-main::-webkit-scrollbar-thumb:hover {
+  background: #484f58; /* Slightly lighter when hovering */
+}
+
+/* Firefox Support */
+.summary-main {
+  scrollbar-width: thin;
+  scrollbar-color: #30363d #15181e;
+  
+  /* Rest of your existing styles */
+  padding: 18px 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* 1. Main Container: Slimmed down */
+.summary-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 360px;
+  height: 100vh;
+  background-color: #15181e;
+  border-left: 1px solid #30363d;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -5px 0 30px rgba(0, 0, 0, 0.4);
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+/* 2. Header: More compact */
+.summary-header {
+  padding: 14px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #30363d;
+}
+
+.summary-header h3 {
+  font-size: 0.75rem; /* Smaller */
+  font-weight: 600;
+  color: #8b949e;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+}
+
+.close-icon {
+  cursor: pointer;
+  color: #8b949e;
+  transition: color 0.2s;
+}
+
+/* 3. Main Body: Optimized spacing */
+
+
+.car-title {
+  font-size: 1.1rem; /* Smaller */
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 2px;
+}
+
+.price {
+  display: block;
+  font-size: 2rem; /* Reduced from 2.8rem */
+  font-weight: 800;
+  color: #21CAB9;
+  line-height: 1.1;
+}
+
+.term {
+  color: #8b949e;
+  font-size: 12px;
+}
+
+/* Plain English Summary: Narrower and tighter */
+.plain-summary {
+  background: rgba(33, 202, 185, 0.05);
+  border-left: 2px solid #21CAB9;
+  padding: 12px 14px;
+  border-radius: 4px 8px 8px 4px;
+  margin: 16px 0;
+}
+
+.plain-summary ul {
+  margin: 4px 0 0 0;
+  padding-left: 14px;
+  color: #b1bac4;
+  font-size: 12px; /* Smaller font */
+  line-height: 1.4;
+}
+
+/* 4. Grid & Metrics: More dense */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.metric-card {
+  background: #1c2128;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #30363d;
+}
+
+.metric-card .label {
+  font-size: 8px; /* Micro labels */
+  color: #8b949e;
+  margin-bottom: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.metric-card .val {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+}
+
+/* 5. Sections: Tightened titles */
+.section-title {
+  font-size: 9px;
+  color: #6e7681;
+  letter-spacing: 1px;
+  margin: 18px 0 8px 0;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.fee-box {
+  background: #1c2128;
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin-bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  border: 1px solid #30363d;
+  color: #d1d5db;
+}
+
+.fee-box.warning strong {
+  color: #f59e0b;
+}
+
+/* Red Flags: Reduced bulk */
+.red-flags {
+  background: rgba(248, 81, 73, 0.03);
+  border: 1px solid rgba(248, 81, 73, 0.15);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.flag-item {
+  display: flex;
+  gap: 8px;
+  color: #f85149;
+  font-size: 11px;
+  margin-bottom: 6px;
+  line-height: 1.3;
+}
+
+.flag-item:last-child { margin-bottom: 0; }
+
+/* 6. Footer: Thinner */
+.summary-footer {
+  padding: 12px 20px;
+  background: #15181e;
+  border-top: 1px solid #30363d;
+}
+
+.ai-disclaimer {
+  display: block;
+  text-align: center;
+  font-size: 7.5px;
+  color: #484f58;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
