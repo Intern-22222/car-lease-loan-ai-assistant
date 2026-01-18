@@ -6,7 +6,7 @@ const ChatWindow = ({ contract, onSendMessage, onToggleSummary, isSummaryOpen, o
   const [inputValue, setInputValue] = useState('');
   const scrollRef = useRef(null);
 
-  // Auto-scroll logic for new messages
+  // Auto-scroll logic: moves scrollbar to bottom when new messages arrive
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -24,7 +24,7 @@ const ChatWindow = ({ contract, onSendMessage, onToggleSummary, isSummaryOpen, o
       {/* Header Section */}
       <div className="chat-header">
         <div className="header-left">
-          {/* Mobile Menu Trigger - Beside the Car Name */}
+          {/* Mobile Menu Trigger */}
           <button className="mobile-sidebar-btn" onClick={onOpenSidebar}>
             <Menu size={22} />
           </button>
@@ -47,7 +47,7 @@ const ChatWindow = ({ contract, onSendMessage, onToggleSummary, isSummaryOpen, o
       {/* Main Message Area */}
       <div className="chat-messages" ref={scrollRef}>
         
-        {/* PDF Attachment (Top of Chat) */}
+        {/* PDF Attachment (Static Top Message) */}
         <div className="message user attachment">
           <div className="avatar-header">
              <div className="avatar user-icon"><User size={14} /></div>
@@ -70,10 +70,10 @@ const ChatWindow = ({ contract, onSendMessage, onToggleSummary, isSummaryOpen, o
               <div className={`avatar ${msg.sender === 'ai' ? 'ai-icon' : 'user-icon'}`}>
                 {msg.sender === 'ai' ? '🤖' : <User size={14} />}
               </div>
-              <span className="sender-name">{msg.sender === 'ai' ? 'Velo AI' : 'You'}</span>
-              <span className="timestamp">
-                {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-              </span>
+              <span className="sender-name">{msg.sender === 'ai' ? 'LeaseIQ' : 'You'}</span>
+              
+              {/* IMPORTANT: Use msg.time from the object, not new Date() */}
+              <span className="timestamp">{msg.time}</span>
             </div>
             
             <div className="msg-bubble">
@@ -94,7 +94,7 @@ const ChatWindow = ({ contract, onSendMessage, onToggleSummary, isSummaryOpen, o
             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
           />
           <button className="send-btn" onClick={handleSend} disabled={!inputValue.trim()}>
-            <Send size={18} />
+            <Send size={18} color="#0C0E12" />
           </button>
         </div>
         <p className="disclaimer">

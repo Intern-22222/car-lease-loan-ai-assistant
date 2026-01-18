@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Menu, X as CloseIcon } from "lucide-react"; 
 import Sidebar from "./components/Sidebar";
 import UploadZone from "./components/UploadZone";
 import ChatWindow from "./components/ChatWindow";
@@ -18,14 +17,20 @@ function App() {
     const savedId = localStorage.getItem("active_id");
     if (savedId) {
       const savedHistory = JSON.parse(localStorage.getItem("app_history"));
-      return savedHistory?.find(c => c.id.toString() === savedId) || null;
+      return savedHistory?.find((c) => c.id.toString() === savedId) || null;
     }
     return null;
   });
 
-  const [view, setView] = useState(() => localStorage.getItem("app_view") || "upload");
-  const [searchTerm, setSearchTerm] = useState(() => localStorage.getItem("search_term") || "");
-  const [isSummaryOpen, setIsSummaryOpen] = useState(() => localStorage.getItem("summary_open") === "true");
+  const [view, setView] = useState(
+    () => localStorage.getItem("app_view") || "upload",
+  );
+  const [searchTerm, setSearchTerm] = useState(
+    () => localStorage.getItem("search_term") || "",
+  );
+  const [isSummaryOpen, setIsSummaryOpen] = useState(
+    () => localStorage.getItem("summary_open") === "true",
+  );
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // --- Persistence Effect ---
@@ -34,7 +39,7 @@ function App() {
     localStorage.setItem("app_view", view);
     localStorage.setItem("search_term", searchTerm);
     localStorage.setItem("summary_open", isSummaryOpen);
-    
+
     if (activeContract) {
       localStorage.setItem("active_id", activeContract.id.toString());
     } else {
@@ -60,7 +65,7 @@ function App() {
   const handleSelectContract = (contract) => {
     setActiveContract(contract);
     setView("chat");
-    setIsSidebarOpen(false); 
+    setIsSidebarOpen(false);
   };
 
   const handleDelete = (e, id) => {
@@ -71,6 +76,11 @@ function App() {
   };
 
   const handleUploadSuccess = (file) => {
+    const currentTime = new Date().toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
     const newEntry = {
       id: Date.now(),
       carName: file.name.replace(/\.[^/.]+$/, ""),
@@ -85,7 +95,13 @@ function App() {
         earlyTermination: "$2,500 penalty",
         excessMileage: "$0.25/mile",
       },
-      chatHistory: [{ sender: "ai", text: `Analysis complete for **${file.name}**.` }],
+      chatHistory: [
+        { 
+          sender: "ai", 
+          text: `Analysis complete for **${file.name}**.`, 
+          time: currentTime 
+        },
+      ],
     };
     setHistory([newEntry, ...history]);
     setActiveContract(newEntry);
@@ -95,23 +111,70 @@ function App() {
 
   const sendMessage = (text) => {
     if (!activeContract) return;
-    const userMsg = { sender: "user", text };
-    const updated = history.map(c => c.id === activeContract.id ? { ...c, chatHistory: [...c.chatHistory, userMsg] } : c);
-    setHistory(updated);
-    setActiveContract(updated.find(c => c.id === activeContract.id));
 
+    const currentTime = new Date().toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+    const userMsg = {
+      sender: "user",
+      text: text,
+      time: currentTime,
+    };
+
+    // Update history with User Message
+    const historyWithUser = history.map((c) =>
+      c.id === activeContract.id
+        ? { ...c, chatHistory: [...c.chatHistory, userMsg] }
+        : c,
+    );
+
+    setHistory(historyWithUser);
+    setActiveContract(historyWithUser.find((c) => c.id === activeContract.id));
+
+    // Simulate AI response
     setTimeout(() => {
-      const aiMsg = { sender: "ai", text: "I've analyzed that specific clause for you." };
-      setHistory(prev => prev.map(c => c.id === activeContract.id ? { ...c, chatHistory: [...c.chatHistory, aiMsg] } : c));
+      const aiTime = new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+
+      const aiMsg = {
+        sender: "ai",
+        text: "I've analyzed that specific clause for you. Is there anything else you'd like to clarify?",
+        time: aiTime,
+      };
+
+      setHistory((prevHistory) => {
+        const finalHistory = prevHistory.map((c) =>
+          c.id === activeContract.id
+            ? { ...c, chatHistory: [...c.chatHistory, aiMsg] }
+            : c,
+        );
+        
+        // Sync the active contract state after AI replies
+        const updatedActive = finalHistory.find((c) => c.id === activeContract.id);
+        setActiveContract(updatedActive);
+        
+        return finalHistory;
+      });
     }, 1000);
   };
 
   return (
     <div className="app-container">
       {/* Overlay for mobile sidebar */}
-      {isSidebarOpen && <div className="sidebar-overlay" onClick={() => setIsSidebarOpen(false)} />}
+      {isSidebarOpen && (
+        <div
+          className="sidebar-overlay"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
 
-      <div className={`main-layout-wrapper ${isSummaryOpen ? "blur-active" : ""} ${isSidebarOpen ? "sidebar-open" : ""}`}>
+      <div
+        className={`main-layout-wrapper ${isSummaryOpen ? "blur-active" : ""} ${isSidebarOpen ? "sidebar-open" : ""}`}
+      >
         <div className="sidebar-container">
           <Sidebar
             history={filteredHistory}
@@ -134,8 +197,7 @@ function App() {
                 onSendMessage={sendMessage}
                 onToggleSummary={() => setIsSummaryOpen(true)}
                 isSummaryOpen={isSummaryOpen}
-                // Pass the sidebar trigger here
-                onOpenSidebar={() => setIsSidebarOpen(true)} 
+                onOpenSidebar={() => setIsSidebarOpen(true)}
               />
             </div>
           )}
@@ -144,7 +206,10 @@ function App() {
 
       {isSummaryOpen && activeContract && (
         <>
-          <div className="summary-backdrop" onClick={() => setIsSummaryOpen(false)} />
+          <div
+            className="summary-backdrop"
+            onClick={() => setIsSummaryOpen(false)}
+          />
           <SummaryPanel
             summary={activeContract.summary}
             carName={activeContract.carName}
