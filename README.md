@@ -48,3 +48,13 @@ AI assistant to review car lease/loan contracts, extract key terms, compare mark
 • Send new messages
 
 • Simulate dealer replies
+
+🟢 Milestone 4: UI Integration & Documentation
+
+• Displayed Fairness Score in the UI for contract evaluation
+
+• Added price comparison view (contract price vs market price)
+
+• Integrated negotiation email output into the frontend
+
+• Connected frontend UI with backend analysis results (prototype/static data)
