@@ -233,3 +233,96 @@ Run the application:
 2.Insights view with red flags and highlights
 3.Multi-PDF upload support
 4.Real-time extraction and rendering of SLA parameters
+
+
+
+
+
+
+
+
+* **🚀 Milestone 4**:
+ AI Negotiation Assistant & Logic Validation
+1. Overview:
+In this milestone, the application evolves from a static contract analyzer into an interactive Negotiation Assistant. The system now uses Generative AI (Google Gemini) to:
+a)Extract hidden data (like Junk Fees) that simple regex misses.
+b)Calculate a "Fairness Score" to instantly grade a contract.
+c)Chat with the user, providing real-time coaching and drafting counter-offers.
+d)Validate Logic to ensure the scoring algorithm is accurate and robust.
+
+2. Key Features Implemented:
+A. Fairness Score Algorithm (Task 1)
+   A proprietary scoring engine that grades a lease contract from 0 (Bad) to 100 (Perfect).
+     a)Purpose: To give users an instant "at-a-glance" understanding of deal quality.
+     b)Input Data: Interest Rate (APR), Monthly Payment, Mileage Limit, Hidden Fees.
+     c)Scoring Logic:
+        i)Base Score: 100 Points.
+        ii)High APR Penalty: -25 points if APR > 10%.
+        iii)Bad Monthly Payment: -10 points if Payment > $800.
+        iv)Low Mileage: -5 points if Mileage < 12,000/yr.
+        v)Junk Fees: -15 points per hidden fee found (e.g., Nitrogen, Doc Prep).
+
+B. AI-Powered Extraction (Task 2)
+Integration with Google Gemini 1.5 Flash to extract complex, unstructured data that traditional OCR misses.
+ a)Prompt Engineering: The AI is instructed to act as a "Legal Auditor" and output strict JSON.
+ b)Capabilities:
+    i)Identifies "Junk Fees" hidden in fine print.
+    ii)Extracts "Money Factor" and converts it to APR.
+    iii)Standardizes inconsistent field names (e.g., "Rent Charge" vs. "Finance Charge").
+
+C. Negotiation Chatbot (Task 3)
+A context-aware AI assistant that helps users actively negotiate with dealers.
+ a)Architecture:
+    i)Context Window: The chatbot is fed the specific JSON data of the uploaded contract.
+    ii)Role: Acts as a "Shark Negotiator" (polite but firm).
+    iii)Functionality:
+         1)Drafts email/text replies to dealers.
+         2)Suggests leverage points (e.g., "This APR is 3% above market average").
+         3)Maintains conversation history for follow-up questions.
+ b)UI: A dedicated "Negotiator" dashboard with a WhatsApp-style chat interface.
+
+D. Logic Validation (Task 4)
+A robust testing framework to prove the algorithm works correctly.
+ a)Visual Validation: A UI card that changes color (Green/Orange/Red) based on the score.
+ b)Automated Testing: A Python script (tests/test_logic.py) that feeds "Perfect" and "Terrible" fake contracts into the system to verify that the score drops appropriately.
+
+3. Technical Architecture:
+File Structure
+
+infosys-car-loan-project/
+├── backend/
+│   ├── app/
+│   │   ├── logic.py            # The Fairness Score Algorithm (Task 1 & 4)
+│   │   ├── llm_service.py      # Google Gemini Integration (Task 2 & 3)
+│   │   └── main.py             # FastAPI backend (optional if using pure Streamlit)
+├── frontend/
+│   ├── dashboard.py            # Main Comparison Dashboard
+│   └── pages/
+│       └── negotiator.py       # New Chatbot Interface (Task 3)
+├── samples/                    # Folder for PDF Contracts
+└── tests/
+    ├── test_logic.py           # Automated Validation Script (Task 4)
+    └── test_prompt.py          # AI Extraction Test Script
+
+Dependencies:
+a)streamlit: For the Dashboard and Chat UI.
+b)google-generativeai: For accessing Gemini 1.5 Flash.
+c)pytesseract / pdf2image: For OCR text extraction.
+d)pandas: For data organization in the dashboard.
+
+4. Usage Guide:
+How to Run the Application
+a)Start the Dashboard:
+       streamlit run frontend/dashboard.py
+b)Upload Contracts:
+       i)Navigate to the sidebar and upload PDF lease agreements.
+       ii)The app will automatically extract data and calculate the Fairness Score.
+c)Use the Negotiator:
+       i)Click on the "Negotiator" page in the sidebar.
+       ii)Upload the specific contract you want to fight for.
+       iii)Ask the AI: "Write an email asking them to remove the Nitrogen fee."
+
+5. How to Run the Tests:
+To verify the system logic for the milestone submission:
+     python tests/test_logic.py
+Expected Output: 🏆 SUCCESS: Logic is verified!
