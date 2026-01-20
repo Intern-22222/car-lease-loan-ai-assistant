@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard'; // The new Summary View
 import Upload from './pages/Upload';       // The new Upload Page
+import Comparison from './pages/Comparison';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/upload" element={<Upload />} />
+          <Route path="/compare" element={<Comparison />} />
         </Routes>
       </div>
     </Router>
