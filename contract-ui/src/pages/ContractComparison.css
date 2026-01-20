@@ -1,0 +1,389 @@
+/* ================= GLOBAL ================= */
+body {
+  margin: 0;
+  background: linear-gradient(135deg, #e9efff, #f7f9fc);
+  font-family: "Segoe UI", Arial, sans-serif;
+  color: #1f2937;
+}
+
+/* ================= PAGE WRAPPER ================= */
+.page-wrapper {
+  max-width: 1250px;
+  margin: 30px auto;
+  padding: 20px;
+}
+
+/* ================= HEADER ================= */
+.header-box {
+  background: linear-gradient(90deg, #023ad3, #3b3b3c, #222121);
+  color: #ffffff;
+  padding: 28px 32px;
+  border-radius: 14px;
+  box-shadow: 0 10px 25px rgba(30, 64, 175, 0.25);
+  margin-bottom: 30px;
+}
+
+.header-box h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.header-box p {
+  margin-top: 8px;
+  font-size: 15px;
+  opacity: 0.95;
+}
+
+/* ================= SELECTION AREA ================= */
+.select-section {
+  background: #ffffff;
+  padding: 22px 25px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+  margin-bottom: 35px;
+  flex-wrap: wrap;
+}
+
+select {
+  padding: 12px 14px;
+  width: 260px;
+  border-radius: 10px;
+  border: 1px solid #c7d2fe;
+  background: #f8fafc;
+  font-size: 14px;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+select:focus {
+  outline: none;
+  border-color: #224fb2;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+button {
+  padding: 12px 22px;
+  border-radius: 10px;
+  border: none;
+  background: #2563eb;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+button:hover:not(:disabled) {
+  background: #0b0c0e;
+}
+
+button:disabled {
+  background: #c7d2fe;
+  cursor: not-allowed;
+}
+
+/* ================= SECTION BLOCK ================= */
+.section-block {
+  background: linear-gradient(180deg, #ffffff, #f9fbff);
+  padding: 22px;
+  border-radius: 14px;
+  margin-bottom: 35px;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.07);
+}
+
+/* ================= SCORE BANNER ================= */
+.score-banner {
+  background: linear-gradient(135deg, #4760b3 0%, #202122 100%);
+  border: 2px solid #bfdbfe;
+  padding: 28px;
+  margin-bottom: 35px;
+}
+
+.score-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.score-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+  flex: 1;
+  min-width: 200px;
+  border: 2px solid #e0e7ff;
+  transition: all 0.3s ease;
+}
+
+.score-card.winner {
+  border-color: #16a34a;
+  box-shadow: 0 8px 16px rgba(22, 163, 74, 0.15);
+  transform: scale(1.05);
+}
+
+.score-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #4b5563;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.score-value {
+  font-size: 36px;
+  font-weight: 700;
+  margin-top: 8px;
+}
+
+.score-value.color-green {
+  color: #16a34a;
+}
+
+.score-value.color-orange {
+  color: #f59e0b;
+}
+
+.score-value.color-red {
+  color: #dc2626;
+}
+
+.vs-badge {
+  background: #16a34a;
+  color: white;
+  padding: 12px 16px;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+}
+
+/* ================= SECTION TITLE ================= */
+.section-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e3a8a;
+  margin-bottom: 18px;
+  border-left: 5px solid #2563eb;
+  padding-left: 12px;
+}
+
+/* ================= TABLE ================= */
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+thead {
+  background: linear-gradient(90deg, #2563eb, #3e4043);
+}
+
+thead th {
+  color: white;
+  padding: 14px;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+}
+
+tbody tr {
+  background: #ffffff;
+  transition: background 0.1s;
+}
+
+tbody tr:hover {
+  background: #f0f4ff;
+}
+
+tbody tr:nth-child(even) {
+  background: #ffffff;
+}
+
+tbody tr:nth-child(even):hover {
+  background: #eef2ff;
+}
+
+td {
+  padding: 14px;
+  font-size: 14px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.feature-label,
+.field-label {
+  font-weight: 600;
+  color: #374151;
+  width: 35%;
+}
+
+/* ================= RATING CIRCLE ================= */
+.rating-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 4px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  background: #ffffff;
+  margin: 0 auto;
+}
+
+/* ================= RATING COLORS ================= */
+.green {
+  border-color: #16a34a;
+  color: #16a34a;
+  box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.15);
+}
+
+.orange {
+  border-color: #f59e0b;
+  color: #f59e0b;
+  box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.15);
+}
+
+.red {
+  border-color: #dc2626;
+  color: #dc2626;
+  box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.15);
+}
+
+/* ================= INSIGHTS LIST ================= */
+.insights-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.insights-list li {
+  background: #eef2ff;
+  border-left: 5px solid #2563eb;
+  padding: 14px 18px;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1f2937;
+  transition: all 0.2s;
+}
+
+.insights-list li:hover {
+  background: #dbeafe;
+  border-left-color: #1e40af;
+  transform: translateX(4px);
+}
+
+/* ================= NO INSIGHTS ================= */
+.no-insights {
+  color: #6b7280;
+  font-style: italic;
+  text-align: center;
+  padding: 20px;
+}
+
+/* ================= ERROR BOX ================= */
+.error-box {
+  background: #fee2e2;
+  border: 2px solid #dc2626;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.error-box h3 {
+  color: #991b1b;
+  margin-top: 0;
+}
+
+.error-box p {
+  color: #7f1d1d;
+  margin: 10px 0;
+}
+
+.error-box ul {
+  color: #7f1d1d;
+  margin: 10px 0;
+  padding-left: 20px;
+}
+
+.error-box li {
+  margin-bottom: 5px;
+}
+
+/* ================= MISSING VALUE ================= */
+.missing-value {
+  text-align: center;
+  color: #9ca3af;
+  font-weight: 500;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 1024px) {
+  .page-wrapper {
+    max-width: 100%;
+  }
+
+  .select-section {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  select {
+    width: 100%;
+  }
+
+  .score-container {
+    flex-direction: column;
+  }
+
+  .score-card {
+    min-width: 150px;
+  }
+
+  table {
+    font-size: 12px;
+  }
+
+  td {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .header-box h1 {
+    font-size: 22px;
+  }
+
+  .section-title {
+    font-size: 16px;
+  }
+
+  .rating-circle {
+    width: 35px;
+    height: 35px;
+    font-size: 12px;
+  }
+
+  table {
+    font-size: 11px;
+  }
+
+  td,
+  th {
+    padding: 8px;
+  }
+}

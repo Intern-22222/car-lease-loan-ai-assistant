@@ -7,9 +7,9 @@ An AI assistant designed to review car lease and loan contracts by extracting te
 
 ## 📌 Internship Contribution 
 
-**Intern C – OCR & Preprocessing Engineer**
+**Intern C – OCR, Preprocessing & UI Support Engineer**
 
-This repository contains my internship work focused on building the OCR, preprocessing, and text storage pipeline for car lease and loan contract documents.
+This repository contains my internship work focused on building the OCR pipeline, preprocessing contract text, and contributing to UI improvements for contract comparison and insights views.
 
 ---
 
@@ -44,68 +44,60 @@ This repository contains my internship work focused on building the OCR, preproc
 
 ---
 
+### ✅ Milestone 3: Contract Comparison Dashboard & Insights UI Improvements (Completed)
+**Role:** Intern C  
+**Focus:** UI improvements for contract comparison and insights view  
+
+- Improved UI layout for the contract comparison dashboard  
+- Enhanced readability and alignment of key contract parameters  
+- Supported insights view to help users easily interpret lease terms  
+- Ensured extracted contract data is presented clearly for comparison  
+- Tested UI changes using sample contract data and user flows  
+
+---
+
 ## 📁 Project Structure
 
 ```text
 carlease/
 │
-├── data/
-│   └── (empty)                     # Reserved for processed / cleaned output
+├── ocr/
+│   ├── ocr_fun.py                  # PDF → Image → Text OCR
+│   ├── text_processing.py          # OCR cleanup & normalization
+│   └── test_ocr.py                 # OCR test script
 │
 ├── Database/
-│   ├── ocr.db                      # SQLite database storing extracted text
-│   ├── db_helper.py                # Database connection and insert logic
-│   └── __init__.py
-│
-├── ocr/
-│   ├── ocr_fun.py                  # Main OCR function (PDF → Image → Text)
-│   ├── text_processing.py          # Noise reduction & text cleanup
-│   ├── test_ocr.py                 # Test script to run OCR pipeline
+│   ├── ocr.db                      # SQLite database for OCR output
+│   ├── db_helper.py
 │   └── __init__.py
 │
 ├── pdfs/
-│   └── test.pdf                    # Sample contract PDF for OCR testing
+│   └── test.pdf                    # Sample contract PDF
 │
-├── .gitignore
+├── data/
+│   └── (reserved)                  # Future processed outputs
+│
+├── contract-ui/
+│   ├── src/
+│   │   ├── constants/
+│   │   │   ├── enums.js
+│   │   │   └── ratingConfig.js
+│   │   │
+│   │   ├── utils/
+│   │   │   └── fieldMapping.js
+│   │   │
+│   │   ├── pages/
+│   │   │   ├── ContractComparison.jsx
+│   │   │   └── ContractComparison.css
+│   │   │
+│   │   ├── App.js
+│   │   └── index.js
+│   │
+│   ├── public/
+│   │   └── index.html
+│   │
+│   ├── package.json
+│   └── .gitignore
+│
 ├── README.md
-└── myenv/                          # Virtual environment (ignored in Git)
-
-
-
-```
-## ▶️ How to Run the OCR Module
-
-1. Ensure all required dependencies are installed (Tesseract, Poppler, Python packages).
-2. Place the input PDF file inside the `pdfs/` folder.
-3. Run the OCR test script using the command below:
-
-python ocr/test_ocr.py
-
-## Output
-
-Extracted and cleaned text is stored in the SQLite database:
-
-Database/ocr.db
-
-## 🛠️ Technologies Used
-
-Python
-
-Tesseract OCR
-
-Poppler (PDF to Image Conversion)
-
-SQLite
-
-Git & GitHub
-
-## 📌 Notes
-
-The data/ directory is intentionally left empty for future processed or cleaned outputs.
-
-The database file is lightweight and used only to store OCR results.
-
-Virtual environment (myenv/) and cache files are excluded using .gitignore.
-
-This OCR module acts as the foundation for future AI-based contract analysis and negotiation features.
-
+└── .gitignore
