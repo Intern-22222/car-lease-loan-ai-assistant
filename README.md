@@ -32,7 +32,10 @@ Compare OCR vs ground truth:    python scripts/compare_ocr.py samples/contract1_
 Goal: Conduct testing with sample user flows to ensure the upload‑to‑results process is bug‑free.
 
 Run Commands
-End‑to‑end test:   
+End‑to‑end test: streamlit run app.py
+It shows the file id, categories, frequency of keywords and full length text
+Used streamlit to demonstrate it. 
+
 
 #  Milestone 4 — Deep QA
 Tasks:
