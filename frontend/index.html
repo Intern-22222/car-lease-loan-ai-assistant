@@ -13,6 +13,11 @@
         <aside class="sidebar">
             <div class="brand">
                 <h2>AutoNegotiator</h2>
+                
+                <button id="newChatBtn" class="new-chat-btn">
+                    <span>+</span> New Chat
+                </button>
+
                 <div class="sidebar-tabs">
                     <button class="tab-btn active" id="tabAnalysis">Analysis</button>
                     <button class="tab-btn" id="tabHistory">History</button>
@@ -97,7 +102,14 @@
             
             <div class="chat-history" id="chatHistory">
                 <div class="message bot-message">
-                    <div class="content">Hello! I'm your AI negotiation assistant. Enter a VIN on the left to get started.</div>
+                    <div class="content">
+                        👋 Hello! I'm your AI car negotiation assistant.<br><br>
+                        <strong>How to use:</strong><br>
+                        • <strong>VIN Analysis:</strong> Enter a VIN in the sidebar for pricing & market data<br>
+                        • <strong>Document Review:</strong> Attach a PDF/image with your question (📎 icon)<br>
+                        • <strong>General Chat:</strong> Ask me anything about car buying, leasing, or negotiation!<br><br>
+                        <em>💡 Tip: Upload your document each time you want to ask questions about it.</em>
+                    </div>
                 </div>
             </div>
 
@@ -113,8 +125,8 @@
                         </svg>
                     </label>
                     <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" hidden>
-                    <input type="text" id="userMessage" placeholder="Type your message... (e.g. 'The dealer offered $45k')" disabled>
-                    <button id="sendBtn" class="send-btn" disabled>
+                    <input type="text" id="userMessage" placeholder="Type your message... (e.g. 'The dealer offered $45k')">
+                    <button id="sendBtn" class="send-btn">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="22" y1="2" x2="11" y2="13"></line>
                             <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>

@@ -102,16 +102,13 @@ RULES:
         """
         Generates an AI response to the user's message.
         Maintains conversation history per session.
+        Works with or without vehicle context.
         """
         
-        if not context:
-            return "I need vehicle information first. Please enter a VIN to analyze the car you're interested in."
-
-        vehicle_details = context.get('vehicle_details', {})
-        market_value = context.get('market_value', {})
+        vehicle_details = context.get('vehicle_details', {}) if context else {}
+        market_value = context.get('market_value', {}) if context else {}
         
-        if not vehicle_details or not market_value:
-            return "I'm missing vehicle data. Let's start by analyzing the VIN."
+        has_vehicle_context = bool(vehicle_details and market_value)
 
         # Get session history
         history = self._get_or_create_session(session_id)
@@ -124,8 +121,24 @@ RULES:
         # Try Gemini AI first
         if GEMINI_AVAILABLE and self.model:
             try:
-                system_prompt = self.generate_system_prompt(vehicle_details, market_value)
-                
+                if has_vehicle_context:
+                    system_prompt = self.generate_system_prompt(vehicle_details, market_value)
+                else:
+                    # General car assistant prompt (no specific vehicle)
+                    system_prompt = """You are a helpful AI car buying and negotiation assistant.
+                    
+You can help users with:
+- General car buying advice and tips
+- Understanding lease vs loan options
+- Explaining car pricing, fees, and negotiation tactics
+- Answering questions about car features and specifications
+- Providing guidance on what to look for in a deal
+
+If the user wants specific pricing analysis or negotiation help for a particular vehicle,
+suggest they enter a VIN to get accurate market data.
+
+Be friendly, professional, and concise in your responses."""
+
                 # Build prompt with conversation history
                 full_prompt = self._build_conversation_prompt(system_prompt, history[:-1], user_message)
                 
@@ -141,7 +154,10 @@ RULES:
 
         # Fallback: Rule-based responses
         if not response_text:
-            response_text = self._fallback_response(user_message, vehicle_details, market_value)
+            if has_vehicle_context:
+                response_text = self._fallback_response(user_message, vehicle_details, market_value)
+            else:
+                response_text = "Hello! I'm your car buying assistant. I can help with general car advice, or enter a VIN in the sidebar for specific pricing analysis."
         
         # Add assistant response to history
         history.append({"role": "assistant", "content": response_text})
@@ -206,9 +222,17 @@ RULES:
                 USER'S QUESTION:
                 {user_prompt}
                 
-                Provide a helpful, concise answer to their question based on the document content.
-                Focus on car pricing, fees, negotiation tactics, and any red flags you notice.
-                Keep your response conversational and actionable.
+                INSTRUCTIONS:
+                1. First, provide a clear, concise OVERVIEW (2-3 sentences) of what this document is (e.g., "This is a Buyer's Order for a 2024 Honda Civic showing a total price of...").
+                2. Then, provide a specific ANSWER to the user's question based on the document content.
+                3. Be professional and highlight any red flags if relevant to the answer.
+
+                FORMAT YOUR RESPONSE AS:
+                **Document Overview:**
+                [Overview text here]
+
+                **Answer:**
+                [Specific answer here]
                 """
             else:
                 prompt = f"""

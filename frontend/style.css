@@ -52,17 +52,51 @@ body {
 }
 
 /* Sidebar Brand */
+/* Sidebar Brand Area */
 .brand {
-    padding-bottom: 20px;
+    padding-bottom: 10px;
     display: flex;
-    align-items: center;
-    gap: 12px;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
 }
 
 .brand h2 {
-    font-size: 18px;
-    font-weight: 600;
+    font-size: 20px;
+    font-weight: 700;
     letter-spacing: -0.5px;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+/* New Chat Button */
+.new-chat-btn {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, #4ade80, #22c55e);
+    border: none;
+    border-radius: 12px;
+    color: #000;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 14px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.new-chat-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(74, 222, 128, 0.3);
+}
+
+.new-chat-btn span {
+    font-size: 18px;
+    line-height: 1;
+    font-weight: 400;
 }
 
 /* Sidebar Tabs - Pill Segmented Control */

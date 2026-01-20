@@ -63,8 +63,12 @@ function addMessage(content, isUser = false, isHtml = false) {
     } else if (!isUser) {
         // For bot messages, convert markdown to HTML
         contentDiv.innerHTML = markdownToHtml(content);
+        // Track for history (only non-loading messages)
+        addMessageToHistory(content, false);
     } else {
         contentDiv.textContent = content;
+        // Track user message for history
+        addMessageToHistory(content, true);
     }
     
     div.appendChild(contentDiv);
@@ -353,60 +357,211 @@ function switchTab(tab) {
 tabAnalysis.addEventListener('click', () => switchTab('analysis'));
 tabHistory.addEventListener('click', () => switchTab('history'));
 
-// History Persistence (LocalStorage for session metadata)
-function saveSessionToHistory(vin, vehicleDetails, lastMessage) {
-    let sessions = JSON.parse(localStorage.getItem('chatSessions') || '[]');
-    const carName = `${vehicleDetails.year} ${vehicleDetails.make} ${vehicleDetails.model}`;
-    const timestamp = new Date().toISOString();
+// History Persistence (LocalStorage)
+const HISTORY_KEY = 'car_assistant_sessions';
+let currentChatMessages = [];
+let currentSessionKey = null; // Unique key for current chat session
+
+function getSavedSessions() {
+    try {
+        return JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
+    } catch {
+        return [];
+    }
+}
+
+function saveSession(vin, vehicleInfo, chatMessages) {
+    const sessions = getSavedSessions();
     
-    // Remove existing session for this VIN if it exists (to move to top)
-    sessions = sessions.filter(s => s.vin !== vin);
+    // Check if session for this VIN already exists
+    const existingIndex = sessions.findIndex(s => s.vin === vin);
     
-    // Add new/updated session to top
-    sessions.unshift({
+    // Create robust vehicle title
+    let vehicleTitle = 'General Chat';
+    if (vehicleInfo && vehicleInfo.make) {
+        vehicleTitle = `${vehicleInfo.year} ${vehicleInfo.make} ${vehicleInfo.model}`;
+    }
+    
+    const sessionData = {
         vin: vin,
-        title: carName,
-        date: timestamp,
-        preview: lastMessage
-    });
+        vehicle: vehicleTitle,
+        lastMessage: chatMessages.length > 0 ? chatMessages[chatMessages.length - 1].text.substring(0, 50) : 'New conversation',
+        timestamp: new Date().toISOString(),
+        messages: chatMessages
+    };
     
-    // Limit to 20 sessions
-    if (sessions.length > 20) sessions.pop();
+    if (existingIndex >= 0) {
+        sessions[existingIndex] = sessionData;
+        // Move to top
+        const updated = sessions.splice(existingIndex, 1)[0];
+        sessions.unshift(updated);
+    } else {
+        sessions.unshift(sessionData); // Add to beginning
+    }
     
-    localStorage.setItem('chatSessions', JSON.stringify(sessions));
+    // Keep only last 20 sessions
+    const trimmedSessions = sessions.slice(0, 20);
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(trimmedSessions));
+    
+    renderHistoryList();
 }
 
 function renderHistoryList() {
-    const sessions = JSON.parse(localStorage.getItem('chatSessions') || '[]');
+    const sessions = getSavedSessions();
     historyList.innerHTML = '';
     
     if (sessions.length === 0) {
-        historyList.innerHTML = '<div style="color:var(--text-secondary); text-align:center; padding:20px;">No history yet</div>';
+        historyList.innerHTML = '<div class="no-history">No saved sessions</div>';
         return;
     }
-
-    sessions.forEach(session => {
+    
+    sessions.forEach((session, index) => {
         const item = document.createElement('div');
-        item.classList.add('history-item');
+        item.className = 'history-item';
         
-        const dateStr = new Date(session.date).toLocaleDateString();
+        const dateStr = session.timestamp ? new Date(session.timestamp).toLocaleDateString() : '';
         
         item.innerHTML = `
-            <h4>${session.title}</h4>
-            <p>${session.preview}</p>
+            <div class="history-vehicle">${session.vehicle}</div>
+            <div class="history-preview">${session.lastMessage}...</div>
             <span class="date">${dateStr}</span>
         `;
-        
-        item.addEventListener('click', () => {
-            // Restore this session (load VIN)
-            vinInput.value = session.vin;
-            switchTab('analysis');
-            loadCarBtn.click(); // Trigger analysis
-        });
-        
+        item.onclick = () => loadSession(index);
         historyList.appendChild(item);
     });
 }
+
+function loadSession(index) {
+    const sessions = getSavedSessions();
+    const session = sessions[index];
+    if (!session) return;
+    
+    // Clear current chat first (keep welcome message)
+    clearChat();
+    
+    // Restore variables
+    currentChatMessages = session.messages || [];
+    currentVIN = session.vin === 'general-chat' ? null : session.vin;
+    
+    // Restore messages to UI
+    if (session.messages && session.messages.length > 0) {
+        session.messages.forEach(msg => {
+            const div = document.createElement('div');
+            div.classList.add('message');
+            div.classList.add(msg.isUser ? 'user-message' : 'bot-message');
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.classList.add('content');
+            
+            if (!msg.isUser) {
+                contentDiv.innerHTML = markdownToHtml(msg.text);
+            } else {
+                contentDiv.textContent = msg.text;
+            }
+            
+            div.appendChild(contentDiv);
+            chatHistory.appendChild(div);
+        });
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+    }
+
+    // Just enable chat - NO VIN analysis
+    updateStatus(`Viewing: ${session.vehicle}`, true);
+    chatInput.disabled = false;
+    sendBtn.disabled = false;
+    
+    // If there was a VIN, just show it in the input (don't click analyze)
+    if (session.vin && session.vin !== 'general-chat') {
+        vinInput.value = session.vin;
+    }
+    
+    // Switch to controls view
+    document.getElementById('controlsView').classList.remove('hidden');
+    document.getElementById('historyView').classList.add('hidden');
+    
+    // Highlight controls tab
+    tabAnalysis.classList.add('active');
+    tabHistory.classList.remove('active');
+    analysisView.classList.remove('hidden');
+    historyView.classList.add('hidden');
+}
+
+function addMessageToHistory(text, isUser) {
+    currentChatMessages.push({ text, isUser, timestamp: new Date().toISOString() });
+    
+    // Generate unique session key if not set
+    if (!currentSessionKey) {
+        currentSessionKey = `chat_${Date.now()}`;
+    }
+    
+    // Auto-save after each message
+    if (currentVIN && currentContext.vehicle_details) {
+        saveSession(currentVIN, currentContext.vehicle_details, currentChatMessages);
+    } else {
+        // Save as "General Chat" with unique session key
+        const genericInfo = { year: '', make: 'General', model: 'Chat' };
+        saveSession(currentSessionKey, genericInfo, currentChatMessages);
+    }
+}
+
+// Initialize history list on page load
+document.addEventListener('DOMContentLoaded', () => {
+    vinInput.value = ''; // Clear any auto-filled value
+    renderHistoryList();
+});
+
+// New Chat / Reset Logic
+const newChatBtn = document.getElementById('newChatBtn');
+
+function startNewChat() {
+    // Reset UI State
+    loadCarBtn.style.display = 'block';
+    loadCarBtn.textContent = 'Analyze VIN';
+    loadCarBtn.disabled = false;
+    resetBtn.classList.add('hidden');
+    
+    // Hide details cards
+    vehicleDetails.classList.add('hidden');
+    marketCard.classList.add('hidden');
+    document.getElementById('engineCard').classList.add('hidden');
+    document.getElementById('insightsCard').classList.add('hidden');
+    
+    // Clear Chat
+    clearChat();
+    chatInput.disabled = false;
+    sendBtn.disabled = false;
+    document.querySelector('#userMessage').disabled = false; // ensure input enabled
+    updateStatus("Ready to assist", false);
+    
+    // Reset Data
+    currentVIN = null;
+    sessionId = null;
+    currentContext = {
+        vehicle_details: null,
+        market_value: null,
+        engine_specs: null,
+        drivetrain: null,
+        safety_features: null
+    };
+    currentChatMessages = []; // Clear tracked messages
+    currentSessionKey = null; // Generate new session key for next chat
+    
+    // Focus input
+    vinInput.value = '';
+    vinInput.focus();
+    
+    // Switch to Controls tab
+    tabAnalysis.click();
+}
+
+// Connect Buttons
+if (newChatBtn) newChatBtn.addEventListener('click', startNewChat);
+
+// Update Reset Button to use the same logic
+// Note: resetBtn listener in original code might duplicate this, but this function is cleaner
+// We'll replace the old listener in the file or just ensure this one is primary
+resetBtn.replaceWith(resetBtn.cloneNode(true)); // Remove old listeners
+document.getElementById('resetBtn').addEventListener('click', startNewChat);
 
 // 4. Update loadChatHistory to support history updates
 async function loadChatHistory(sessionId, vehicleDetails, marketValue, currency, vin) {
@@ -473,12 +628,7 @@ removeAttachment.addEventListener('click', () => {
     attachedFile = null;
     attachmentPreview.classList.add('hidden');
     attachedFileName.textContent = '';
-    
-    // Re-disable input if no VIN is loaded
-    if (!currentVIN) {
-        document.getElementById('userMessage').disabled = true;
-        document.getElementById('sendBtn').disabled = true;
-    }
+    // Input stays enabled - user can still chat without VIN
 });
 
 // Modify sendMessage to handle file + prompt
@@ -514,11 +664,16 @@ sendMessage = async function() {
         }
         
         try {
+            console.log('📤 Sending file to backend:', fileToSend.name, fileToSend.size, 'bytes');
+            console.log('📝 User prompt:', message || '(none)');
+            
             const response = await fetch(`${API_BASE}/api/document/analyze`, {
                 method: 'POST',
                 body: formData
             });
+            console.log('📥 Response status:', response.status);
             const data = await response.json();
+            console.log('📥 Response data:', data);
             
             // Remove loading
             const msgToRemove = document.getElementById(loadingId);
