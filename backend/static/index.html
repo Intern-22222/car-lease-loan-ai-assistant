@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Car Lease AI Dashboard</title>
+    <link rel="stylesheet" href="/app/style.css">
+</head>
+
+<body>
+
+<header>
+    🚗 Car Lease & Loan AI Assistant
+</header>
+
+<div class="container">
+
+    <!-- SLA SECTION -->
+    <div class="section">
+        <h2>📄 Contract SLA Extraction</h2>
+        <input type="file" id="contractFile">
+        <br>
+        <button onclick="uploadContract()">Upload & Extract</button>
+
+        <div class="grid">
+            <div class="result">APR: <span id="apr">—</span></div>
+            <div class="result">Payment: <span id="payment">—</span></div>
+            <div class="result">Term: <span id="term">—</span></div>
+        </div>
+    </div>
+
+    <!-- MARKET PRICE -->
+    <div class="section">
+        <h2>💰 Market Fair Price</h2>
+
+        <div class="grid">
+            <input id="year" placeholder="Year">
+            <input id="make" placeholder="Make">
+            <input id="model" placeholder="Model">
+            <input id="credit" placeholder="Credit Score">
+        </div>
+
+        <button onclick="estimatePrice()">Estimate Price</button>
+        <div class="result">Estimated Price ($) : <span id="price">—</span></div>
+    </div>
+
+    <!-- RECOMMENDATION -->
+    <div class="section">
+        <h2>⭐ Car Recommendation</h2>
+
+        <input id="rec_credit" placeholder="Credit Score">
+        <br>
+        <button onclick="recommendCar()">Recommend</button>
+
+        <div class="result" id="segment"></div>
+        <div class="result" id="suggestion"></div>
+
+        <img id="carImage">
+    </div>
+
+</div>
+
+<script src="/app/script.js"></script>
+</body>
+</html>

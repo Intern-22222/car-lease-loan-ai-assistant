@@ -1,3 +1,5 @@
+from fastapi.staticfiles import StaticFiles
+
 from fastapi import FastAPI, UploadFile, File, Request
 from fastapi.templating import Jinja2Templates
 from pathlib import Path
@@ -140,12 +142,12 @@ def recommend_car(credit_score: int):
     if credit_score >= 750:
         return {
             "segment": "Premium",
-            "suggestion": "Honda Accord / Toyota Camry"
+            "suggestion": "Toyota Camry"
         }
     elif credit_score >= 650:
         return {
             "segment": "Mid-range",
-            "suggestion": "Hyundai Elantra / Kia Seltos"
+            "suggestion": "Hyundai Elantra"
         }
     else:
         return {
@@ -156,3 +158,8 @@ def recommend_car(credit_score: int):
 @app.get("/recommendation/{credit_score}")
 def recommend(credit_score: int):
     return recommend_car(credit_score)
+
+from fastapi.staticfiles import StaticFiles
+
+app.mount("/app", StaticFiles(directory="static", html=True), name="static")
+
