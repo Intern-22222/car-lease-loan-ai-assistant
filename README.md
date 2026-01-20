@@ -3,9 +3,11 @@ Car Lease/Loan Contract Review and Negotiation AI Assistant
 <br>
 AI assistant to review car lease/loan contracts, extract key terms, compare market prices &amp; assist with negotiation using LLMs and public vehicle data.
 
-# Intern D
-# Inter Nmae: Soundarya R
-# Batch: D2
+ Intern D
+ Inter Name: Soundarya R
+ Batch: D2
+
+ 
 # Milestone 1 — Setup & Infra
 Focus: docker-compose, infra (local DB), test harness, CI skeleton, demo scripts.
 
