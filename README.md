@@ -69,15 +69,64 @@ This repository contains the backend implementation and integration work complet
 - **Python Regex** – SLA field extraction
 
 ---
+## Week 4: Vehicle Intelligence & Pricing APIs
+
+**Focus:** Contract enrichment, vehicle metadata extraction, market price estimation
+
+### ✅ Completed Tasks
+- Implemented **VIN decoding integration** using the **NHTSA API** to extract:
+  - Vehicle year
+  - Make
+  - Model
+  - Trim / body class (when available)
+- Extended contract parsing to support **VIN-based vehicle identification**
+- Designed and implemented a **market fair price estimation service**:
+  - Rule-based pricing logic as a fallback mechanism
+  - Price adjustments based on:
+    - Vehicle year, make, and model
+    - User credit score (risk-based adjustment)
+  - Structured for future integration with real-world pricing APIs (e.g., Edmunds)
+- Developed `/market_fair_price` API endpoint to:
+  - Accept vehicle and credit score inputs
+  - Return estimated fair market price in a standardized JSON format
+- Added **credit-score–aware vehicle recommendation logic**
+- Implemented **result caching** to improve performance and avoid redundant computation
+- Generated **sample lease contract PDFs** containing VIN and financial fields for:
+  - OCR testing
+  - SLA extraction validation
+  - End-to-end demo scenarios
+
+### 📦 Deliverables
+- VIN decoding service (NHTSA API integration)
+- `/market_fair_price` API endpoint
+- Pricing and recommendation logic module
+- Sample lease contract PDFs for testing and demos
+
+**Status:** Completed
+
+---
+
+## Technologies Used
+- **FastAPI** – Backend framework
+- **Tesseract OCR** – Text extraction
+- **pdf2image + Poppler** – PDF processing
+- **Jinja2** – Backend dashboard templating
+- **Python Regex** – SLA and contract field extraction
+- **Pytest** – API testing
+- **Docker / docker-compose** – Infrastructure readiness
+
+---
 
 ## Current Status
-✅ All assigned milestones (Weeks 1–3) have been completed successfully  
-✅ Backend is fully functional and frontend-ready  
-✅ SLA extraction verified with real contract data
+✅ All assigned milestones (Weeks 1–4) completed successfully  
+✅ Backend supports SLA extraction, vehicle decoding, and pricing intelligence  
+✅ APIs are stable, testable, and frontend-ready  
+✅ Architecture allows future enhancement with real-world datasets and APIs
+
 
 ---
 
 ## How to Run
 ```bash
-uvicorn main:app --reload ```
+uvicorn main:app --reload 
 
