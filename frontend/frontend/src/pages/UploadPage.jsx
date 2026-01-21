@@ -186,6 +186,8 @@ const UploadPage = () => {
     setMessageType("");
     setToastMessage("");
     setToastType("");
+    setConfidence("");
+    setNotes("");
 
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
