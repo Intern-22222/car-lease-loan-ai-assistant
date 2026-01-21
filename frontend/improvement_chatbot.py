@@ -445,6 +445,57 @@ def convert_to_native_types(obj):
     else:
         return obj
 
+def find_missing_attributes(analysis1, analysis2):
+    """Find attributes that are missing or not specified in either contract"""
+    missing_insights = []
+    
+    all_fields = {
+        "interest_rate_apr": "Interest Rate / APR",
+        "lease_term_duration": "Lease Term Duration",
+        "monthly_payment": "Monthly Payment",
+        "down_payment": "Down Payment",
+        "residual_value": "Residual Value",
+        "mileage_allowance": "Mileage Allowance",
+        "mileage_overage_charges": "Overage Charges",
+        "early_termination_clause": "Early Termination",
+        "purchase_option": "Purchase Option",
+        "maintenance_responsibilities": "Maintenance",
+        "warranty_coverage": "Warranty Coverage",
+        "insurance_coverage": "Insurance Coverage",
+        "penalties_late_fees": "Penalties/Late Fees"
+    }
+    
+    for field_key, field_name in all_fields.items():
+        val1 = analysis1.get(field_key, "Not specified")
+        val2 = analysis2.get(field_key, "Not specified")
+        
+        is_missing_1 = val1 in ["Not specified", "Not analyzed", None, ""]
+        is_missing_2 = val2 in ["Not specified", "Not analyzed", None, ""]
+        
+        if is_missing_1 and not is_missing_2:
+            missing_insights.append({
+                'field': field_name,
+                'contract': 1,
+                'value': val2,
+                'type': 'missing'
+            })
+        elif is_missing_2 and not is_missing_1:
+            missing_insights.append({
+                'field': field_name,
+                'contract': 2,
+                'value': val1,
+                'type': 'missing'
+            })
+        elif is_missing_1 and is_missing_2:
+            missing_insights.append({
+                'field': field_name,
+                'contract': 'both',
+                'value': None,
+                'type': 'both_missing'
+            })
+    
+    return missing_insights
+
 # File upload section
 col1, col2 = st.columns(2)
 
@@ -519,37 +570,7 @@ if analyze_button:
                     st.session_state['contract1_data'] = contract1_data
                     st.session_state['contract2_data'] = contract2_data
                     st.session_state['market_benchmarks'] = market_benchmarks
-                    
-                    # Display Fairness Scores
-                    st.header("🎯 Fairness Score Analysis")
-                    
-                    col1, col2 = st.columns(2)
-                    
-                    with col1:
-                        st.metric(
-                            label="Contract 1 - Overall Fairness",
-                            value=f"{score1['total_score']}/100",
-                            delta=f"{get_score_color(score1['total_score'])} {'Excellent' if score1['total_score'] >= 80 else 'Fair' if score1['total_score'] >= 60 else 'Poor'}"
-                        )
-                        st.write("**Score Breakdown:**")
-                        st.write(f"💰 Price Score: {score1['price_score']}/50")
-                        st.write(f"⚠️ Risk Score: {score1['risk_score']}/30")
-                        st.write(f"📋 Fee Score: {score1['fee_score']}/20")
-                        if contract1_data['junk_fees']:
-                            st.warning(f"⚠️ Identified Fees: {', '.join(contract1_data['junk_fees'])}")
-                    
-                    with col2:
-                        st.metric(
-                            label="Contract 2 - Overall Fairness",
-                            value=f"{score2['total_score']}/100",
-                            delta=f"{get_score_color(score2['total_score'])} {'Excellent' if score2['total_score'] >= 80 else 'Fair' if score2['total_score'] >= 60 else 'Poor'}"
-                        )
-                        st.write("**Score Breakdown:**")
-                        st.write(f"💰 Price Score: {score2['price_score']}/50")
-                        st.write(f"⚠️ Risk Score: {score2['risk_score']}/30")
-                        st.write(f"📋 Fee Score: {score2['fee_score']}/20")
-                        if contract2_data['junk_fees']:
-                            st.warning(f"⚠️ Identified Fees: {', '.join(contract2_data['junk_fees'])}")
+                    st.session_state['analysis_complete'] = True
                     
                     # Recommendation
                     st.markdown("---")
@@ -563,61 +584,47 @@ if analyze_button:
                         st.info("ℹ️ Both contracts have equal fairness scores")
                         st.session_state['recommended_contract'] = 1
                     
-                    # Display comparison
+                    # NEW: Insights Section - Only show missing attributes
                     st.markdown("---")
-                    st.header("📊 Detailed Contract Comparison")
+                    st.header("💡 Contract Insights - Missing Attributes")
                     
-                    comparison_data = {
-                        "Interest Rate / APR": (analysis1.get("interest_rate_apr"), analysis2.get("interest_rate_apr")),
-                        "Lease Term Duration": (analysis1.get("lease_term_duration"), analysis2.get("lease_term_duration")),
-                        "Monthly Payment": (analysis1.get("monthly_payment"), analysis2.get("monthly_payment")),
-                        "Down Payment": (analysis1.get("down_payment"), analysis2.get("down_payment")),
-                        "Residual Value": (analysis1.get("residual_value"), analysis2.get("residual_value")),
-                        "Mileage Allowance": (analysis1.get("mileage_allowance"), analysis2.get("mileage_allowance")),
-                        "Overage Charges": (analysis1.get("mileage_overage_charges"), analysis2.get("mileage_overage_charges")),
-                        "Early Termination": (analysis1.get("early_termination_clause"), analysis2.get("early_termination_clause")),
-                        "Purchase Option": (analysis1.get("purchase_option"), analysis2.get("purchase_option")),
-                        "Maintenance": (analysis1.get("maintenance_responsibilities"), analysis2.get("maintenance_responsibilities")),
-                        "Warranty Coverage": (analysis1.get("warranty_coverage"), analysis2.get("warranty_coverage")),
-                        "Insurance Coverage": (analysis1.get("insurance_coverage"), analysis2.get("insurance_coverage")),
-                        "Penalties/Late Fees": (analysis1.get("penalties_late_fees"), analysis2.get("penalties_late_fees"))
-                    }
+                    missing_insights = find_missing_attributes(analysis1, analysis2)
                     
-                    # Create comparison table
-                    for term, (val1, val2) in comparison_data.items():
-                        st.markdown(f"### {term}")
-                        col1, col2 = st.columns(2)
-                        
-                        with col1:
-                            st.info(f"**Contract 1:** {val1}")
-                        
-                        with col2:
-                            st.info(f"**Contract 2:** {val2}")
-                        
-                        st.markdown("---")
+                    if missing_insights:
+                        for insight in missing_insights:
+                            if insight['type'] == 'missing':
+                                if insight['contract'] == 1:
+                                    st.warning(f"⚠️ **{insight['field']}** is missing in Contract 1 (Contract 2 has: {insight['value']})")
+                                else:
+                                    st.warning(f"⚠️ **{insight['field']}** is missing in Contract 2 (Contract 1 has: {insight['value']})")
+                            elif insight['type'] == 'both_missing':
+                                st.error(f"❌ **{insight['field']}** is missing in BOTH contracts")
+                    else:
+                        st.success("✅ All attributes are present in both contracts!")
                     
-                    # Download option
+                    # Download option - MODIFIED to only include junk/hidden fees
+                    st.markdown("---")
                     st.subheader("💾 Download Results")
                     
                     results = {
                         "contract_1": {
-                            "analysis": analysis1,
                             "fairness_score": convert_to_native_types(score1),
-                            "contract_data": convert_to_native_types(contract1_data)
+                            "junk_fees": contract1_data['junk_fees'],
+                            "hidden_fees": analysis1.get('hidden_fees', [])
                         },
                         "contract_2": {
-                            "analysis": analysis2,
                             "fairness_score": convert_to_native_types(score2),
-                            "contract_data": convert_to_native_types(contract2_data)
+                            "junk_fees": contract2_data['junk_fees'],
+                            "hidden_fees": analysis2.get('hidden_fees', [])
                         },
-                        "comparison": comparison_data,
-                        "market_benchmarks": market_benchmarks
+                        "market_benchmarks": market_benchmarks,
+                        "recommendation": f"Contract {st.session_state['recommended_contract']} is fairer"
                     }
                     
                     st.download_button(
-                        label="📥 Download JSON Report",
+                        label="📥 Download Junk/Hidden Fees Report (JSON)",
                         data=json.dumps(results, indent=2),
-                        file_name="contract_comparison.json",
+                        file_name="contract_fees_report.json",
                         mime="application/json"
                     )
                     
@@ -625,6 +632,45 @@ if analyze_button:
                     st.error("❌ Failed to analyze one or both contracts. Please check the errors above.")
             else:
                 st.error("❌ Failed to extract text from one or both files")
+
+# Display fairness scores if analysis is complete (persists across button clicks)
+if 'analysis_complete' in st.session_state and st.session_state['analysis_complete']:
+    if 'score1' in st.session_state and 'score2' in st.session_state:
+        st.markdown("---")
+        st.header("🎯 Current Fairness Scores")
+        
+        col1, col2 = st.columns(2)
+        
+        score1 = st.session_state['score1']
+        score2 = st.session_state['score2']
+        contract1_data = st.session_state['contract1_data']
+        contract2_data = st.session_state['contract2_data']
+        
+        with col1:
+            st.metric(
+                label="Contract 1 - Overall Fairness",
+                value=f"{score1['total_score']}/100",
+                delta=f"{get_score_color(score1['total_score'])} {'Excellent' if score1['total_score'] >= 80 else 'Fair' if score1['total_score'] >= 60 else 'Poor'}"
+            )
+            st.write("**Score Breakdown:**")
+            st.write(f"💰 Price Score: {score1['price_score']}/50")
+            st.write(f"⚠️ Risk Score: {score1['risk_score']}/30")
+            st.write(f"📋 Fee Score: {score1['fee_score']}/20")
+            if contract1_data['junk_fees']:
+                st.warning(f"⚠️ Identified Fees: {', '.join(contract1_data['junk_fees'])}")
+        
+        with col2:
+            st.metric(
+                label="Contract 2 - Overall Fairness",
+                value=f"{score2['total_score']}/100",
+                delta=f"{get_score_color(score2['total_score'])} {'Excellent' if score2['total_score'] >= 80 else 'Fair' if score2['total_score'] >= 60 else 'Poor'}"
+            )
+            st.write("**Score Breakdown:**")
+            st.write(f"💰 Price Score: {score2['price_score']}/50")
+            st.write(f"⚠️ Risk Score: {score2['risk_score']}/30")
+            st.write(f"📋 Fee Score: {score2['fee_score']}/20")
+            if contract2_data['junk_fees']:
+                st.warning(f"⚠️ Identified Fees: {', '.join(contract2_data['junk_fees'])}")
 
 # NEGOTIATION ASSISTANT SECTION
 if 'analysis1' in st.session_state and 'analysis2' in st.session_state:
