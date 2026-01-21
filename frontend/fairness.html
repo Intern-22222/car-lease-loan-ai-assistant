@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Fairness Score</title>
+  <title>Contract Fairness Score</title>
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -11,21 +12,24 @@
     }
 
     .card {
-      background: #fff;
+      background: #ffffff;
       padding: 25px;
       border-radius: 10px;
-      max-width: 600px;
+      max-width: 650px;
       margin: auto;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
 
     h2 {
-      margin-bottom: 10px;
+      margin-bottom: 20px;
     }
 
     .score {
       font-size: 48px;
       font-weight: bold;
+    }
+
+    .good {
       color: green;
     }
 
@@ -33,22 +37,20 @@
       color: red;
     }
 
-    .prices {
-      margin-top: 20px;
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
     }
 
-    .prices div {
-      margin: 6px 0;
-    }
-
-    textarea {
+    input {
       width: 100%;
-      height: 120px;
-      margin-top: 15px;
+      padding: 8px;
+      margin-top: 5px;
     }
 
     button {
-      margin-top: 10px;
+      margin-top: 15px;
       padding: 10px 15px;
       border: none;
       background: #007bff;
@@ -56,46 +58,103 @@
       border-radius: 5px;
       cursor: pointer;
     }
+
+    .result {
+      margin-top: 15px;
+      background: #eef3ff;
+      padding: 12px;
+      border-radius: 6px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 140px;
+      margin-top: 15px;
+      padding: 10px;
+    }
   </style>
 </head>
+
 <body>
 
-  <div class="card">
-    <h2>Contract Fairness Analysis</h2>
+<div class="card">
 
-    <div>
-      Fairness Score:
-      <span class="score" id="score">45</span>/100
-    </div>
+  <h2>Contract Fairness Analysis</h2>
 
-    <div class="prices">
-      <div><b>Contract Price:</b> $27,148</div>
-      <div><b>Fair Market Price:</b> $23,000</div>
-      <div><b>Overpayment Risk:</b> $4,148</div>
-    </div>
-
-    <h3>Negotiation Email</h3>
-    <textarea id="emailText" readonly></textarea>
-
-    <button onclick="generateEmail()">Generate Email</button>
+  <div>
+    Fairness Score:
+    <span class="score" id="score">--</span>/100
   </div>
 
-  <script>
-    function generateEmail() {
-      document.getElementById("emailText").value =
+  <label>Contract Price ($)</label>
+  <input type="number" id="contractPrice" placeholder="Enter contract price">
+
+  <label>Fair Market Price ($)</label>
+  <input type="number" id="marketPrice" placeholder="Enter market price">
+
+  <button onclick="calculateFairness()">Calculate Fairness</button>
+
+  <div class="result" id="priceResult"></div>
+
+  <h3>Negotiation Email</h3>
+
+  <textarea id="emailText" readonly placeholder="Click 'Generate Email' after calculation"></textarea>
+
+  <button onclick="generateEmail()">Generate Email</button>
+
+</div>
+
+<script>
+let emailContent = "";
+
+function calculateFairness() {
+  const contract = Number(document.getElementById("contractPrice").value);
+  const market = Number(document.getElementById("marketPrice").value);
+
+  if (!contract || !market) {
+    alert("Please enter both contract and market prices.");
+    return;
+  }
+
+  const difference = contract - market;
+  const percent = (difference / market) * 100;
+  let score = Math.max(100 - percent, 0).toFixed(0);
+
+  const scoreSpan = document.getElementById("score");
+  scoreSpan.innerText = score;
+
+  scoreSpan.className = "score " + (score >= 70 ? "good" : "bad");
+
+  document.getElementById("priceResult").innerHTML = `
+    <b>Contract Price:</b> $${contract}<br>
+    <b>Market Price:</b> $${market}<br>
+    <b>Overpayment Risk:</b> $${difference}<br>
+    <b>Difference:</b> ${percent.toFixed(2)}%
+  `;
+
+  emailContent =
 `Subject: Request for Revised Buyer’s Order
 
 Hello,
 
-After reviewing the contract, I noticed the price exceeds the fair market value.
-Additionally, optional add-ons like Nitrogen Fill and VIN Etching were included.
+After reviewing the contract, I noticed that the price is approximately ${percent.toFixed(2)}% higher than the fair market value.
 
-Please remove these charges and share a revised buyer’s order.
+This indicates a potential overpayment, and I request a revised quotation aligned with current market pricing.
+
+Please also remove any optional add-ons that were not explicitly requested.
 
 Thank you,
 Customer`;
-    }
-  </script>
+}
+
+function generateEmail() {
+  if (!emailContent) {
+    alert("Please calculate fairness first.");
+    return;
+  }
+  document.getElementById("emailText").value = emailContent;
+}
+</script>
 
 </body>
 </html>
