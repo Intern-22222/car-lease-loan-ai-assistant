@@ -1,105 +1,112 @@
-import React, { useState } from 'react';
-import { X, AlertTriangle, Info, Send, MessageSquare } from 'lucide-react';
+import React from 'react';
+import { 
+  X, Target, TrendingUp, AlertTriangle, 
+  CheckCircle, Info, DollarSign, Calendar 
+} from 'lucide-react';
 import './SummaryPanel.css';
 
-const SummaryPanel = ({ data, onClose }) => {
-  const [userQuery, setUserQuery] = useState('');
-
-  // Fallback data for demonstration
-  const contract = data || {
-    vehicle: "2024 Tesla Model 3",
-    summaryPoints: [
-      "You are entering a 36-month lease agreement with Tesla Financial.",
-      "Ownership only transfers if you select the 'Buyout' option at term end.",
-      "You are responsible for all maintenance and insurance costs."
-    ],
-    financials: {
-      price: "$42,990",
-      downPayment: "$4,500",
-      apr: "6.49%",
-      tenure: "36 Months",
-      monthly: "$549",
-      totalPayable: "$24,264"
-    },
-    penalties: {
-      lateFee: "$25.00 or 5%",
-      prepayment: "No penalty",
-      excessMileage: "$0.25 / mile"
-    },
-    redFlags: [
-      "Arbitration Clause: Mandatory out-of-court dispute resolution.",
-      "Wear & Tear: Return standards are strictly dictated by the lender."
-    ]
+const SummaryPanel = ({ summary, carName, analysis, onClose }) => {
+  // Helper to choose color and icon based on the Market Deal Rating
+  const getRatingStyles = (rating) => {
+    if (!rating) return { color: '#8b949e', icon: <Target size={20} /> };
+    if (rating.includes("Great")) return { color: '#21CAB9', icon: <CheckCircle size={20} /> };
+    if (rating.includes("Fair")) return { color: '#FFD700', icon: <TrendingUp size={20} /> };
+    return { color: '#FF4D4D', icon: <AlertTriangle size={20} /> };
   };
+
+  const ratingStyles = getRatingStyles(analysis?.deal_rating);
 
   return (
     <div className="summary-panel">
-      {/* Header */}
+      {/* 1. Header Section */}
       <div className="summary-header">
-        <h3>Contract Summary</h3>
+        <h3>Contract Intelligence</h3>
         <X size={20} className="close-icon" onClick={onClose} />
       </div>
 
-      {/* Main Content Area */}
       <div className="summary-main">
-        <h2 className="car-title">{contract.vehicle}</h2>
-        
-        <div className="price-highlight">
-          <span className="price">{contract.financials.monthly}</span>
-          <span className="term">{contract.financials.tenure}</span>
+        <h2 className="car-title">{carName || "Vehicle Contract"}</h2>
+
+        {/* 2. NEW: Market Intelligence Card (Top Priority) */}
+        <div className="analysis-card" style={{ borderLeft: `4px solid ${ratingStyles.color}` }}>
+          <div className="analysis-header">
+            {ratingStyles.icon}
+            <span style={{ color: ratingStyles.color, fontWeight: 'bold', marginLeft: '8px' }}>
+              {analysis?.deal_rating || "Analysis Pending"}
+            </span>
+          </div>
+          <div className="price-comparison">
+            <div className="price-item">
+              <span>Market Value</span>
+              <strong>${analysis?.market_price?.toLocaleString() || "---"}</strong>
+            </div>
+            <div className="price-item">
+              <span>Your Price</span>
+              <strong>${analysis?.your_price?.toLocaleString() || "---"}</strong>
+            </div>
+          </div>
         </div>
 
-        {/* 1. Plain English Summary */}
+        {/* 3. Main Highlights (Monthly & Term) */}
+        <div className="price-highlight">
+          <div className="highlight-item">
+            <span className="price">{summary?.monthly || "---"}</span>
+            <span className="label">Monthly Payment</span>
+          </div>
+          <div className="highlight-item">
+            <span className="term">{summary?.duration || "---"}</span>
+            <span className="label">Contract Term</span>
+          </div>
+        </div>
+
+        {/* 4. Simple Explanation Section */}
         <div className="plain-summary">
-          <h4 className="section-title" style={{ marginTop: 0, color: '#21CAB9' }}>
-            <Info size={14} style={{ verticalAlign: 'middle', marginRight: '6px' }} />
+          <h4 className="section-title">
+            <Info size={14} style={{ marginRight: '6px' }} />
             Simple Explanation
           </h4>
           <ul>
-            {contract.summaryPoints.map((point, i) => (
-              <li key={i}>{point}</li>
-            ))}
+            <li>You are entering a {summary?.duration || 'set-term'} agreement.</li>
+            <li>Responsibility for maintenance and insurance is yours.</li>
+            <li>Excess mileage fees of {summary?.excessMileage || 'standard rates'} apply.</li>
           </ul>
         </div>
 
-        {/* 2. Financial Grid */}
-        <h4 className="section-title">Financial Terms</h4>
+        {/* 5. Detailed Financial Grid */}
+        <h4 className="section-title">Financial Details</h4>
         <div className="metrics-grid">
-          {Object.entries(contract.financials).map(([key, value]) => (
-            <div key={key} className="metric-card">
-              <p className="label">{key.replace(/([A-Z])/g, ' $1')}</p>
-              <p className="val">{value}</p>
-            </div>
-          ))}
+          <div className="metric-card">
+            <p className="label">APR / Interest</p>
+            <p className="val">{summary?.apr || "N/A"}</p>
+          </div>
+          <div className="metric-card">
+            <p className="label">Total Deposit</p>
+            <p className="val">{summary?.deposit || "N/A"}</p>
+          </div>
+          <div className="metric-card">
+            <p className="label">Annual Mileage</p>
+            <p className="val">{summary?.mileage || "N/A"}</p>
+          </div>
+          <div className="metric-card">
+            <p className="label">Early Exit Fee</p>
+            <p className="val">{summary?.earlyTermination || "N/A"}</p>
+          </div>
         </div>
 
-        {/* 3. Rules & Penalties */}
-        <h4 className="section-title">Rules & Penalties</h4>
-        <div className="fee-box">
-          <p>Late Fee</p>
-          <strong>{contract.penalties.lateFee}</strong>
-        </div>
-        <div className="fee-box">
-          <p>Prepayment</p>
-          <strong>{contract.penalties.prepayment}</strong>
-        </div>
-        <div className="fee-box warning">
-          <p>Excess Mileage</p>
-          <strong>{contract.penalties.excessMileage}</strong>
-        </div>
-
-        {/* 4. Red Flags */}
-        <h4 className="section-title">Risk Alerts</h4>
+        {/* 6. Red Flags / Risks */}
+        <h4 className="section-title" style={{ color: '#FF4D4D' }}>Risk Alerts</h4>
         <div className="red-flags">
-          {contract.redFlags.map((flag, i) => (
-            <div key={i} className="flag-item">
-              <AlertTriangle size={16} />
-              <p>{flag}</p>
-            </div>
-          ))}
+          <div className="flag-item">
+            <AlertTriangle size={16} />
+            <p><strong>Wear & Tear:</strong> Return standards are strictly dictated by the lender.</p>
+          </div>
+          <div className="flag-item">
+            <AlertTriangle size={16} />
+            <p><strong>Arbitration:</strong> Mandatory out-of-court dispute resolution active.</p>
+          </div>
         </div>
       </div>
-
+ 
     </div>
   );
 };

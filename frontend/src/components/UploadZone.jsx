@@ -1,22 +1,51 @@
-import React, { useRef } from 'react';
-import { Upload } from 'lucide-react';
+import React, { useRef, useState } from 'react';
+import { Upload, Loader2 } from 'lucide-react'; // Added Loader2 for loading state
 import './UploadZone.css';
 
 const UploadZone = ({ onUploadSuccess }) => {
-  // Use a ref to target the hidden file input
   const fileInputRef = useRef(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleContainerClick = () => {
-    // Trigger the file browser when the dashed box is clicked
+    if (isUploading) return; // Prevent clicks while uploading
     fileInputRef.current.click();
   };
 
-  const handleFileChange = (event) => {
+  const handleFileChange = async (event) => {
     const file = event.target.files[0];
-    if (file) {
-      console.log("Selected file:", file.name);
-      // For now, we simulate success by calling your redirect function
-      onUploadSuccess(file); 
+    if (!file) return;
+
+    // Start loading state
+    setIsUploading(true);
+
+    // Prepare the form data for the backend
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      console.log("Uploading to backend...");
+      
+      const response = await fetch("http://localhost:8000/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Upload failed");
+      }
+
+      const result = await response.json();
+      console.log("Backend response:", result);
+
+      // result should contain the filename and status from your Python code
+      // We pass the file object and the backend result to App.jsx
+      onUploadSuccess(file, result); 
+      
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      alert("Failed to upload and analyze contract. Please check if the backend is running.");
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -27,9 +56,10 @@ const UploadZone = ({ onUploadSuccess }) => {
         <p>Upload your contract and get instant, plain-language explanations</p>
       </div>
       
-      {/* Clicking this div now triggers the hidden input */}
-      <div className="drop-zone" onClick={handleContainerClick}>
-        {/* Hidden File Input */}
+      <div 
+        className={`drop-zone ${isUploading ? 'uploading' : ''}`} 
+        onClick={handleContainerClick}
+      >
         <input 
           type="file" 
           ref={fileInputRef} 
@@ -39,10 +69,24 @@ const UploadZone = ({ onUploadSuccess }) => {
         />
 
         <div className="icon-circle">
-          <Upload size={30} color="#8b949e" />
+          {isUploading ? (
+            <Loader2 size={30} color="#21CAB9" className="animate-spin" />
+          ) : (
+            <Upload size={30} color="#8b949e" />
+          )}
         </div>
-        <h4>Drop your lease contract here</h4>
-        <p>or click to browse • PDF files supported</p>
+
+        {isUploading ? (
+          <>
+            <h4>Analyzing Contract...</h4>
+            <p>Our AI is reading the fine print for you.</p>
+          </>
+        ) : (
+          <>
+            <h4>Drop your lease contract here</h4>
+            <p>or click to browse • PDF files supported</p>
+          </>
+        )}
       </div>
 
       <div className="tags">

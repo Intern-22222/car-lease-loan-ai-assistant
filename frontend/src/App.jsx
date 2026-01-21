@@ -22,15 +22,9 @@ function App() {
     return null;
   });
 
-  const [view, setView] = useState(
-    () => localStorage.getItem("app_view") || "upload",
-  );
-  const [searchTerm, setSearchTerm] = useState(
-    () => localStorage.getItem("search_term") || "",
-  );
-  const [isSummaryOpen, setIsSummaryOpen] = useState(
-    () => localStorage.getItem("summary_open") === "true",
-  );
+  const [view, setView] = useState(() => localStorage.getItem("app_view") || "upload");
+  const [searchTerm, setSearchTerm] = useState(() => localStorage.getItem("search_term") || "");
+  const [isSummaryOpen, setIsSummaryOpen] = useState(() => localStorage.getItem("summary_open") === "true");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // --- Persistence Effect ---
@@ -75,106 +69,126 @@ function App() {
     if (activeContract?.id === id) startNewChat();
   };
 
-  const handleUploadSuccess = (file) => {
+  /**
+   * MILESTONE 4 INTEGRATED: Upload + Market Intelligence
+   */
+  const handleUploadSuccess = async (file, backendResult) => {
     const currentTime = new Date().toLocaleTimeString([], {
       hour: "2-digit",
       minute: "2-digit",
     });
 
+    // Step 1: Prepare potential VIN and Price for Market Analysis
+    // In Milestone 5, these will be extracted from the PDF result
+    const simulatedVin = "5YJ3E1EB7NF211111"; // Example Tesla VIN
+    const simulatedPrice = 38000;
+
+    let marketAnalysis = null;
+
+    try {
+      // Step 2: Fetch Market Intelligence (Task 3 & 4 of Milestone 4)
+      const marketRes = await fetch(
+        `http://localhost:8000/market-info/${simulatedVin}?contract_price=${simulatedPrice}`
+      );
+      if (marketRes.ok) {
+        const marketData = await marketRes.json();
+        marketAnalysis = marketData.analysis;
+      }
+    } catch (error) {
+      console.error("Market Intelligence Fetch Failed:", error);
+    }
+
+    // Step 3: Create the final entry
     const newEntry = {
       id: Date.now(),
       carName: file.name.replace(/\.[^/.]+$/, ""),
       fileName: file.name,
       date: new Date().toLocaleDateString(),
       summary: {
-        monthly: "$489/month",
-        duration: "36 months",
-        apr: "4.9%",
-        mileage: "12,000/yr",
-        deposit: "$500",
-        earlyTermination: "$2,500 penalty",
-        excessMileage: "$0.25/mile",
+        monthly: backendResult?.monthly || "$450.00",
+        duration: backendResult?.duration || "36 months",
+        apr: backendResult?.apr || "N/A",
+        mileage: backendResult?.mileage || "12,000/yr",
+        deposit: backendResult?.deposit || "N/A",
+        excessMileage: backendResult?.excessMileage || "N/A",
       },
+      analysis: marketAnalysis, // NEW: Milestone 4 Deal Rating
       chatHistory: [
         { 
           sender: "ai", 
-          text: `Analysis complete for **${file.name}**.`, 
+          text: `I've finished analyzing **${file.name}**. I've also performed a market check—take a look at the summary panel for the deal rating!`, 
           time: currentTime 
         },
       ],
     };
-    setHistory([newEntry, ...history]);
+
+    const updatedHistory = [newEntry, ...history];
+    setHistory(updatedHistory);
     setActiveContract(newEntry);
     setView("chat");
     setIsSummaryOpen(true);
   };
 
-  const sendMessage = (text) => {
+  const sendMessage = async (text) => {
     if (!activeContract) return;
 
-    const currentTime = new Date().toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+    const currentTime = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    const userMsg = { sender: "user", text: text, time: currentTime };
 
-    const userMsg = {
-      sender: "user",
-      text: text,
-      time: currentTime,
-    };
-
-    // Update history with User Message
     const historyWithUser = history.map((c) =>
-      c.id === activeContract.id
-        ? { ...c, chatHistory: [...c.chatHistory, userMsg] }
-        : c,
+      c.id === activeContract.id ? { ...c, chatHistory: [...c.chatHistory, userMsg] } : c
     );
-
     setHistory(historyWithUser);
     setActiveContract(historyWithUser.find((c) => c.id === activeContract.id));
 
-    // Simulate AI response
-    setTimeout(() => {
-      const aiTime = new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
+    try {
+      const response = await fetch("http://localhost:8000/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          message: text,
+          contract_id: activeContract.id 
+        })
       });
+
+      if (!response.ok) throw new Error("Server error");
+      const data = await response.json();
 
       const aiMsg = {
         sender: "ai",
-        text: "I've analyzed that specific clause for you. Is there anything else you'd like to clarify?",
-        time: aiTime,
+        text: data.reply, 
+        time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
       };
 
-      setHistory((prevHistory) => {
-        const finalHistory = prevHistory.map((c) =>
-          c.id === activeContract.id
-            ? { ...c, chatHistory: [...c.chatHistory, aiMsg] }
-            : c,
+      setHistory((prev) => {
+        const finalHistory = prev.map((c) =>
+          c.id === activeContract.id ? { ...c, chatHistory: [...c.chatHistory, aiMsg] } : c
         );
-        
-        // Sync the active contract state after AI replies
         const updatedActive = finalHistory.find((c) => c.id === activeContract.id);
         setActiveContract(updatedActive);
-        
         return finalHistory;
       });
-    }, 1000);
+
+    } catch (error) {
+      console.error("Chat Error:", error);
+      const errorMsg = {
+        sender: "ai",
+        text: "I'm having trouble connecting to my brain (the server). Please check your connection.",
+        time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      };
+      setHistory((prev) => prev.map((c) =>
+        c.id === activeContract.id ? { ...c, chatHistory: [...c.chatHistory, errorMsg] } : c
+      ));
+    }
   };
 
   return (
     <div className="app-container">
-      {/* Overlay for mobile sidebar */}
       {isSidebarOpen && (
-        <div
-          className="sidebar-overlay"
-          onClick={() => setIsSidebarOpen(false)}
-        />
+        <div className="sidebar-overlay" onClick={() => setIsSidebarOpen(false)} />
       )}
 
-      <div
-        className={`main-layout-wrapper ${isSummaryOpen ? "blur-active" : ""} ${isSidebarOpen ? "sidebar-open" : ""}`}
-      >
+      <div className={`main-layout-wrapper ${isSummaryOpen ? "blur-active" : ""} ${isSidebarOpen ? "sidebar-open" : ""}`}>
         <div className="sidebar-container">
           <Sidebar
             history={filteredHistory}
@@ -206,12 +220,10 @@ function App() {
 
       {isSummaryOpen && activeContract && (
         <>
-          <div
-            className="summary-backdrop"
-            onClick={() => setIsSummaryOpen(false)}
-          />
+          <div className="summary-backdrop" onClick={() => setIsSummaryOpen(false)} />
           <SummaryPanel
             summary={activeContract.summary}
+            analysis={activeContract.analysis} // Pass the deal rating here
             carName={activeContract.carName}
             onClose={() => setIsSummaryOpen(false)}
           />

@@ -73,3 +73,19 @@
 .green { background: #22c55e; }
 .blue { background: var(--primary); }
 .orange { background: #f59e0b; }
+
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.drop-zone.uploading {
+  cursor: wait;
+  border-color: #21CAB9;
+  background: rgba(33, 202, 185, 0.05);
+}
