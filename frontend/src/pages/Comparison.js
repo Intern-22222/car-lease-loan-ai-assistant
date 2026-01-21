@@ -1,95 +1,158 @@
 import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
-import { calculateFairnessScore, checkSimilarity } from '../utils/fairnessLogic';
+import axios from 'axios';
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
+import Chatbot from '../components/Chatbot'; // <--- IT IS BACK!
+
+// Logic Helpers
+const calculateFairnessScore = (contract) => {
+  let score = 10;
+  if (parseFloat(contract.apr) > 5.0) score -= 2;
+  if (parseInt(contract.terminationFee) > 400) score -= 1.5;
+  return Math.max(0, score).toFixed(1);
+};
+
+const checkSimilarity = (c1, c2) => c1?.vehicle === c2?.vehicle;
 
 function Comparison() {
-  // MOCK DATA (Since we don't have the backend connected yet)
-  const contractA = {
-    id: 1, vehicle: "Toyota Camry 2024", price: 450, apr: 4.5, terminationFee: 350
-  };
-  const contractB = {
-    id: 2, vehicle: "Toyota Camry 2024", price: 420, apr: 3.9, terminationFee: 300
-  };
+  const location = useLocation();
+  const apiData = location.state?.data || {};
+  const contractA = apiData.contract_a;
+  const contractB = apiData.contract_b;
 
-  const isSimilar = checkSimilarity(contractA, contractB);
-  const scoreA = calculateFairnessScore(contractA);
-  const scoreB = calculateFairnessScore(contractB);
+  const scoreA = contractA ? calculateFairnessScore(contractA) : 0;
+  const scoreB = contractB ? calculateFairnessScore(contractB) : 0;
+  const isDualMode = contractA && contractB;
 
-  // Email Modal State
+  // Email State
   const [showEmailModal, setShowEmailModal] = useState(false);
+  const [emailStatus, setEmailStatus] = useState("");
+
+  const targetScore = isDualMode ? (scoreA > scoreB ? scoreA : scoreB) : (scoreA || scoreB);
+
+  const handleSendEmail = async (emailBody) => {
+    setEmailStatus("sending");
+    try {
+      await axios.post("http://127.0.0.1:8000/send-email", { body: emailBody });
+      setEmailStatus("sent");
+      setTimeout(() => { setShowEmailModal(false); setEmailStatus(""); }, 2000);
+    } catch (error) {
+      console.error(error);
+      setEmailStatus("error");
+    }
+  };
+
+  const getScoreColor = (score) => {
+    if (score >= 8.5) return "#28a745"; 
+    if (score >= 5.0) return "#ffc107"; 
+    return "#dc3545"; 
+  };
 
   return (
     <div>
       <Navbar />
-      <div style={{ padding: '40px' }}>
-        <h1>📊 Contract Analysis & Comparison</h1>
+      <div style={{ padding: '40px', paddingBottom: '100px' }}>
+        <h1 style={{ textAlign: 'center' }}>
+          {isDualMode ? "📊 Contract Comparison" : "📄 Single Contract Analysis"}
+        </h1>
 
-        <div style={{ display: 'flex', gap: '20px', marginTop: '20px' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '50px', marginTop: '30px' }}>
           
           {/* CONTRACT A CARD */}
-          <div style={styles.card}>
-            <h2>Contract A</h2>
-            <h3>Score: <span style={{ color: scoreA >= 8.5 ? 'green' : 'orange' }}>{scoreA}/10</span></h3>
-            <p>Vehicle: {contractA.vehicle}</p>
-            <p>APR: {contractA.apr}%</p>
-            <p>Monthly: ${contractA.price}</p>
-          </div>
+          {contractA && (
+            <div style={styles.card}>
+              <h2>Contract A</h2>
+              <div style={{ width: '150px', margin: '20px auto' }}>
+                <CircularProgressbar 
+                  value={scoreA} 
+                  maxValue={10} 
+                  text={`${scoreA}/10`} 
+                  styles={buildStyles({
+                    pathColor: getScoreColor(scoreA),
+                    textColor: '#333',
+                    trailColor: '#d6d6d6',
+                    textSize: '16px'
+                  })}
+                />
+              </div>
+              <p>Vehicle: <strong>{contractA.vehicle}</strong></p>
+              <p>Monthly: ${contractA.price}</p>
+            </div>
+          )}
 
-          {/* VS BADGE */}
-          <div style={{ alignSelf: 'center', fontSize: '30px', fontWeight: 'bold' }}>VS</div>
+          {isDualMode && <div style={{ alignSelf: 'center', fontSize: '30px', fontWeight: 'bold' }}>VS</div>}
 
           {/* CONTRACT B CARD */}
-          <div style={styles.card}>
-            <h2>Contract B</h2>
-            <h3>Score: <span style={{ color: scoreB >= 8.5 ? 'green' : 'orange' }}>{scoreB}/10</span></h3>
-            <p>Vehicle: {contractB.vehicle}</p>
-            <p>APR: {contractB.apr}%</p>
-            <p>Monthly: ${contractB.price}</p>
-          </div>
+          {contractB && (
+            <div style={styles.card}>
+              <h2>Contract B</h2>
+              <div style={{ width: '150px', margin: '20px auto' }}>
+                <CircularProgressbar 
+                  value={scoreB} 
+                  maxValue={10} 
+                  text={`${scoreB}/10`} 
+                  styles={buildStyles({
+                    pathColor: getScoreColor(scoreB),
+                    textColor: '#333',
+                    trailColor: '#d6d6d6',
+                    textSize: '16px'
+                  })}
+                />
+              </div>
+              <p>Vehicle: <strong>{contractB.vehicle}</strong></p>
+              <p>Monthly: ${contractB.price}</p>
+            </div>
+          )}
         </div>
 
-        {/* LOGIC: SIMILARITY CHECK */}
+        {/* INSIGHT BOX */}
         <div style={styles.insightBox}>
           <h3>💡 AI Insight</h3>
-          {isSimilar ? (
+          {isDualMode ? (
             <p>
-              These contracts are for the <strong>same vehicle</strong>. 
-              <strong> Contract B</strong> is the better deal because it saves you 
-              <strong> ${contractA.price - contractB.price}/month</strong>.
+              Comparing two offers... Contract <strong>{scoreA > scoreB ? "A" : "B"}</strong> has the better Fairness Score.
             </p>
           ) : (
-            <p>
-              These are <strong>different vehicles</strong>. Compare the features closely 
-              rather than just the price.
-            </p>
+            <p>Fairness Score: <strong>{targetScore}/10</strong>. {targetScore < 8.5 ? "Consider negotiating the APR." : "Terms look fair!"}</p>
           )}
         </div>
 
         {/* NEGOTIATE BUTTON */}
-        <button onClick={() => setShowEmailModal(true)} style={styles.negotiateBtn}>
-          📧 Negotiate with Dealer (Auto-Draft)
-        </button>
+        <div style={{ textAlign: 'center' }}>
+          <button onClick={() => setShowEmailModal(true)} style={styles.negotiateBtn}>
+            📧 Open Negotiation Generator
+          </button>
+        </div>
 
-        {/* HIDDEN EMAIL MODAL */}
+        {/* EMAIL MODAL */}
         {showEmailModal && (
           <div style={styles.modalOverlay}>
             <div style={styles.modal}>
-              <h3>Draft Email to Dealer</h3>
-              <p>We generated this based on the Fairness Score.</p>
+              <h3>📩 Auto-Draft Negotiation Email</h3>
               <textarea 
-                rows="6" 
-                style={{ width: '100%', marginBottom: '10px' }}
-                defaultValue={`Hello,\n\nI noticed Contract B has a Fairness Score of ${scoreB}, which is higher than yours (${scoreA}). Can you match their APR of ${contractB.apr}%?\n\nBest, Client`}
+                id="email-text"
+                rows="8" 
+                style={{ width: '100%', marginBottom: '10px', padding: '10px' }}
+                defaultValue={`Subject: Question about Lease APR\n\nHello,\n\nI analyzed the lease contract for the ${contractA?.vehicle || 'Car'}. The Fairness Score is ${targetScore}/10.\n\nCan we discuss the APR?\n\nBest,\n[Your Name]`}
               />
               <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
                 <button onClick={() => setShowEmailModal(false)}>Cancel</button>
-                <button style={{ backgroundColor: '#28a745', color: 'white' }} onClick={() => alert("Email Sent via Backend!")}>
-                  Send Secretly 🚀
+                <button 
+                  style={{ backgroundColor: emailStatus === "sent" ? 'grey' : '#28a745', color: 'white' }} 
+                  onClick={() => handleSendEmail(document.getElementById('email-text').value)}
+                  disabled={emailStatus === "sent"}
+                >
+                  {emailStatus === "sending" ? "Sending..." : "Send Secretly 🚀"}
                 </button>
               </div>
             </div>
           </div>
         )}
+
+        {/* --- THE CHATBOT IS HERE --- */}
+        <Chatbot />
 
       </div>
     </div>
@@ -97,11 +160,11 @@ function Comparison() {
 }
 
 const styles = {
-  card: { border: '1px solid #ddd', padding: '20px', borderRadius: '10px', width: '40%', boxShadow: '0 4px 8px rgba(0,0,0,0.1)' },
-  insightBox: { marginTop: '30px', padding: '20px', backgroundColor: '#e3f2fd', borderRadius: '8px', borderLeft: '5px solid #2196f3' },
-  negotiateBtn: { marginTop: '20px', padding: '15px', backgroundColor: '#6f42c1', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer', fontSize: '16px' },
-  modalOverlay: { position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center' },
-  modal: { backgroundColor: 'white', padding: '30px', borderRadius: '10px', width: '500px' }
+  card: { border: '1px solid #ddd', padding: '20px', borderRadius: '10px', width: '300px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)', textAlign: 'center', backgroundColor: '#fff' },
+  insightBox: { marginTop: '30px', marginBottom: '20px', padding: '20px', backgroundColor: '#e3f2fd', borderRadius: '8px', borderLeft: '5px solid #2196f3' },
+  negotiateBtn: { padding: '15px 30px', backgroundColor: '#6f42c1', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '16px', fontWeight: 'bold' },
+  modalOverlay: { position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.6)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 },
+  modal: { backgroundColor: 'white', padding: '30px', borderRadius: '10px', width: '500px', boxShadow: '0 10px 25px rgba(0,0,0,0.3)' }
 };
 
 export default Comparison;

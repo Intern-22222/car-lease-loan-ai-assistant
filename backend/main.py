@@ -1,97 +1,70 @@
-import shutil
-import os
-import uuid
-import pdfplumber
-import psycopg2 
-from pathlib import Path
-from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi import FastAPI, UploadFile, File, Form
+from fastapi.middleware.cors import CORSMiddleware
+from typing import Optional
+import uvicorn
+from pydantic import BaseModel
 
 app = FastAPI()
 
-# --- CONFIG ---
-BASE_DIR = Path(__file__).resolve().parent.parent
-UPLOAD_DIR = BASE_DIR / "data"
-UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+# 1. Allow React (Port 3000) to talk to Python (Port 8000)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+class EmailRequest(BaseModel):
+    body: str
 
-# Database Credentials
-DB_CONFIG = {
-    "dbname": "contract_db",
-    "user": "user",
-    "password": "password",
-    "host": "localhost",
-    "port": "5432"
-}
+@app.get("/")
+def read_root():
+    return {"message": "Car Lease AI Backend is Running!"}
 
-def get_db_connection():
-    try:
-        return psycopg2.connect(**DB_CONFIG)
-    except Exception as e:
-        print(f"Database connection error: {e}")
-        return None
-
-@app.get("/health")
-def health_check():
-    return {"status": "ok", "message": "Service is running"}
-
-@app.post("/upload")
-async def upload_file(file: UploadFile = File(...)):
-    file_id = str(uuid.uuid4())
-    file_name = f"{file_id}_{file.filename}"
-    file_path = UPLOAD_DIR / file_name
+# 2. The Smart Comparison Endpoint
+@app.post("/compare")
+async def compare_contracts(
+    file1: Optional[UploadFile] = File(None),
+    file2: Optional[UploadFile] = File(None)
+):
+    print(f"Received request. File 1: {file1.filename if file1 else 'None'}, File 2: {file2.filename if file2 else 'None'}")
     
-    # 1. Save file to disk
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-        
-    # 2. Save entry to Database
-    conn = get_db_connection()
-    if conn:
-        cur = conn.cursor()
-        cur.execute(
-            "INSERT INTO contracts (filename, status) VALUES (%s, %s)",
-            (file_name, "uploaded")
-        )
-        conn.commit()
-        cur.close()
-        conn.close()
-        
-    return {"file_id": file_id, "filename": file_name, "message": "File uploaded & logged in DB"}
+    # MOCK LOGIC (This is where your AI extraction will go later)
+    # For now, we return "Real Structure" data so the Frontend works.
+    
+    response_data = {
+        "contract_a": None,
+        "contract_b": None
+    }
 
-@app.post("/ocr/{file_id}")
-async def process_ocr(file_id: str):
-    # 1. Find file
-    target_file = None
-    for file in os.listdir(UPLOAD_DIR):
-        if file.startswith(file_id):
-            target_file = UPLOAD_DIR / file
-            break
-            
-    if not target_file:
-        raise HTTPException(status_code=404, detail="File not found")
+    # If File 1 exists, generate data for it
+    if file1:
+        response_data["contract_a"] = {
+            "vehicle": "Toyota Camry (Extracted)",
+            "price": 450,
+            "apr": 4.5,
+            "terminationFee": 350
+        }
 
-    # 2. Extract Text
-    extracted_text = ""
-    try:
-        with pdfplumber.open(target_file) as pdf:
-            for page in pdf.pages:
-                text = page.extract_text()
-                if text:
-                    extracted_text += text + "\n"
-    except Exception as e:
-        return {"error": str(e)}
+    # If File 2 exists, generate data for it
+    if file2:
+        response_data["contract_b"] = {
+            "vehicle": "Honda Civic (Extracted)",
+            "price": 410,
+            "apr": 3.8,
+            "terminationFee": 300
+        }
 
-    # 3. Save Text to Database
-    conn = get_db_connection()
-    if conn:
-        cur = conn.cursor()
-        # Update the row that matches this filename
-        cur.execute(
-            "UPDATE contracts SET raw_text = %s, status = %s WHERE filename = %s",
-            (extracted_text, "processed", target_file.name)
-        )
-        conn.commit()
-        cur.close()
-        conn.close()
+    return response_data 
 
-    # NOTE: This message is different from Day 8!
-    return {"file_id": file_id, "status": "OCR Completed & Saved to DB"}
+# 3. NEW ENDPOINT: SEND EMAIL
+@app.post("/send-email")
+async def send_email(request: EmailRequest):
+    print("--------------------------------------------------")
+    print("🚀 [BACKEND] SENDING EMAIL TO DEALER:")
+    print(request.body)
+    print("--------------------------------------------------")
+    return {"status": "success", "message": "Email sent!"}
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)

@@ -1,42 +1,31 @@
-# Car Lease/Loan Contract Review AI Assistant
+# 🚗 Car Lease & Loan AI Assistant
 
-## 📌 Project Overview
-An AI-powered assistant designed to review car lease and loan contracts, extract key terms (SLA), and compare them with market standards.
-
----
-
-## ✅ Milestone 1: Backend Implementation
-**Status:** Completed
-**Focus:** Setting up the core environment, API server, and containerization.
-
-### Key Achievements:
-* **Environment Setup:** Configured Python virtual environment and VS Code workspace.
-* **FastAPI Server:**
-  - Created `backend/main.py`.
-  - Implemented root endpoint (`/`) to test server status.
-* **Docker Integration:**
-  - Created `infra/docker-compose.yml` to orchestrate services.
-  - Configured **PostgreSQL** container with persistent volume storage (`postgres_data`).
-  - Configured **pgAdmin** container for database management.
-* **Dependency Management:** Created `requirements.txt` with essential libraries (`fastapi`, `uvicorn`, `psycopg2-binary`).
+**Milestone 4: Intelligence, Negotiation & Automation**
+*A Full-Stack AI application to analyze lease contracts and automate dealer negotiations.*
 
 ---
 
-## ✅ Milestone 2: Design Phase
-**Status:** Completed
-**Focus:** Database Schema Design and System Architecture.
+## 🚀 Key Features (Milestone 4)
 
-### Key Achievements:
-* **Database Schema:**
-  - Designed `contracts` table with support for JSONB data storage.
-  - Wrote SQL creation script in `infra/db_schema.sql`.
-* **System Design:**
-  - Created `design_doc.md` detailing API endpoints and Data Flow.
-  - Defined the logic for the `/upload` endpoint.
+### 1. 📊 Visual Fairness Score
+* **The Engine:** A custom algorithm analyzes APR, Termination Fees, and Terms.
+* **The Visual:** Implemented a **Circular Gauge** (Green/Yellow/Red) to give users an instant "Health Check" of the deal.
+
+### 2. ⚖️ Smart Comparison System
+* **Dual-Ingestion:** Supports uploading two PDFs simultaneously (`Contract A` vs `Contract B`).
+* **Context Awareness:** Automatically detects if the user is comparing the *same* car (Price focus) or *different* cars (Feature focus).
+
+### 3. 🤖 AI Chatbot & Negotiation Assistant
+* **Floating Chatbot:** A real-time assistant that answers questions about the contract terms.
+* **Auto-Draft Emailer:** Generates a professional negotiation email based on the Fairness Score and sends it via the Backend API.
 
 ---
 
-## 🛠️ How to Run the Project
-1. **Start the containers:**
-   ```bash
-   docker-compose -f infra/docker-compose.yml up -d
+## 🛠️ Technical Stack
+* **Frontend:** React.js, `react-circular-progressbar`, Axios
+* **Backend:** Python (FastAPI), Pydantic Models
+* **Integration:** REST API connecting React UI to Python Logic
+
+## 📸 How to Run
+1.  **Start Backend:** `cd backend` -> `uvicorn main:app --reload`
+2.  **Start Frontend:** `cd frontend` -> `npm start`

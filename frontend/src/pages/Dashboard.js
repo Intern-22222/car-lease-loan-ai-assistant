@@ -1,63 +1,57 @@
 import React from 'react';
 import Navbar from '../components/Navbar';
+import { useNavigate } from 'react-router-dom'; // Import navigation tool
 
 function Dashboard() {
-  // MOCK DATA: This simulates what the AI will eventually send us!
-  const mockData = {
-    contractName: "Toyota_Lease_Agreement_2024.pdf",
-    extractedDate: "2025-01-09",
-    apr: "4.5%",
-    monthlyPayment: "$450.00",
-    leaseTerm: "36 Months",
-    mileageLimit: "12,000 miles/year",
-    terminationFee: "$350.00"
-  };
+  const navigate = useNavigate(); // Activate navigation
 
   return (
     <div>
       <Navbar />
       <div style={{ padding: '40px' }}>
-        <h1>📊 SLA Summary Dashboard</h1>
-        <p>Showing latest analysis for: <strong>{mockData.contractName}</strong></p>
-
-        {/* The Cards Layout */}
-        <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', marginTop: '30px' }}>
-          
-          <SummaryCard title="Monthly Payment" value={mockData.monthlyPayment} color="#007bff" />
-          <SummaryCard title="APR (Interest)" value={mockData.apr} color="#28a745" />
-          <SummaryCard title="Lease Term" value={mockData.leaseTerm} color="#fd7e14" />
-          <SummaryCard title="Mileage Limit" value={mockData.mileageLimit} color="#6c757d" />
         
+        {/* HEADER SECTION */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h1>📊 Your Financial Dashboard</h1>
+          
+          {/* NEW BUTTON: Links M3 Dashboard to M4 Tools */}
+          <button 
+            onClick={() => navigate('/upload')} 
+            style={styles.newBtn}
+          >
+            ➕ Start New Fairness Check
+          </button>
         </div>
 
-        {/* Detailed Section */}
-        <div style={{ marginTop: '40px', borderTop: '1px solid #ccc', paddingTop: '20px' }}>
-          <h3>⚠️ Important Terms & Fees</h3>
-          <ul>
-            <li>Early Termination Fee: <strong>{mockData.terminationFee}</strong></li>
-            <li>Processed Date: {mockData.extractedDate}</li>
-          </ul>
+        {/* --- OLD MILESTONE 3 CONTENT BELOW --- */}
+        <p>Showing latest analysis for: <strong>Toyota_Lease_Agreement_2024.pdf</strong></p>
+
+        <div style={{ display: 'flex', gap: '20px', marginTop: '20px' }}>
+          <div style={styles.card}>
+            <h3>Monthly Payment</h3>
+            <h1>$450.00</h1>
+          </div>
+          <div style={styles.card}>
+            <h3>APR (Interest)</h3>
+            <h1>4.5%</h1>
+          </div>
+          <div style={styles.card}>
+            <h3>Lease Term</h3>
+            <h1>36 Months</h1>
+          </div>
         </div>
+
       </div>
     </div>
   );
 }
 
-// A reusable small component for the cards
-function SummaryCard({ title, value, color }) {
-  return (
-    <div style={{ 
-      border: `2px solid ${color}`, 
-      padding: '20px', 
-      borderRadius: '10px', 
-      width: '200px',
-      textAlign: 'center',
-      backgroundColor: '#f8f9fa'
-    }}>
-      <h4 style={{ color: color, margin: '0 0 10px 0' }}>{title}</h4>
-      <h2 style={{ margin: 0 }}>{value}</h2>
-    </div>
-  );
-}
+const styles = {
+  card: { border: '1px solid #ddd', padding: '20px', borderRadius: '10px', width: '200px', textAlign: 'center', boxShadow: '0 2px 5px rgba(0,0,0,0.1)' },
+  newBtn: { 
+    backgroundColor: '#28a745', color: 'white', padding: '12px 24px', 
+    border: 'none', borderRadius: '8px', fontSize: '16px', cursor: 'pointer' 
+  }
+};
 
 export default Dashboard;
