@@ -68,3 +68,97 @@ Setup **Frontend, Backend, and OCR service**
 - Frontend is fully connected to backend APIs and is **working correctly**
 
 ## 📌 Milestone 2 – Completed ✅
+
+## 📌 Milestone 3: Frontend Structure & Navigation
+
+### 🎯 Objective
+The objective of Milestone 3 was to design and implement the core **ReactJS frontend structure**, including user authentication screens and smooth navigation between key application sections.
+
+---
+
+### ✅ Tasks Completed
+
+#### 1. ReactJS Application Structure
+- Created a scalable **ReactJS project structure**.
+- Implemented a **Login screen** for user authentication.
+- Developed a **Document Upload screen** to allow users to upload contract PDF files.
+- Applied reusable components and clean folder organization.
+
+#### 2. Navigation & Routing
+- Implemented basic navigation between:
+  - Login screen
+  - Dashboard
+  - Document upload section
+- Ensured smooth screen transitions using React routing logic.
+- Maintained application state to control authenticated access.
+
+---
+
+### 🧪 Testing & Validation
+- Verified successful navigation between all screens.
+- Tested login flow and upload screen rendering.
+- Ensured UI components load correctly without errors.
+
+---
+
+### 🏁 Outcome
+Milestone 3 successfully established a functional and user-friendly frontend foundation, enabling users to log in, upload documents, and navigate seamlessly across the application.
+
+---
+
+
+## 📌 Milestone 4: Fairness Validation & Logic Verification
+
+### 🎯 Objective
+The goal of Milestone 4 was to validate the end-to-end logic of the AI system by ensuring that the fairness scoring, hidden fee detection, and negotiation assistant outputs are accurate, consistent, and reliable.
+
+---
+
+### ✅ Tasks Completed
+
+#### 1. Fairness Score Algorithm Validation
+- Verified the fairness score calculation by combining:
+  - **Risk factors** (penalties, termination clauses, interest rate risks)
+  - **Price-related factors** (hidden fees, additional charges)
+- Ensured the final score is normalized on a **0–100 scale**.
+- Classified contracts into ratings such as **Fair**, **Moderate**, or **Unfair** based on thresholds.
+
+#### 2. Hidden Fee Extraction Verification
+- Validated LLM prompt outputs to ensure:
+  - Hidden or junk fees are extracted accurately
+  - Output follows a **structured JSON format**
+- Confirmed consistency across different contract samples.
+
+#### 3. Negotiation Assistant Output Testing
+- Tested auto-generated counter-negotiation emails.
+- Ensured emails are:
+  - Context-aware
+  - Professional and polite
+  - Aligned with detected unfair clauses and fees
+
+#### 4. End-to-End Logic Validation
+- Tested complete workflow:
+  1. PDF upload
+  2. OCR text extraction
+  3. Clause and fee analysis
+  4. Fairness score generation
+  5. Negotiation email creation
+- Verified correct data flow between **React frontend** and **Flask backend** via REST APIs.
+
+---
+
+### 🧪 Testing & Validation
+- Manual test cases with multiple contract samples
+- Edge-case testing for:
+  - Missing data
+  - Extremely high-risk clauses
+  - No hidden fee scenarios
+- API validation using Postman
+
+---
+
+### 🏁 Outcome
+Milestone 4 successfully validated the system’s logic, ensuring the AI assistant produces accurate fairness scores, reliable fee detection, and meaningful negotiation recommendations, making the solution production-ready.
+
+---
+
