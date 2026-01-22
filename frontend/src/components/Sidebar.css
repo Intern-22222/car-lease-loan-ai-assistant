@@ -1,70 +1,70 @@
+/* --- Sidebar Container --- */
 .sidebar {
   width: 280px; 
-  height:100%;
-  border-right: 1px solid var(--border);
+  height: 100vh;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   flex-direction: column;
-  padding: 24px 16px; 
-  background-color: #080A0C;
-  box-sizing: border-box; /* Ensures search bar stays inside */
+  padding: 20px 14px; 
+  background-color: #080A0C; /* Deep black background */
+  box-sizing: border-box;
+  color: #ffffff;
 }
 
+/* --- HEADER & LOGO --- */
 .sidebar-header {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  margin-bottom: 24px;
-  padding-bottom: 15px;
-  border-bottom: 1px solid var(--border);
+  gap: 12px;
+  margin-bottom: 20px;
 }
 
-/* Logo with background matching delete button style */
 .logo {
   display: flex;
   align-items: center;
-  gap: 12px;
-  font-size: 1.4rem; /* Increased for better visibility */
-  font-weight: 700;
-  color: #fff;
-  padding: 4px; 
-  width: fit-content; 
-  margin-bottom: 8px; 
+  gap: 10px;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #ffffff;
+  padding: 4px 8px;
+  letter-spacing: -0.5px;
 }
 
 .logo-icon {
-  color: var(--primary); /* Uses #21CAB9 */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(33, 202, 185, 0.15); /* Background style like buttons */
-  padding: 6px; /* Increased padding so icon isn't cramped */
-  border-radius: 12px; 
+  color: var(--primary); 
+  background: rgba(33, 202, 185, 0.12);
+  padding: 6px;
+  border-radius: 10px;
+  flex-shrink: 0;
 }
 
 .new-chat-btn {
   width: 100%;
-  background: var(--primary); /* #21CAB9 */
-  color: #050505; 
+  background: var(--primary);
+  color: #000000; 
   border: none;
-  padding: 12px;
-  border-radius: 12px; 
-  font-weight: 600;
+  padding: 10px 12px; 
+  border-radius: 8px; 
+  font-weight: 700; 
+  font-size: 0.85rem; 
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  transition: opacity 0.2s, transform 0.1s;
+  gap: 8px; 
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.new-chat-btn:hover { opacity: 0.9; }
-.new-chat-btn:active { transform: scale(0.98); }
+.new-chat-btn:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(33, 202, 185, 0.3);
+}
 
+/* --- SEARCH INPUT --- */
 .search-container {
   position: relative;
-  margin-bottom: 24px;
-  width: 100%; 
-  box-sizing: border-box;
+  margin: 0 4px 16px 4px;
 }
 
 .search-icon {
@@ -72,111 +72,165 @@
   left: 12px; 
   top: 50%;
   transform: translateY(-50%);
-  color: var(--text-dim);
-  pointer-events: none;
+  color: #636e72;
 }
 
 .search-container input {
   width: 100%;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 10px 12px 10px 36px; 
-  color: var(--text-main);
+  background: #121417; 
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 10px 12px 10px 38px; 
+  color: #ffffff;
   font-size: 14px;
   outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  box-sizing: border-box; /* CRITICAL for width */
 }
 
 .search-container input:focus {
-  border-color: var(--text-dim);
-  box-shadow: 0 0 0 2px rgba(139, 148, 158, 0.1);
+  border-color: var(--primary);
 }
 
+/* --- TOOLBOX SECTION --- */
+.toolbox {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 24px;
+}
+
+.section-title {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #636e72;
+  font-weight: 800;
+  margin: 16px 0 8px 12px;
+  opacity: 0.7;
+}
+
+.tool-btn {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: #a0a0a0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent; /* Placeholder for active state */
+}
+
+.tool-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+}
+
+/* ACTIVE TOOL STATE */
+.tool-btn.active {
+  background: rgba(33, 202, 185, 0.15); /* Primary tint */
+  color: var(--primary);
+  border-left: 3px solid var(--primary);
+  border-radius: 2px 8px 8px 2px;
+}
+
+.tool-btn.active svg {
+  color: var(--primary);
+}
+
+/* --- HISTORY LIST --- */
 .history-list {
   flex: 1;
   overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding-right: 4px; 
+  padding-right: 4px;
 }
 
 .history-list::-webkit-scrollbar { width: 4px; }
 .history-list::-webkit-scrollbar-thumb {
-  background: var(--border);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
 }
 
 .history-item {
-  padding: 12px;
-  border-radius: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
   cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 4px;
   transition: all 0.2s ease;
-  border: 1px solid transparent;
 }
 
-.history-item:hover { background: var(--bg-card); }
+.history-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
 
-/* Active state with your specific #21CAB9 teal */
+/* ACTIVE HISTORY STATE */
 .history-item.active {
-  background: rgba(33, 202, 185, 0.12); 
-  border: 1px solid rgba(33, 202, 185, 0.3);
+  background: rgba(33, 202, 185, 0.1);
+  border-right: 2px solid var(--primary);
 }
 
 .item-info {
   flex: 1;
-  min-width: 0; 
+  min-width: 0;
 }
 
 .item-car {
   margin: 0;
-  font-weight: 600; /* Bolder for easier recognition */
-  font-size: 14px;
-  color: var(--text-main);
+  font-weight: 500;
+  font-size: 13.5px;
+  color: #e0e0e0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* User-friendly Highlight: Active item text becomes teal */
 .history-item.active .item-car {
   color: var(--primary);
+  font-weight: 600;
 }
 
-.item-file, .item-date {
-  margin: 2px 0 0 0;
-  font-size: 12px;
-  color: var(--text-dim);
+.item-date {
+  font-size: 11px;
+  color: #636e72;
+  margin-top: 2px;
 }
 
+/* DELETE BUTTON */
 .delete-btn {
   background: transparent;
   border: none;
-  color: var(--text-dim);
+  color: #636e72;
   cursor: pointer;
   padding: 6px;
   border-radius: 6px;
   opacity: 0;
-  transition: all 0.2s;
-  margin-left: 8px;
+  transition: all 0.2s ease;
 }
 
-.history-item:hover .delete-btn { opacity: 1; }
+.history-item:hover .delete-btn {
+  opacity: 0.6;
+}
+
 .delete-btn:hover {
-  color: #ff4d4d;
-  background: rgba(255, 77, 77, 0.1);
+  opacity: 1 !important;
+  background: rgba(255, 68, 68, 0.15);
+  color: #ff4444;
 }
 
+/* --- FOOTER --- */
 .sidebar-footer {
   margin-top: auto; 
-  padding-top: 20px;
-  border-top: 1px solid var(--border);
-  font-size: 12px;
-  color: var(--text-dim);
-  text-align: center;
+  padding: 16px 8px 0 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 11px;
+  color: #636e72;
+  font-weight: 600;
+  text-transform: uppercase;
 }
