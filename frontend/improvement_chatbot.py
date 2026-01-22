@@ -602,29 +602,37 @@ if analyze_button:
                     else:
                         st.success("✅ All attributes are present in both contracts!")
                     
-                    # Download option - MODIFIED to only include junk/hidden fees
+                    # CHANGE 1: Download option - Modified to ONLY show junk/hidden fees
                     st.markdown("---")
-                    st.subheader("💾 Download Results")
+                    st.subheader("💾 Download Junk/Hidden Fees Report")
+                    
+                    # Filter hidden_fees to only include junk fees (is_junk_fee: true)
+                    contract1_junk_hidden_fees = [
+                        fee for fee in analysis1.get('hidden_fees', [])
+                        if fee.get('is_junk_fee', False)
+                    ]
+                    
+                    contract2_junk_hidden_fees = [
+                        fee for fee in analysis2.get('hidden_fees', [])
+                        if fee.get('is_junk_fee', False)
+                    ]
                     
                     results = {
                         "contract_1": {
-                            "fairness_score": convert_to_native_types(score1),
-                            "junk_fees": contract1_data['junk_fees'],
-                            "hidden_fees": analysis1.get('hidden_fees', [])
+                            "junk_fees_identified": contract1_data['junk_fees'],
+                            "hidden_junk_fees": contract1_junk_hidden_fees
                         },
                         "contract_2": {
-                            "fairness_score": convert_to_native_types(score2),
-                            "junk_fees": contract2_data['junk_fees'],
-                            "hidden_fees": analysis2.get('hidden_fees', [])
+                            "junk_fees_identified": contract2_data['junk_fees'],
+                            "hidden_junk_fees": contract2_junk_hidden_fees
                         },
-                        "market_benchmarks": market_benchmarks,
                         "recommendation": f"Contract {st.session_state['recommended_contract']} is fairer"
                     }
                     
                     st.download_button(
                         label="📥 Download Junk/Hidden Fees Report (JSON)",
                         data=json.dumps(results, indent=2),
-                        file_name="contract_fees_report.json",
+                        file_name="contract_junk_fees_report.json",
                         mime="application/json"
                     )
                     
@@ -757,14 +765,8 @@ if 'analysis1' in st.session_state and 'analysis2' in st.session_state:
                 
                 # Display the email
                 st.subheader("📧 Generated Email")
-                st.text_area(
-                    "Email Content",
-                    value=email_content,
-                    height=400,
-                    key="generated_email"
-                )
                 
-                # Add timestamp and metadata to email
+                # Add timestamp and metadata to email for display only
                 timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 email_with_metadata = f"""{'='*80}
 CONTRACT NEGOTIATION EMAIL
@@ -784,16 +786,18 @@ Identified Issues: {', '.join(selected_contract_data['junk_fees']) if selected_c
 {'='*80}
 """
                 
-                # Download button for the email
-                st.download_button(
-                    label="📥 Download Email as .txt",
-                    data=email_with_metadata,
-                    file_name=f"negotiation_email_contract_{contract_to_negotiate}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
-                    mime="text/plain",
-                    use_container_width=True
+                st.text_area(
+                    "Email Content",
+                    value=email_with_metadata,
+                    height=400,
+                    key="generated_email"
                 )
                 
-                st.info("💡 **Next Steps:** Review the email, make any personal edits, and send it to your dealer!")
+                # CHANGE 2: Use Streamlit's code block with copy button for the email content
+                st.markdown("### 📋 Copy Email Content")
+                st.code(email_content, language=None)
+                
+                st.info("💡 **Next Steps:** Click the copy icon (top-right of the box above) to copy the email, then paste it into your email client and send it to your dealer!")
 
 # Footer
 st.markdown("---")
