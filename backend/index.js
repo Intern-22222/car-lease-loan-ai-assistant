@@ -41,7 +41,6 @@ async function gracefulShutdown() {
   }
 }
 
-
 //Global crash handlers
 process.on("uncaughtException", (err) => {
   logger.error(`Uncaught Exception: ${err.message}`);
@@ -58,14 +57,16 @@ app.get("/", (req, res) => {
   res.send("Backend API is running");
 });
 
+app.get("/health", (req, res) => {
+  res.json({ status: "ok" });
+});
+
 app.use("/api", healthRoutes);
 app.use("/api", uploadRoutes);
 app.use("/api", testHandler);
-app.use("/api",resultRoute);
+app.use("/api", resultRoute);
 // Global error middleware
 app.use(errorHandler);
-
-
 
 async function startServer() {
   try {
@@ -75,7 +76,6 @@ async function startServer() {
     // Start HTTP server only AFTER DB is ok
     global.server = app.listen(PORT);
     logger.info(`Server running on port http://localhost:${PORT}`);
-
   } catch (err) {
     logger.error(`Startup failed: ${err.message}`);
     process.exit(1); // Fail fast → Docker restarts container

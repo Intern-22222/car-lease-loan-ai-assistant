@@ -26,7 +26,6 @@ const UploadPage = () => {
   const [confidence, setConfidence] = useState(null);
   const [notes, setNotes] = useState([]);
 
-
   const extractFieldsFromText = (text) => {
     text = text.replace(/\s+/g, " ").trim();
     let fields = {
@@ -36,7 +35,7 @@ const UploadPage = () => {
       emi: "",
     };
     const amountMatch = text.match(
-      /loan\s*amount\s*(?:inr|rs\.?)?\s*([\d,]+)/i
+      /loan\s*amount\s*(?:inr|rs\.?)?\s*([\d,]+)/i,
     );
     if (amountMatch) {
       fields.loanAmount = "₹" + amountMatch[1];
@@ -138,20 +137,20 @@ const UploadPage = () => {
         // setIsUploading(false);
         // setIsLoading(false);
 
-          setExtractedFields({
-            loanAmount: data.extracted?.fields?.loan_amount ?? "",
-            interestRate: data.extracted?.fields?.interest_rate ?? "",
-            tenure: data.extracted?.fields?.tenure_months
-              ? data.extracted.fields.tenure_months + " months"
-              : "",
-            emi: data.extracted?.fields?.emi ?? "",
-          });
+        setExtractedFields({
+          loanAmount: data.extracted?.fields?.loan_amount ?? "",
+          interestRate: data.extracted?.fields?.interest_rate ?? "",
+          tenure: data.extracted?.fields?.tenure_months
+            ? data.extracted.fields.tenure_months + " months"
+            : "",
+          emi: data.extracted?.fields?.emi ?? "",
+        });
 
-          setConfidence(data.extracted?.confidence ?? null);
-          setNotes(data.extracted?.notes ?? []);
-          setIsProcessing(false);
-          setIsUploading(false);
-          setIsLoading(false);
+        setConfidence(data.extracted?.confidence ?? null);
+        setNotes(data.extracted?.notes ?? []);
+        setIsProcessing(false);
+        setIsUploading(false);
+        setIsLoading(false);
       })
       .catch((error) => {
         console.error("Upload error:", error);
@@ -293,7 +292,7 @@ const UploadPage = () => {
                             if (file.type !== "application/pdf") {
                               showMessage(
                                 "Only PDF files are allowed",
-                                "error"
+                                "error",
                               );
                               return;
                             }
@@ -301,7 +300,7 @@ const UploadPage = () => {
                             if (file.size > MAX_FILE_SIZE) {
                               showMessage(
                                 "File too large. Max size is 10MB.",
-                                "error"
+                                "error",
                               );
                               return;
                             }
@@ -402,7 +401,7 @@ const UploadPage = () => {
                   backgroundColor: "#2563eb",
                   color: "white",
                   textDecoration: "none",
-                  marginTop:"10px"
+                  marginTop: "10px",
                 }}
               >
                 📜 View OCR History
@@ -461,8 +460,8 @@ const UploadPage = () => {
                               confidence >= 0.7
                                 ? "#16a34a"
                                 : confidence >= 0.4
-                                ? "#ca8a04"
-                                : "#dc2626",
+                                  ? "#ca8a04"
+                                  : "#dc2626",
                           }}
                         >
                           {(confidence * 100).toFixed(1)}%
@@ -580,8 +579,8 @@ const UploadPage = () => {
                     uploadStatus === "success"
                       ? "font-semibold text-green-600"
                       : uploadStatus === "error"
-                      ? "font-semibold text-red-600"
-                      : "text-gray-400"
+                        ? "font-semibold text-red-600"
+                        : "text-gray-400"
                   }
                 >
                   Result
