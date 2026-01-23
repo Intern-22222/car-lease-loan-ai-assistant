@@ -14,3 +14,15 @@ AI assistant to review car lease/loan contracts, extract key terms, compare mark
 - Completed the codde to upload file & read sla terms from uploaded file (backend/routers)+(backend/services)
 - Created the PostgreSQL_DB using Render (backend/db)
  
+## ✅ Milestone 3 Deliverables (Completed)
+- Connected document upload API to the backend processing pipeline
+- Integrated OCR processing directly with uploaded documents
+- Maintained extracted SLA data in backend memory for access by other endpoints
+- Built a backend dashboard view
+
+## ✅ Milestone 4 Deliverables (Completed)
+- Designed and implemented a market fair price estimation service
+- Extended contract parsing to support VIN-based vehicle identification 
+
+
+ 
