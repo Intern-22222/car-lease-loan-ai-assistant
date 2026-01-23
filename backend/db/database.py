@@ -6,6 +6,8 @@ import psycopg2
 import os
 from dotenv import load_dotenv
 
+# from backend.db import model
+
 load_dotenv()
 SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL")
 
@@ -17,6 +19,8 @@ Base = declarative_base()
 
 from sqlalchemy.orm import Session
 from typing import Generator
+
+
 
 
 def get_db():

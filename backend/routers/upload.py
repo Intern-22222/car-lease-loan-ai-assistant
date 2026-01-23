@@ -1,31 +1,44 @@
+    
 import os
-from  fastapi import APIRouter, HTTPException, UploadFile, File
-
+from fastapi import APIRouter, HTTPException, UploadFile, File
 from backend.services.ocr import extract_text
 from backend.services.standrd_txt import extract_std_txt
+from backend.routers.price_estim import price_estimate
 
-# this will ensure if tempfolder then it will create it
-UPLOAD_DIR = "temp_file_uplod"
-os.makedirs(UPLOAD_DIR, exist_ok=True)
+router = APIRouter(tags=["Upload file/doc"])
 
-router=APIRouter(tags=["Upload file/doc"])
 
 @router.post("/uploadfile")
-async def upload_file(file: UploadFile=File(...)):
-    if file.filename == "":
+async def upload_file(file: UploadFile = File(...)):
+    if not file or file.filename == "":
         raise HTTPException(status_code=400, detail="No file selected")
-    filepath=os.path.join(UPLOAD_DIR, file.filename)
-    
-    filecont=await file.read()
-    
-    raw_t= extract_text(filecont,file.filename)
-    std_text_data = extract_std_txt(raw_t)
-    
-    with open(filepath,"wb") as f:
-        f.write(await file.read())
-        
-    return {"status": "success","filename":file.filename, "filepath":filepath, "extracted_text_preview": std_text_data}
 
+    # Read file bytes
+    file_bytes = await file.read()
 
+    # 1️⃣ OCR / text extraction
+    raw_text = extract_text(file_bytes, file.filename)
 
-    
+    if not raw_text:
+        raise HTTPException(status_code=400, detail="Unable to extract text")
+
+    # 2️⃣ Standardize extracted text
+    extracted = extract_std_txt(raw_text)
+
+    response = {
+        "extracted_contract": extracted
+    }
+
+    # 3️⃣ Safely extract VIN
+    vin = (
+        extracted.get("vehicle", {})
+        .get("vin")
+    )
+
+    # 4️⃣ If VIN exists → estimate price
+    if vin:
+     response["vin"] = vin
+    else:
+     response["vin"] = None
+
+    return response
