@@ -13,3 +13,13 @@ venv/
 
 # VS Code
 .vscode/
+
+# Uploaded files
+backend/temp_uploads/*
+!backend/temp_uploads/.gitkeep
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
