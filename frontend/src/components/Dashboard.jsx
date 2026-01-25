@@ -25,7 +25,13 @@ function Dashboard() {
 
         {/* Sidebar */}
         <aside className="w-64 bg-white dark:bg-gray-800 shadow-lg p-6 hidden md:block">
-          <h2 className="text-2xl font-bold mb-10 text-center">⚙️ Dashboard</h2>
+          
+          <button
+              onClick={() => navigate("/dashboard")}
+              className="text-2xl font-bold mb-10 text-center"
+            >
+              ⚙️ Dashboard
+            </button>
 
           <div className="space-y-4">
             <button

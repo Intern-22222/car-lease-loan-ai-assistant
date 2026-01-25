@@ -61,6 +61,9 @@ function Login() {
 
       if (data.is_new_user) {
         alert("New user created. Welcome!");
+        localStorage.setItem("predictions", "0");
+  localStorage.setItem("uploads", "0");
+  localStorage.setItem("just_reset", "true");
       } else {
         alert("Welcome back!");
       }
