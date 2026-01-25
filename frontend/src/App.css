@@ -1,16 +1,17 @@
-
+/* --- 1. Root Variables --- */
 :root {
   --bg-dark: #0d1117;
-  --bg-sidebar: #0d1117; /* Sidebar and Main have same bg */
+  --bg-sidebar: #0d1117; 
   --bg-card: #161b22;
-  --primary: #21CAB9; /* The specific teal color from your image */
+  --primary: #21CAB9; 
   --text-main: #ffffff;
   --text-dim: #8b949e;
-  --border: #21262d; /* Subtle dark border */
+  --border: #30363d; /* Standardized with your chat-header border */
 }
 
+/* --- 2. Global Resets --- */
 * {
-  box-sizing: border-box; /* Prevents elements from leaking out */
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
@@ -18,20 +19,22 @@
 body {
   background-color: var(--bg-dark);
   color: var(--text-main);
-  font-family: 'Inter', sans-serif; /* Clean font as seen in image */
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  overflow: hidden; /* Prevent body scroll */
 }
 
-
-
+/* --- 3. App Layout Structure --- */
 .app-container {
   display: flex;
   height: 100vh;
   width: 100vw;
+  background-color: var(--bg-dark);
   overflow: hidden;
-  position: relative;
-  background-color: #0d1117;
 }
 
+/* This wrapper contains the Sidebar and the Content Area.
+   It ensures the Sidebar stays a fixed anchor on the left.
+*/
 .main-layout-wrapper {
   display: flex;
   width: 100%;
@@ -39,49 +42,81 @@ body {
   transition: filter 0.3s ease;
 }
 
-/* The Blur Effect */
-.blur-active {
-  filter: blur(2px);
-  pointer-events: none; /* Prevents clicking background when summary is open */
+/* --- 4. Content Area Wrapper (The Stability Fix) --- */
+/* This is the container for everything to the right of the Sidebar.
+   By making this a flex-column, the Header stays at the top.
+*/
+.content-area-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
 }
 
-/* Semi-transparent backdrop for better focus */
+/* --- 5. Main View Container --- */
+/* This is where ChatWindow or VinPriceCheck are rendered.
+   It fills the remaining space under the global header.
+*/
+.main-view-container {
+  flex: 1;
+  width: 100%;
+  height: calc(100vh - 60px); /* Subtract Header height */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+/* --- 6. Effects & Overlays --- */
+.blur-active {
+  filter: blur(4px);
+  pointer-events: none;
+}
+
 .backdrop {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(2px);
   z-index: 999;
 }
 
-.main-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.chat-layout {
-  display: flex;
-  height: 100%;
-  width: 100%;
-}
-
-
-
+/* --- 7. Responsive Mobile Rules --- */
 @media (max-width: 768px) {
   .app-container {
-    flex-direction: column; /* Stack vertically instead of side-by-side */
+    flex-direction: column;
   }
 
-  .sidebar {
-    display: none; /* Hide sidebar by default on mobile */
-    /* You would then add a button to toggle this 'display: block' */
+  /* On mobile, we usually stack or hide the sidebar.
+     The content-area-wrapper still keeps the header on top.
+  */
+  .sidebar-container {
+    position: fixed;
+    left: -100%; /* Hidden off-screen */
+    z-index: 2000;
+    transition: left 0.3s ease;
   }
 
-  .main-content {
+  .sidebar-open .sidebar-container {
+    left: 0;
+  }
+
+  .content-area-wrapper {
     width: 100%;
-    padding: 10px;
   }
+}
+
+/* --- 8. Animation Utilities --- */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-in {
+  animation: fadeIn 0.3s ease-in-out;
 }

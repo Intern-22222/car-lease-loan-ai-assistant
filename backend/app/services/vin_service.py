@@ -3,11 +3,6 @@ import httpx
 
 @lru_cache(maxsize=100)
 def get_cached_vin_data(vin: str):
-    """
-    This is a helper function that lru_cache can watch.
-    Note: For simplicity in learning, we make this synchronous 
-    so the built-in cache works perfectly.
-    """
     url = f"https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVin/{vin}?format=json"
     
     with httpx.Client() as client:
@@ -27,8 +22,4 @@ def get_cached_vin_data(vin: str):
         return car_info
 
 async def decode_vin(vin: str):
-    """
-    This is the function your main.py calls.
-    It now uses the 'desk' (cache) instead of always going to the 'basement'.
-    """
     return get_cached_vin_data(vin)

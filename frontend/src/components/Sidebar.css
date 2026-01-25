@@ -172,8 +172,10 @@
 
 /* ACTIVE HISTORY STATE */
 .history-item.active {
-  background: rgba(33, 202, 185, 0.1);
-  border-right: 2px solid var(--primary);
+ background: rgba(33, 202, 185, 0.15); /* Primary tint */
+  color: var(--primary);
+  border-left: 3px solid var(--primary);
+  border-radius: 2px 8px 8px 2px;
 }
 
 .item-info {

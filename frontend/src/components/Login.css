@@ -1,0 +1,135 @@
+/* --- Login Page Wrapper --- */
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: radial-gradient(circle at top right, #1a2c2e, #0C0E12 60%);
+  font-family: 'Inter', sans-serif;
+  padding: 20px;
+}
+
+/* --- Glassmorphism Card --- */
+.login-card {
+  background: rgba(22, 27, 34, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(48, 54, 61, 0.8);
+  padding: 40px;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  text-align: center;
+}
+
+/* --- Header & Logo --- */
+.login-header {
+  margin-bottom: 32px;
+}
+
+.logo-icon {
+  color: #21CAB9; /* Your Teal Brand Color */
+  margin-bottom: 12px;
+  width: 48px;
+  height: 48px;
+}
+
+.login-header h1 {
+  color: #ffffff;
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+.login-header p {
+  color: #8b949e;
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+/* --- Input Styling --- */
+.input-group {
+  position: relative;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 10px;
+  padding: 0 14px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-group:focus-within {
+  border-color: #21CAB9;
+  box-shadow: 0 0 0 2px rgba(33, 202, 185, 0.1);
+}
+
+.input-group svg {
+  color: #484f58;
+  margin-right: 12px;
+}
+
+.input-group input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  padding: 12px 0;
+  font-size: 14px;
+  outline: none;
+}
+
+.input-group input::placeholder {
+  color: #484f58;
+}
+
+/* --- Submit Button --- */
+.login-btn {
+  width: 100%;
+  background: #21CAB9;
+  color: #000000;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.login-btn:hover {
+  background: #1eb4a5;
+  transform: translateY(-1px);
+}
+
+.login-btn:active {
+  transform: translateY(0);
+}
+
+/* --- Toggle Signup/Login Text --- */
+.toggle-auth {
+  margin-top: 24px;
+  font-size: 13.5px;
+  color: #8b949e;
+}
+
+.toggle-auth span {
+  color: #21CAB9;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 4px;
+}
+
+.toggle-auth span:hover {
+  text-decoration: underline;
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 480px) {
+  .login-card {
+    padding: 30px 20px;
+  }
+}

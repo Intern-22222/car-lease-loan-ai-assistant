@@ -20,6 +20,165 @@
   overflow: hidden;
   position: relative;
 }
+/* --- Header Base Styling --- */
+.chat-header {
+  height: 60px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+  background-color: rgba(13, 17, 23, 0.85);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid #30363d; /* Divider for active chat */
+  transition: border-bottom 0.3s ease, background-color 0.3s ease;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* --- Welcome State: No Border --- */
+.chat-header.no-border {
+  border-bottom: 1px solid transparent;
+  background-color: transparent;
+}
+
+/* --- Right Side Layout --- */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* --- Summary Toggle Button --- */
+.summary-toggle-btn {
+  background: transparent;
+  border: 1px solid #30363d;
+  color: #8b949e;
+  padding: 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.summary-toggle-btn:hover:not(:disabled) {
+  background: #1c2128;
+  color: #fff;
+}
+
+.summary-toggle-btn.active {
+  color: #21CAB9; /* Brand Teal */
+  background: rgba(33, 202, 185, 0.1);
+  border-color: #21CAB9;
+}
+
+/* --- Circular Profile Trigger --- */
+.user-profile-dropdown {
+  position: relative;
+}
+
+.profile-trigger {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px; /* Space for name if you keep it */
+}
+
+/* The Circular Avatar */
+.avatar.user-profile {
+  width: 30px;
+  height: 30px;
+  background: #21CAB9; /* Brand Teal */
+  color: #000;
+  border-radius: 50%; /* Perfect Circle */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  border: 2px solid transparent;
+  transition: transform 0.2s ease;
+}
+
+.profile-trigger:hover .avatar.user-profile {
+  transform: scale(1.05);
+}
+
+/* Hide text elements to maintain minimal circular look if desired */
+/* .user-firstname, .profile-trigger > svg:not(.avatar svg) { display: none; } */
+
+.user-firstname {
+  font-size: 14px;
+  color: #e6edf3;
+  font-weight: 500;
+}
+
+/* --- Dropdown Menu --- */
+.dropdown-menu {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  width: 220px;
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  padding: 12px 0;
+  z-index: 1000;
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.dropdown-info {
+  padding: 0 16px 12px;
+}
+
+.dropdown-info strong {
+  display: block;
+  color: #fff;
+  font-size: 14px;
+}
+
+.dropdown-info span {
+  font-size: 12px;
+  color: #8b949e;
+}
+
+.dropdown-divider {
+  border: none;
+  border-top: 1px solid #30363d;
+  margin: 8px 0;
+}
+
+.logout-item {
+  width: 100%;
+  padding: 10px 16px;
+  background: transparent;
+  border: none;
+  color: #f85149; /* Distinct Red */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 13.5px;
+}
+
+.logout-item:hover {
+  background: rgba(248, 81, 73, 0.1);
+}
+
+.rotate {
+  transform: rotate(180deg);
+  transition: transform 0.2s ease;
+}
 
 /* WELCOME STATE: Vertical Center Grouping */
 .is-welcome .chat-container {
@@ -45,26 +204,11 @@
   pointer-events: all;
 }
 
-/* --- Header Section --- */
-.chat-header {
-  height: 56px; 
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 16px;
-  background-color: rgba(13, 17, 23, 0.85);
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid #30363d;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 100;
-}
-
+/* --- Basic Header Titles --- */
 .header-titles h3 { font-size: 14px; color: #fff; margin: 0; }
 .file-subtitle { font-size: 11px; color: #8b949e; }
 
+/* --- Staged File Preview --- */
 .staged-file-preview {
   display: flex;
   align-items: center;
@@ -95,6 +239,7 @@
 .attach-btn.has-file {
   color: #2dd4bf;
 }
+
 /* --- Welcome View (Compact) --- */
 .welcome-container {
   text-align: center;
@@ -274,17 +419,62 @@
 .chat-content-wrapper::-webkit-scrollbar { width: 4px; }
 .chat-content-wrapper::-webkit-scrollbar-thumb { background: #30363d; border-radius: 10px; }
 
-/* Panel Toggles */
-.summary-toggle-btn {
-  background: transparent;
-  border: none;
-  color: #8b949e;
-  cursor: pointer;
-  padding: 6px;
-  border-radius: 6px;
-}
-.summary-toggle-btn.active { color: #21CAB9; background: rgba(33, 202, 185, 0.1); }
-
 /* Animation Utilities */
 .animate-spin { animation: spin 1s linear infinite; }
 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+/* --- Markdown Styling for AI Responses --- */
+.markdown-body {
+  line-height: 1.6;
+  font-size: 13.5px;
+  color: #e0e0e0;
+}
+
+/* Headers: Making "Agreement Overview" pop */
+.markdown-body h3 {
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 5px;
+}
+
+/* Financial Summary List */
+.markdown-body ul {
+  margin: 10px 0;
+  padding-left: 20px;
+  list-style-type: disc;
+}
+
+.markdown-body li {
+  margin-bottom: 6px;
+}
+
+/* Horizontal Rule */
+.markdown-body hr {
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: none;
+  margin: 1.5rem 0;
+}
+
+/* Bold text */
+.markdown-body strong {
+  color: #ffffff; /* Teal color to match your LeaseIQ theme */
+  font-weight: 600;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .markdown-body h2 {
+    font-size: 1.1rem;
+  }
+  .markdown-body {
+    font-size: 0.9rem;
+  }
+}

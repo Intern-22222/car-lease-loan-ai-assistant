@@ -1,0 +1,197 @@
+/* --- Global Header Container --- */
+.global-header {
+  height: 60px; /* Fixed height is critical for stability */
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+  background-color: #0C0E12; /* Match your app's background */
+  border-bottom: 1px solid #30363d; /* Border appears when chatting */
+  transition: border-bottom 0.3s ease;
+  z-index: 1000;
+  box-sizing: border-box;
+}
+
+/* --- Welcome/VIN State: No Border --- */
+.global-header.no-border {
+  border-bottom: 1px solid transparent; /* Keeps layout height same but hides line */
+}
+
+/* --- Header Left: Titles & Logo --- */
+.header-left {
+  flex: 1; /* Occupies all space to push right side icons */
+  display: flex;
+  align-items: center;
+  min-width: 0; /* Prevents overflow with long titles */
+}
+
+.header-titles h3 {
+  font-size: 14px;
+  color: #ffffff;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-subtitle {
+  font-size: 11px;
+  color: #8b949e;
+  display: block;
+}
+
+/* --- Header Right: Tools & Account --- */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px; /* Spacing between Toggle and Profile */
+  flex-shrink: 0; /* Ensures buttons never move or squish */
+}
+
+/* --- Summary Toggle Button --- */
+.summary-toggle-btn {
+  background: transparent;
+  border: 1px solid #30363d;
+  color: #8b949e;
+  padding: 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.summary-toggle-btn:hover {
+  background: #1c2128;
+  color: #ffffff;
+}
+
+.summary-toggle-btn.active {
+  color: #21CAB9; /* Your Brand Teal */
+  background: rgba(33, 202, 185, 0.1);
+  border-color: #21CAB9;
+}
+
+/* --- CIRCULAR PROFILE TRIGGER --- */
+.user-profile-dropdown {
+  position: relative;
+}
+
+.profile-trigger {
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Space between circle and name */
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 20px;
+  transition: background 0.2s;
+}
+
+.profile-trigger:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* The 38px Circle Avatar */
+.avatar.user-profile {
+  width: 38px;
+  height: 38px;
+  background: #21CAB9; /* Brand Teal */
+  color: #000;
+  border-radius: 50%; /* Perfect Circle */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.user-firstname {
+  font-size: 14px;
+  font-weight: 500;
+  color: #e6edf3;
+}
+
+/* --- Dropdown Menu --- */
+.profile-dropdown {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  width: 240px;
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  padding: 12px 0;
+  z-index: 2000;
+  animation: slideDown 0.2s ease-out;
+}
+
+.dropdown-info {
+  padding: 0 16px 12px;
+}
+
+.user-label {
+  font-size: 11px;
+  color: #8b949e;
+  margin-bottom: 4px;
+}
+
+.dropdown-info strong {
+  display: block;
+  font-size: 14px;
+  color: #ffffff;
+}
+
+.dropdown-info span {
+  font-size: 12px;
+  color: #8b949e;
+}
+
+.dropdown-divider {
+  border: none;
+  border-top: 1px solid #30363d;
+  margin: 8px 0;
+}
+
+.logout-item {
+  width: 100%;
+  padding: 10px 16px;
+  background: transparent;
+  border: none;
+  color: #f85149; /* Alert Red */
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.logout-item:hover {
+  background: rgba(248, 81, 73, 0.1);
+}
+
+/* --- Utilities --- */
+.rotate {
+  transform: rotate(180deg);
+  transition: transform 0.2s ease;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateX(-10px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

@@ -3,269 +3,223 @@ import Sidebar from "./components/Sidebar";
 import ChatWindow from "./components/ChatWindow";
 import SummaryPanel from "./components/SummaryPanel";
 import VinPriceCheck from "./components/VinPriceCheck";
-import { dummyContracts } from "./data/dummyData";
+import Login from "./components/Login"; // Add this back
+import Header from "./components/Header"; 
+import { api } from "./services/api";
 import "./App.css";
 
 function App() {
-  // --- 1. State Management ---
+  // --- 1. Authentication State ---
+  // Change this to check localStorage so it can actually be null
+  const [user, setUser] = useState(() => {
+    const savedUser = localStorage.getItem("user_session");
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
+
+  // --- 2. History & Session State ---
   const [history, setHistory] = useState(() => {
     const saved = localStorage.getItem("app_history");
-    return saved ? JSON.parse(saved) : dummyContracts;
+    return saved ? JSON.parse(saved) : [];
   });
 
   const [activeContract, setActiveContract] = useState(() => {
     const savedId = localStorage.getItem("active_id");
     if (savedId) {
-      const savedHistory = JSON.parse(
-        localStorage.getItem("app_history") || "[]",
-      );
+      const savedHistory = JSON.parse(localStorage.getItem("app_history") || "[]");
       return savedHistory?.find((c) => c.id.toString() === savedId) || null;
     }
     return null;
   });
 
+  const [view, setView] = useState(() => localStorage.getItem("app_view") || "chat");
   const [searchTerm, setSearchTerm] = useState("");
   const [isSummaryOpen, setIsSummaryOpen] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // Controls the middle section: 'chat', 'vin', 'comparison', 'negotiation'
-  const [view, setView] = useState("chat");
-
-  // --- 2. Persistence Effect ---
+  // --- 3. Persistence Sync ---
   useEffect(() => {
     localStorage.setItem("app_history", JSON.stringify(history));
+    localStorage.setItem("app_view", view);
+    
+    // Logic to persist or remove user session
+    if (user) {
+      localStorage.setItem("user_session", JSON.stringify(user));
+    } else {
+      localStorage.removeItem("user_session");
+    }
+
     if (activeContract) {
       localStorage.setItem("active_id", activeContract.id.toString());
     } else {
       localStorage.removeItem("active_id");
     }
-  }, [history, activeContract]);
+  }, [history, activeContract, view, user]);
 
-  // --- 3. Filtered Sidebar History ---
-  const filteredHistory = history.filter(
-    (item) =>
-      item.carName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.fileName.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
-
-  // --- 4. Handlers ---
-  const handleVinCheck = async (vin, price) => {
-    try {
-      const response = await fetch(
-        `http://localhost:8000/market-info/${vin}?contract_price=${price}`,
-      );
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || "Failed to decode VIN");
-      }
-      const data = await response.json();
-
-      // Return the data so the VinPriceCheck component can display it locally
-      return data;
-    } catch (error) {
-      console.error("VIN Check Error:", error);
-      throw error;
-    }
+  // --- 4. Helper Functions ---
+  // Add this back to handle the "Sign In" button click
+  const handleLoginSuccess = (token, userData) => {
+    setUser(userData);
   };
 
-  const handleUploadSuccess = async (
-    file,
-    backendResult,
-    isFollowUp = false,
-    userMessage = "",
-  ) => {
-    const currentTime = new Date().toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-
-    // 1. Create the file message
-    const fileMsg = {
-      sender: "user",
-      type: "file",
-      fileName: file.name,
-      text: userMessage, // Attach the user's text directly to the file message
-      time: currentTime,
-    };
-
-    // 2. Create the AI response message
-    const aiMsg = {
-      sender: "ai",
-      text: `I've analyzed **${file.name}**. I've updated the Intelligence Panel.`,
-      time: currentTime,
-    };
-
-    if (isFollowUp && activeContract) {
-      const updatedHistory = history.map((c) =>
-        c.id === activeContract.id
-          ? {
-              ...c,
-              // ONLY change title if it's currently a generic default
-              carName:
-                c.carName === "New Analysis" ||
-                c.fileName === "General Inquiry" ||
-                c.carName.includes("...")
-                  ? file.name.split(".")[0]
-                  : c.carName,
-              chatHistory: [...c.chatHistory, fileMsg, aiMsg],
-              summary: backendResult?.summary || c.summary || {},
-              analysis: backendResult?.analysis || c.analysis || {},
-            }
-          : c,
-      );
-      setHistory(updatedHistory);
-      setActiveContract(updatedHistory.find((c) => c.id === activeContract.id));
-    } else {
-      // New Entry Logic
-      const newEntry = {
-        id: Date.now(),
-        carName: file.name.replace(/\.[^/.]+$/, ""),
-        fileName: file.name,
-        date: new Date().toLocaleDateString(),
-        summary: backendResult?.summary || {},
-        analysis: backendResult?.analysis || {},
-        chatHistory: [fileMsg, aiMsg],
-      };
-      setHistory([newEntry, ...history]);
-      setActiveContract(newEntry);
-    }
-
-    // Ensure UI states are correct
+  // Update this to actually clear the state
+  const handleLogout = () => {
+    setUser(null);
+    localStorage.removeItem("user_session");
     setView("chat");
-    setIsSummaryOpen(true);
   };
 
-  const sendMessage = async (text) => {
-    const currentTime = new Date().toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
+  const addMessageToHistory = (contractId, message) => {
+    setHistory((prev) =>
+      prev.map((c) =>
+        c.id === contractId ? { ...c, chatHistory: [...c.chatHistory, message] } : c
+      )
+    );
+    setActiveContract((prev) => {
+      if (prev && prev.id === contractId) {
+        return { ...prev, chatHistory: [...prev.chatHistory, message] };
+      }
+      return prev;
     });
-    const userMsg = { sender: "user", text, time: currentTime };
-    let currentActiveId;
+  };
 
-    if (!activeContract) {
+  // --- 5. Core Chat Logic ---
+  const sendMessage = async (input, targetContract = null) => {
+    const isObject = typeof input === 'object';
+    const text = isObject ? input.text : input;
+    if (!text?.trim() && !isObject) return;
+
+    const currentTime = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    const userMsg = isObject ? input : { sender: "user", text: text.trim(), time: currentTime };
+    
+    let currentContract = targetContract || activeContract;
+    let contractId;
+    let fileContext = null;
+
+    if (!currentContract) {
+      contractId = Date.now();
       const newChat = {
-        id: Date.now(),
-        carName: text.length > 20 ? text.substring(0, 20) + "..." : text,
-        fileName: "General Inquiry",
+        id: contractId,
+        carName: isObject ? "Analyzing..." : "New Conversation", 
+        fileName: isObject ? input.fileName : "General Inquiry",
+        serverFilename: null,
         date: new Date().toLocaleDateString(),
         summary: {},
         chatHistory: [userMsg],
       };
-      setHistory([newChat, ...history]);
+      setHistory((prev) => [newChat, ...prev]);
       setActiveContract(newChat);
-      currentActiveId = newChat.id;
     } else {
-      currentActiveId = activeContract.id;
-      const updated = history.map((c) =>
-        c.id === currentActiveId
-          ? { ...c, chatHistory: [...c.chatHistory, userMsg] }
-          : c,
-      );
-      setHistory(updated);
-      setActiveContract(updated.find((c) => c.id === currentActiveId));
+      contractId = currentContract.id;
+      fileContext = currentContract.serverFilename;
+      addMessageToHistory(contractId, userMsg);
     }
 
-    try {
-      const res = await fetch("http://localhost:8000/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text, contract_id: currentActiveId }),
-      });
-      const data = await res.json();
-      const aiMsg = {
-        sender: "ai",
-        text: data.reply,
-        time: new Date().toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-      };
-
-      setHistory((prev) => {
-        const updated = prev.map((c) =>
-          c.id === currentActiveId
-            ? { ...c, chatHistory: [...c.chatHistory, aiMsg] }
-            : c,
-        );
-        const active = updated.find((c) => c.id === currentActiveId);
-        if (active) setActiveContract(active);
-        return updated;
-      });
-    } catch (e) {
-      console.error(e);
+    if (!isObject) {
+      try {
+        const res = await api.sendChatMessage(text, fileContext);
+        const aiMsg = {
+          sender: "ai",
+          text: res.data.reply,
+          time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        };
+        addMessageToHistory(contractId, aiMsg);
+      } catch (e) {
+        console.error("Chat Error:", e);
+      }
     }
   };
 
+  const handleUploadSuccess = async (file, backendResult, isExisting, messageText) => {
+    const extractionData = backendResult.data;
+    const vehicleTitle = extractionData?.make && extractionData?.model 
+      ? `${extractionData.make} ${extractionData.model}` 
+      : (extractionData?.model || extractionData?.vin || file.name.split(".")[0]);
+
+    const principalAmount = extractionData?.loan_amount || extractionData?.principal;
+
+    const updateData = {
+      carName: vehicleTitle, 
+      serverFilename: backendResult.filename,
+      summary: { ...extractionData, principal: principalAmount },
+    };
+
+    setHistory((prev) => prev.map((c) => (c.id === activeContract?.id ? { ...c, ...updateData } : c)));
+    setActiveContract((prev) => ({ ...prev, ...updateData }));
+    setIsSummaryOpen(true);
+
+    try {
+      const res = await api.sendChatMessage("Provide a summary of this document.", backendResult.filename);
+      addMessageToHistory(activeContract.id, {
+        sender: "ai",
+        text: res.data.reply,
+        time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      });
+    } catch (err) {
+      console.error("AI summary error:", err);
+    }
+  };
+
+  const handleVinCheck = async (vin, price) => {
+    const response = await api.getMarketAnalysis(vin, price);
+    return response.data;
+  };
+
+  // --- 6. Render Logic ---
+  // ADD THIS BACK: If no user, show Login screen
+  if (!user) {
+    return <Login onLoginSuccess={handleLoginSuccess} />;
+  }
+
   return (
     <div className="app-container">
-      <div
-        className={`main-layout-wrapper ${isSidebarOpen ? "sidebar-open" : ""}`}
-      >
-        <div className="sidebar-container">
-          <Sidebar
-            history={filteredHistory}
-            activeId={activeContract?.id}
-            onSelect={(c) => {
-              setActiveContract(c);
-              setView("chat");
-              setIsSidebarOpen(false);
-            }}
-            onDelete={(e, id) => {
-              e.stopPropagation();
-              setHistory((h) => h.filter((i) => i.id !== id));
-              if (activeContract?.id === id) setActiveContract(null);
-            }}
-            onNewChat={() => {
-              setActiveContract(null);
-              setView("chat");
-              setIsSummaryOpen(false);
-            }}
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            view={view} // <--- ADD THIS LINE
-            setView={setView}
-          />
-          Why th
-        </div>
+      <Sidebar
+        history={history.filter((i) => i.carName.toLowerCase().includes(searchTerm.toLowerCase()))}
+        activeId={activeContract?.id}
+        onSelect={(c) => {
+          setActiveContract(c);
+          setView("chat");
+          setIsSummaryOpen(false);
+        }}
+        onDelete={(e, id) => {
+          e.stopPropagation();
+          setHistory((h) => h.filter((i) => i.id !== id));
+          if (activeContract?.id === id) setActiveContract(null);
+        }}
+        onNewChat={() => {
+          setActiveContract(null);
+          setView("chat");
+          setIsSummaryOpen(false);
+        }}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        view={view}
+        setView={setView}
+      />
 
-        <main className="main-content">
-          {/* UPDATED: Multi-view routing logic */}
+      <div className="content-area-wrapper">
+        <Header 
+          user={user} 
+          onLogout={handleLogout} // Link to the clear state function
+          activeContract={activeContract} 
+          onToggleSummary={() => setIsSummaryOpen(!isSummaryOpen)}
+          isSummaryOpen={isSummaryOpen}
+          view={view}
+        />
+        
+        <main className="main-view-container">
           {view === "chat" && (
             <ChatWindow
               contract={activeContract}
               onSendMessage={sendMessage}
               onUploadSuccess={handleUploadSuccess}
-              onToggleSummary={() => setIsSummaryOpen(!isSummaryOpen)}
-              isSummaryOpen={isSummaryOpen}
             />
           )}
 
           {view === "vin" && (
             <VinPriceCheck
+              key={activeContract?.id || "empty"}
               onCheck={handleVinCheck}
               onBack={() => setView("chat")}
             />
-          )}
-
-          {view === "comparison" && (
-            <div className="placeholder-view">
-              <h2>Comparison Page</h2>
-              <p>Compare multiple lease offers side-by-side.</p>
-              <button className="back-btn" onClick={() => setView("chat")}>
-                Back to Chat
-              </button>
-            </div>
-          )}
-
-          {view === "negotiation" && (
-            <div className="placeholder-view">
-              <h2>Negotiation Assistant</h2>
-              <p>AI-powered scripts to help you get a better deal.</p>
-              <button className="back-btn" onClick={() => setView("chat")}>
-                Back to Chat
-              </button>
-            </div>
           )}
         </main>
       </div>
@@ -273,7 +227,6 @@ function App() {
       {isSummaryOpen && activeContract && (
         <SummaryPanel
           summary={activeContract.summary}
-          analysis={activeContract.analysis}
           carName={activeContract.carName}
           onClose={() => setIsSummaryOpen(false)}
         />
