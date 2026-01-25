@@ -20,3 +20,8 @@ tabulate
 rich
 pytest
 requests
+
+fastapi
+uvicorn
+python-multipart
+PyPDF2>=3.0.0
