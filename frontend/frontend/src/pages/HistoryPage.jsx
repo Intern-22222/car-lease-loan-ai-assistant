@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import { Link } from "react-router-dom";
 const HistoryPage = () => {
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -50,6 +50,23 @@ const pageSize = 5;
 
   return (
     <div style={{ padding: "20px" }}>
+      
+      <div style={{ marginBottom: "20px" }}>
+        <Link
+          to="/"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            textDecoration: "none",
+            color: "#4b5563",
+            fontWeight: "500",
+            fontSize: "14px",
+          }}
+        >
+          <span style={{ marginRight: "5px" }}>⬅</span> Back to Upload
+        </Link>
+      </div>
+
       <h2 style={{ marginBottom: "15px" }}>📜 OCR History</h2>
       <div style={{ marginTop: "10px", marginBottom: "12px" }}>
         <input
@@ -120,8 +137,8 @@ const pageSize = 5;
                       item.confidence >= 0.7
                         ? "#16a34a"
                         : item.confidence >= 0.4
-                        ? "#ca8a04"
-                        : "#dc2626",
+                          ? "#ca8a04"
+                          : "#dc2626",
                   }}
                 >
                   {(item.confidence * 100).toFixed(1)}%

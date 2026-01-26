@@ -17,6 +17,8 @@ function App() {
           <Route path="/" element={<UploadPage />}></Route>
           <Route path="/history" element={<HistoryPage />}></Route>
           <Route path="/history/:id" element={<ResultDetailsPage />}></Route>
+          {/* 👇 THIS IS THE MISSING LINE 👇 */}
+          <Route path="/results/:id" element={<ResultDetailsPage />} />
         </Routes>
         <ToastContainer position="top-right" autoClose={3000} />
       </BrowserRouter>

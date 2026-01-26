@@ -9,6 +9,7 @@ const uploadRoutes = require("./src/routes/upload.route");
 const errorHandler = require("./src/middlewares/error.middleware");
 const testHandler = require("./src/routes/ocr.routes");
 const resultRoute = require("./src/routes/result.routes");
+const vinRoutes = require("./src/routes/vin.routes");
 // Utilities
 const logger = require("./src/utils/logger");
 const dotenv = require("dotenv").config();
@@ -65,6 +66,7 @@ app.use("/api", healthRoutes);
 app.use("/api", uploadRoutes);
 app.use("/api", testHandler);
 app.use("/api", resultRoute);
+app.use("/api/v1/vin",vinRoutes);
 
 
 // Global error middleware
