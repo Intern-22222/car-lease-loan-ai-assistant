@@ -12,11 +12,16 @@
   "type": "commonjs",
   "dependencies": {
     "axios": "^1.13.3",
+    "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.0.1",
     "multer": "^2.0.2",
+    "nodemailer": "^7.0.13",
+    "openai": "^6.16.0",
+    "pdf-extraction": "^1.0.2",
     "pdf-to-png-converter": "^3.11.0",
     "tesseract.js": "^7.0.0"
   },

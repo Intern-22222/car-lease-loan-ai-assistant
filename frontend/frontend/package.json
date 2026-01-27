@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",
+    "axios": "^1.13.4",
     "jsdf": "^0.3.2",
     "jspdf": "^4.0.0",
     "react": "^19.2.0",
