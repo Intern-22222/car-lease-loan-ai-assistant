@@ -391,3 +391,223 @@ This structure keeps conversations organized and makes rendering easy.
    - Typing a message and pressing **Send** or **Enter**.
    - Clicking the **─ / +** button to minimize or maximize the whole window.
 
+---
+
+## Milestone 4 (Week 2)  
+## Intern B: Fairness Validation & Negotiation Chatbot
+
+**Status**: ✅ Complete – Contract analysis, fairness scoring, and negotiation chatbot integrated end‑to‑end.
+
+***
+
+## 1. Objective
+
+Extend the backend and frontend so that, after OCR, the system can:
+
+- Analyze a car lease/loan contract using an LLM (Groq Llama‑3).  
+- Detect **risk factors** and **hidden/junk fees** in structured JSON.  
+- Compute a transparent **Contract Fairness Score (0–100)** with rating (Fair / Moderate / Unfair).  
+- Expose a **Negotiation Assistant chatbot** that answers questions and generates ready‑to‑send counter‑offer emails.
+
+***
+
+## 2. New Backend Components
+
+### 2.1 Data Model & Schemas
+
+**Models**
+
+- `ContractAnalysis` table  
+  - `id`, `contract_id`, `file_id`  
+  - `analysis_json` (full LLM output + fairness)  
+  - `created_at`
+
+**Pydantic Schemas**
+
+- `RiskFactor { name, severity (1–5), description }`  
+- `HiddenFee { fee_name, amount?, currency?, frequency?, clause_excerpt? }`  
+- `PriceFactors { base_price?, total_monthly_payment?, total_due_at_signing?, estimated_total_cost?, currency? }`  
+- `FairnessInfo { score, rating, explanation }`  
+- `ContractAnalysisPayload { file_id, risk_factors[], price_factors, hidden_fees[], fairness }`  
+- `ChatRequest { file_id, message, history[], intent: "chat" | "email" }`  
+- `ChatResponse { assistant_message, counter_email_draft? }`
+
+***
+
+### 2.2 Fairness Score Algorithm
+
+File: `app/fairness.py`  
+
+Inputs derived from LLM JSON:
+
+- Average **risk severity** (1–5) across `risk_factors`.  
+- Number of **hidden fees**.  
+- Hidden‑fee amount ratio: `sum(hidden_fee.amount) / estimated_total_cost` (when cost is available).
+
+Scoring (all 0–100, higher = more fair):
+
+- `risk_score = max(0, 100 - avg_severity * 15)`  
+- `fee_score  = max(0, 100 - hidden_fee_count * 10)`  
+- `amount_score = max(0, 100 - min(amount_ratio * 200, 100))`  
+
+Final score:
+
+- `fairness_score = round(0.4 * risk_score + 0.3 * fee_score + 0.3 * amount_score)`  
+
+Rating:
+
+- `>= 75` → **Fair**  
+- `50–74` → **Moderate**  
+- `< 50` → **Unfair**  
+
+`FairnessInfo.explanation` stores a short breakdown (avg severity, fee count, fee ratio) for transparency.
+
+***
+
+### 2.3 LLM Integration (Groq Llama‑3)
+
+File: `app/groq_client.py`  
+
+Provider: **Groq Cloud**, model **`llama-3.1-8b-instant`** (free tier).  
+
+#### Contract Analysis
+
+Function: `analyze_contract_text(raw_text: str) -> dict`
+
+- System prompt asks LLM to return **only JSON** with keys:
+  - `risk_factors[]`, `price_factors`, `hidden_fees[]`, `fairness`.  
+- For very large contracts:
+  - If Groq returns “request too large (413)”, backend retries with a **truncated** version of the text to stay within token limits.
+- Output JSON is parsed and then passed through `compute_fairness` to overwrite numeric score & rating.
+
+#### Negotiation Assistant
+
+Function: `generate_chat_reply(analysis, request) -> { assistant_message, counter_email_draft }`
+
+- Uses:
+  - Summary of fairness score and key issues.  
+  - Chat `history` (user/assistant messages).  
+  - `intent`:
+    - `"chat"` → plain conversational answer.  
+    - `"email"` → full negotiation email.
+
+Prompt rules:
+
+- For **chat**:
+  - Return JSON: `{ "assistant_message": "...", "counter_email_draft": null }`.  
+- For **email**:
+  - Return JSON with:
+    - `assistant_message`: short explanation of strategy.  
+    - `counter_email_draft`: professional email including:
+      - `Subject: ...`  
+      - Greeting (`Dear ...`)  
+      - Body referencing unfair clauses / hidden fees and fairness score.  
+      - Polite but firm request to revise/remove charges.  
+      - Closing and regards.
+
+If the model fails to produce valid JSON, backend safely wraps the raw text into a default JSON shape so the API never crashes.
+
+***
+
+### 2.4 New API Endpoints
+
+All built on top of the existing upload/OCR flow.
+
+#### 1) Analyze Contract
+
+`POST /contracts/{file_id}/analyze`  
+
+- Validates that `contracts.raw_text` exists (OCR already run).  
+- Calls `analyze_contract_text(raw_text)` (Groq).  
+- Computes fairness score via `compute_fairness`.  
+- Upserts into `ContractAnalysis` table.  
+- Response: `ContractAnalysisPayload` (risk factors, hidden fees, price factors, fairness).
+
+#### 2) Get Saved Analysis
+
+`GET /contracts/{file_id}/analysis`  
+
+- Fetches the latest `analysis_json` from `ContractAnalysis`.  
+- Response: `ContractAnalysisPayload`.
+
+#### 3) Negotiation Chatbot
+
+`POST /contracts/{file_id}/chat`  
+
+- Body: `ChatRequest` with `message`, optional `history`, and `intent`.  
+- Loads saved analysis; if missing, asks client to call `/analyze` first.  
+- Calls `generate_chat_reply`.  
+- Response: `ChatResponse`:
+  - `assistant_message` → shown in chat bubble.  
+  - `counter_email_draft` → shown in a separate email panel when present.
+
+***
+
+## 3. React Frontend: Fairness & Chatbot UI
+
+Folder: `frontend/chatbot` (Vite + React)
+
+### 3.1 API Client
+
+File: `src/api/client.ts`
+
+- `uploadContract(file)` → `POST /upload`  
+- `runOCR(fileId)` → `POST /ocr/{file_id}`  
+- `analyzeContract(fileId)` → `POST /contracts/{file_id}/analyze`  
+- `getAnalysis(fileId)` → `GET /contracts/{file_id}/analysis`  
+- `sendChat(fileId, message, history, intent)` → `POST /contracts/{file_id}/chat`
+
+### 3.2 Centered App Layout
+
+File: `src/App.jsx`
+
+- Full‑screen **gradient background** with a single **centered card**:
+  - Header: project title + milestone tag.  
+  - Top row:
+    - **Upload card** (PDF/image):
+      - One button triggers: upload → OCR → analyze automatically.
+      - Shows status messages through each step.
+    - **Existing `file_id` card**:
+      - Input to paste `file_id` returned by backend.
+      - “Analyze” button: calls `/analyze` or falls back to `/analysis` if already cached.
+  - Main content:
+    - `<ChatWindow fileId={fileId} analysis={analysis} />`  
+      (chat + fairness summary side by side inside the card).
+
+### 3.3 Negotiation Assistant & Fairness Summary
+
+File: `src/components/ChatWindow.jsx`
+
+- **Left panel – Negotiation Assistant**
+  - Chat bubbles (`MessageBubble.jsx`) with user/assistant alignment.
+  - Textarea input.
+  - Buttons:
+    - **Send** → `intent: "chat"` (normal guidance).  
+    - **Generate Email** → `intent: "email"` (asks backend for email draft).  
+  - Shows helper text when conversation is empty.
+
+- **Right panel – Fairness Summary**
+  - Card showing:
+    - `fairness.score` and `fairness.rating` with color (green/yellow/red).  
+    - Detailed explanation string from backend (severity, fee count, ratio).  
+    - Count of hidden fees and risk factors.  
+    - Short list of top risky clauses.  
+  - When `counter_email_draft` is present, displays it in a scrollable area for copy/paste.
+
+CORS is configured in FastAPI to allow the React dev server (`localhost:5173`) to call backend APIs.
+
+***
+
+## 4. Testing & Validation
+
+- **API Testing (Swagger/Postman)**:
+  - Verified `upload → ocr → analyze → chat` flow across multiple sample contracts.  
+  - Confirmed contracts with more severe penalties and multiple hidden fees receive lower scores and different ratings.
+
+- **Edge Cases**:
+  - Very long contracts: handled Groq’s “request too large” (413) by automatically truncating text and retrying.  
+  - Missing analysis: `/chat` returns clear error until `/analyze` is run.  
+  - Invalid LLM JSON: backend safely falls back and never crashes.
+
+- **End‑to‑End Frontend**:
+  - From React: upload contract, observe OCR + analysis status, view fairness summary, ask questions, and generate a professional counter‑offer email directly from the chatbot.
