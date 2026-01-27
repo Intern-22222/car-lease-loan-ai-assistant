@@ -1,0 +1,12 @@
+{
+  "BMW001": {
+    "messages": [
+      { "sender": "dealer", "text": "Welcome! How can I help you today?" }
+    ]
+  },
+  "BMW002": {
+    "messages": [
+      { "sender": "dealer", "text": "Hello! Looking for lease options?" }
+    ]
+  }
+}

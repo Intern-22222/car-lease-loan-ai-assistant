@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Car Lease / Loan Fairness Analysis</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      padding: 40px;
+    }
+
+    .card {
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      max-width: 750px;
+      margin: auto;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      margin-bottom: 15px;
+    }
+
+    .score {
+      font-size: 48px;
+      font-weight: bold;
+    }
+
+    .good { color: green; }
+    .fair { color: orange; }
+    .bad  { color: red; }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 12px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 10px 18px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 15px;
+      margin-right: 10px;
+    }
+
+    .result {
+      background: #eef3fb;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 180px;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="card">
+  <h1>🚗 Car Lease / Loan Fairness Analysis</h1>
+
+  <div>
+    Fairness Score:
+    <span id="score" class="score good">100</span>/100
+  </div>
+
+  <label>Vehicle Condition</label>
+  <select id="condition">
+    <option value="new">New Car</option>
+    <option value="used">Used Car</option>
+  </select>
+
+  <label>Contract Price ($)</label>
+  <input type="number" id="contractPrice" placeholder="4000 - 60000">
+
+  <label>Fair Market Price ($)</label>
+  <input type="number" id="marketPrice" placeholder="4000 - 60000">
+
+  <button onclick="calculateFairness()">Calculate Fairness</button>
+  <button onclick="generateEmail()" id="generateEmailBtn" disabled>
+    Generate Negotiation Email
+  </button>
+
+  <div class="result" id="priceDetails" style="display:none;">
+    <p><b>Adjusted Market Price:</b> $<span id="amp"></span></p>
+    <p><b>Price Difference:</b> <span id="diff"></span>%</p>
+    <p><b>Risk Amount:</b> $<span id="risk"></span></p>
+    <p><b>Loan Decision:</b> <span id="decision"></span></p>
+  </div>
+
+  <h3>Negotiation / Review Email</h3>
+  <textarea id="emailText" readonly></textarea>
+</div>
+
+<script>
+const MIN_PRICE = 4000;
+const MAX_PRICE = 60000;
+
+let state = {};
+
+function calculateFairness() {
+  const cp = Number(document.getElementById("contractPrice").value);
+  const mp = Number(document.getElementById("marketPrice").value);
+  const condition = document.getElementById("condition").value;
+
+  if (!cp || !mp) {
+    alert("Please enter both prices.");
+    return;
+  }
+
+  if (cp < MIN_PRICE || cp > MAX_PRICE || mp < MIN_PRICE || mp > MAX_PRICE) {
+    alert(`Prices must be between $${MIN_PRICE} and $${MAX_PRICE}.`);
+    return;
+  }
+
+  // Adjust market price for used cars (10% depreciation)
+  const adjustedMP = condition === "used" ? mp * 0.9 : mp;
+
+  let diffPercent = ((cp - adjustedMP) / adjustedMP) * 100;
+
+  let score = 100 - Math.abs(diffPercent);
+
+  // Extra risk for heavy underpricing
+  if (diffPercent < -20) score -= 10;
+
+  score = Math.max(0, Math.min(100, Math.round(score)));
+
+  const decision = getDecision(score);
+
+  state = { cp, adjustedMP, diffPercent, score, decision };
+
+  updateScore(score);
+  document.getElementById("amp").innerText = adjustedMP.toFixed(2);
+  document.getElementById("diff").innerText = diffPercent.toFixed(2);
+  document.getElementById("risk").innerText = (cp - adjustedMP).toFixed(2);
+  document.getElementById("decision").innerText = decision;
+
+  document.getElementById("priceDetails").style.display = "block";
+  document.getElementById("generateEmailBtn").disabled = false;
+  document.getElementById("emailText").value = "";
+}
+
+function updateScore(score) {
+  const el = document.getElementById("score");
+  el.innerText = score;
+  el.className = "score";
+  el.classList.add(score >= 85 ? "good" : score >= 60 ? "fair" : "bad");
+}
+
+function getDecision(score) {
+  if (score >= 85) return "Approved for Lease / Loan";
+  if (score >= 65) return "Approved with Negotiation";
+  if (score >= 50) return "Manual Review Required";
+  return "High Risk – Not Recommended";
+}
+
+function generateEmail() {
+  const { cp, adjustedMP, diffPercent, decision } = state;
+
+  let email = "Subject: Car Lease / Loan Pricing Review\n\nHello,\n\n";
+
+  if (diffPercent === 0) {
+    email += `The contract price of $${cp.toFixed(2)} matches the fair market value. 
+This lease/loan request is well aligned with market standards and can be approved.\n\n`;
+  } else if (diffPercent > 0 && diffPercent <= 10) {
+    email += `The contract price of $${cp.toFixed(2)} is slightly higher than the adjusted market value of $${adjustedMP.toFixed(2)}.
+A minor price adjustment is recommended before final approval.\n\n`;
+  } else if (diffPercent > 10) {
+    email += `The contract price exceeds the adjusted market value by ${diffPercent.toFixed(2)}%.
+This represents increased financial risk, and renegotiation is advised.\n\n`;
+  } else {
+    email += `The contract price is significantly lower than market value.
+Although attractive, further verification of vehicle condition and documentation is recommended.\n\n`;
+  }
+
+  email += `Final Decision: ${decision}\n\nThank you.`;
+
+  document.getElementById("emailText").value = email;
+}
+</script>
+
+</body>
+</html>
