@@ -20,3 +20,28 @@ __pycache__/
 .env
 uploads/
 temp/
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Pytest cache
+.pytest_cache/
+
+# Virtual environments
+myenv/
+venv/
+.env
+
+# VS Code
+.vscode/
+
+# Uploaded files
+backend/temp_uploads/*
+!backend/temp_uploads/.gitkeep
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
