@@ -1,31 +1,37 @@
-# 🚗 Car Lease & Loan AI Assistant
+# Car Lease & Loan AI Assistant 🚗💰
 
-**Milestone 4: Intelligence, Negotiation & Automation**
-*A Full-Stack AI application to analyze lease contracts and automate dealer negotiations.*
+A full-stack AI application for predicting car prices, analyzing fairness, and managing lease contracts.
+
+## 🚀 Features & Milestones Completed
+
+### ✅ Milestone 1: Backend & Database Setup
+- Built FastAPI backend connected to SQLite/PostgreSQL.
+- Integrated User Authentication (Login/Signup).
+
+### ✅ Milestone 2: Dashboard & UI
+- Developed a React Frontend with a responsive Dashboard.
+- Added visual charts for loan vs. lease comparison.
+
+### ✅ Milestone 3: AI Price Prediction (NEW) 🔮
+- **Real-time Valuation:** Connected to NHTSA API for accurate vehicle details.
+- **Fair Price Analysis:** Uses Google Gemini AI to estimate market value based on VIN & mileage.
+- **Visual Interface:** Created a dedicated "Price Predictor" page with green/red fairness indicators.
+
+### ✅ Milestone 4: Document Analysis (OCR)
+- Upload feature for Lease Contracts (PDFs).
+- OCR processing to extract text from contracts.
 
 ---
 
-## 🚀 Key Features (Milestone 4)
+## 🛠️ Setup Instructions
 
-### 1. 📊 Visual Fairness Score
-* **The Engine:** A custom algorithm analyzes APR, Termination Fees, and Terms.
-* **The Visual:** Implemented a **Circular Gauge** (Green/Yellow/Red) to give users an instant "Health Check" of the deal.
+### Backend
+1. Navigate to the folder: `cd backend`
+2. Create/Activate virtual environment.
+3. Install dependencies: `pip install -r requirements.txt`
+4. Run server: `uvicorn main:app --reload`
 
-### 2. ⚖️ Smart Comparison System
-* **Dual-Ingestion:** Supports uploading two PDFs simultaneously (`Contract A` vs `Contract B`).
-* **Context Awareness:** Automatically detects if the user is comparing the *same* car (Price focus) or *different* cars (Feature focus).
-
-### 3. 🤖 AI Chatbot & Negotiation Assistant
-* **Floating Chatbot:** A real-time assistant that answers questions about the contract terms.
-* **Auto-Draft Emailer:** Generates a professional negotiation email based on the Fairness Score and sends it via the Backend API.
-
----
-
-## 🛠️ Technical Stack
-* **Frontend:** React.js, `react-circular-progressbar`, Axios
-* **Backend:** Python (FastAPI), Pydantic Models
-* **Integration:** REST API connecting React UI to Python Logic
-
-## 📸 How to Run
-1.  **Start Backend:** `cd backend` -> `uvicorn main:app --reload`
-2.  **Start Frontend:** `cd frontend` -> `npm start`
+### Frontend
+1. Navigate to the folder: `cd frontend`
+2. Install packages: `npm install`
+3. Start React app: `npm start`
