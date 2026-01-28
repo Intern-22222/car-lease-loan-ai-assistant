@@ -8,7 +8,7 @@ __pycache__/
 *.py[cod]
 
 # Environment variables
-.env
+
 
 # IDE files
 .vscode/
@@ -17,7 +17,7 @@ __pycache__/
 # OS files
 .DS_Store
 
-.env
+
 uploads/
 temp/
 # Python cache
@@ -31,7 +31,7 @@ __pycache__/
 # Virtual environments
 myenv/
 venv/
-.env
+
 
 # VS Code
 .vscode/
@@ -71,9 +71,9 @@ MANIFEST
 
 # Virtual Environment
 venv/
-env/
+
 ENV/
-.env
+
 .venv/
 
 # IDEs

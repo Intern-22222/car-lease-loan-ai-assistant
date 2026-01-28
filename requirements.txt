@@ -1,57 +1,50 @@
-fastapi
-uvicorn
-sqlalchemy
-psycopg2-binary
-pydantic
-python-dotenv
-boto3
-pdf2image
-pytesseract
-pypdf2
-pdfplumber
-nltk
-spacy
-regex
-python-multipart
-openai
-transformers
-langchain
-tabulate
-rich
-pytest
-requests
+# Python Dependencies for Car Lease/Loan AI Assistant
+# Cleaned and consolidated - duplicates removed
 
-fastapi
-uvicorn
-python-multipart
+# Core Web Framework
+fastapi>=0.104.0
+uvicorn>=0.24.0
+python-multipart>=0.0.6
+
+# Database
+sqlalchemy>=2.0.0
+psycopg2-binary>=2.9.0
+
+# Data Validation
+pydantic>=2.0.0
+
+# Environment & Configuration
+python-dotenv>=1.0.0
+
+# PDF Processing
 PyPDF2>=3.0.0
-# Python dependencies for Car Lease/Loan AI Assistant - OCR Module
+pdf2image>=1.16.0
+pdfplumber>=0.10.0
+PyMuPDF>=1.24.0
 
-# OCR Dependencies (Tesseract)
+# OCR & Image Processing
 pytesseract>=0.3.10
-PyMuPDF>=1.24.0  
 Pillow>=10.0.0
+opencv-python>=4.8.0
+
+# NLP & Text Processing
+nltk>=3.8.0
+spacy>=3.7.0
+regex>=2023.0.0
+
+# AI/ML - HuggingFace (replaced google-generativeai)
+transformers>=4.35.0
+requests>=2.31.0
+
+# Web Server (Flask for server.py)
+flask>=3.0.0
+flask-cors>=4.0.0
+
+# Utilities
+boto3>=1.28.0
+tabulate>=0.9.0
+rich>=13.0.0
 
 # Testing
 pytest>=7.4.0
 pytest-cov>=4.1.0
-
-# PDF Text Extraction (native PDFs)
-pdfplumber>=0.10.0
-
-# Milestone 2: Image Preprocessing (Computer Vision)
-opencv-python>=4.8.0
-
-# Milestone 2: Database Integration
-sqlalchemy>=2.0.0
-
-# Utilities
-python-dotenv>=1.0.0
-requests>=2.31.0
-
-# Milestone 3+4: Unified Web Server
-flask>=3.0.0
-flask-cors>=4.0.0
-
-# Milestone 3: AI Chatbot (Google Gemini)
-google-generativeai>=0.3.0

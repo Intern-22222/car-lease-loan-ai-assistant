@@ -1,39 +1,69 @@
 version: "3.9"
 
 services:
-  # 1. Database Service (Milestone 1)
+  # PostgreSQL Database
   db:
     image: postgres:15
     container_name: lease_assistant_db
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-admin}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-admin_pass}
-      POSTGRES_DB: ${POSTGRES_DB:-lease_db}
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: manvi123
+      POSTGRES_DB: contractdb
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./infra/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    networks:
+      - lease_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d contractdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # pgAdmin for Database Management
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: lease_assistant_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@admin.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-manvi123}
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
     networks:
       - lease_network
 
-  # 2. Backend API Service (Milestone 1 & 2)
+  # FastAPI Backend
   backend:
     build:
       context: .
-      dockerfile: backend/Dockerfile # Ensure you have a Dockerfile in your backend folder
+      dockerfile: backend/Dockerfile
     container_name: lease_assistant_api
     ports:
       - "8000:8000"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
-      DATABASE_URL: postgresql://${POSTGRES_USER:-admin}:${POSTGRES_PASSWORD:-admin_pass}@db:5432/${POSTGRES_DB:-lease_db}
+      DATABASE_URL: postgresql://admin:manvi123@db:5432/contractdb
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: contractdb
+      DB_USER: admin
+      DB_PASS: manvi123
+      HF_TOKEN: ${HF_TOKEN}
+      HF_MODEL: ${HF_MODEL:-mistralai/Mistral-7B-Instruct-v0.2}
     volumes:
-      - ./backend:/app
+      - ./backend:/app/backend
+      - ./data:/app/data
     networks:
       - lease_network
+    command: uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
 
-  # 3. Streamlit Frontend Service (Milestone 3 Improvements)
+  # Streamlit Frontend (optional)
   frontend:
     image: python:3.9-slim
     container_name: lease_assistant_frontend
@@ -49,6 +79,8 @@ services:
       - backend
     networks:
       - lease_network
+    environment:
+      BACKEND_URL: http://backend:8000
 
 networks:
   lease_network:

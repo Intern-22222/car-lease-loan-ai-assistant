@@ -14,42 +14,58 @@ def test_read_health():
     """Test the health check endpoint."""
     response = client.get("/health")
     assert response.status_code == 200
-    assert response.json() == {"status": "healthy"}
+    data = response.json()
+    assert "status" in data
+    assert data["status"] == "healthy"
+    assert "service" in data
 
 def test_upload_file():
-    """Test the file upload endpoint with a dummy file."""
-    files = {"file": ("test.pdf", b"dummy content", "application/pdf")}
-    response = client.post("/upload", files=files)
+    """Test the file upload endpoint with a real PDF file."""
+    # Use a real sample PDF
+    test_file_path = "samples/contract2.pdf"
     
-    assert response.status_code == 200
-    assert "file_id" in response.json()
-    assert response.json()["message"] == "File received"
-
-def test_trigger_ocr():
-    """Test the OCR trigger endpoint (Updated for Milestone 2)."""
-    file_id = 123
-    response = client.post(f"/ocr/{file_id}")
+    if not os.path.exists(test_file_path):
+        pytest.skip(f"Sample file {test_file_path} not found")
     
-    assert response.status_code == 200
-    assert "status" in response.json()
-    assert response.json()["message"] == f"OCR and Extraction started for {file_id}"
-
-def test_integrated_results():
-    """
-    NEW for Milestone 2 Task 1: 
-    Tests the combined SLA (LLM) and Vehicle (VIN API) data endpoint.
-    """
-    file_id = 123
-    response = client.get(f"/contract/{file_id}")
+    with open(test_file_path, 'rb') as f:
+        files = {"file": ("contract2.pdf", f, "application/pdf")}
+        response = client.post("/upload", files=files)
     
     assert response.status_code == 200
     data = response.json()
+    assert "file_id" in data
+    assert "text_length" in data
+    # Message changed after auto-analysis implementation
+    assert "message" in data
+    # Should have analysis data from auto-analysis
+    assert "analysis" in data
+    assert "risks" in data
+    assert "fairness_score" in data
+    # Store file_id for next test
+    return data["file_id"]
+
+
+def test_get_contract():
+    """Test retrieving contract details."""
+    # First upload a file
+    file_id = test_upload_file()
     
-    # Verify the two main data components exist
-    assert "sla_extraction" in data
-    assert "vehicle_info" in data
+    # Then retrieve it
+    response = client.get(f"/contract/{file_id}")
+    assert response.status_code == 200
+    data = response.json()
+    assert "filename" in data
+    assert "text_raw" in data
+
+def test_analyze_contract():
+    """Test contract analysis endpoint."""
+    # First upload
+    file_id = test_upload_file()
     
-    # Verify sample data within the components
-    assert data["sla_extraction"]["apr"] == 4.99
-    assert data["vehicle_info"]["make"] == "Toyota"
-    assert data["status"] == "completed"
+    # Then analyze
+    response = client.post(f"/analyze/{file_id}")
+    assert response.status_code == 200
+    data = response.json()
+    assert "analysis" in data
+    assert "fairness_score" in data
+    assert "risks" in data

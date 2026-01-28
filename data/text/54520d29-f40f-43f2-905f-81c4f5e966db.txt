@@ -1,0 +1,13 @@
+Sample Contract A: The Standard Deal 
+ Interest Rate / APR:  4.2% (Money Factor: 0.00175) 
+ Lease Term Duration:  36 Months 
+ Monthly Payment:  $450.00 
+ Down Payment:  $2,500.00 
+ Residual Value:  $18,000.00 (60% of MSRP) 
+ Mileage Allowance:  12,000 miles per year ($0.20/mile overage) 
+ Early Termination Clause:  Remaining monthly payments plus a $500.00 ﬂat fee 
+ Purchase Option (Buyout):  $18,350.00 (Residual Value + $350 purchase fee) 
+ Maintenance:  Lessee responsible for all routine oil changes and tire rotations 
+ Warranty/Insurance:  Manufacturer bumper-to-bumper warranty for 36 months; 
+$100k/$300k liability insurance required 
+ Penalties / Late Fees:  5% of the monthly payment if 10 days past due

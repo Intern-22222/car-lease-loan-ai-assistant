@@ -21,9 +21,9 @@ until $(curl -s -o /dev/null -w "%{http_code}" $API_URL/health | grep -q "200");
 done
 echo "✅ Backend is UP."
 
-# 2. Upload - Expecting File ID 123 from your main.py simulation
+# 2. Upload - Extract UUID file_id from JSON response
 UPLOAD_RES=$(curl -s -F "file=@$SAMPLE_FILE" $API_URL/upload)
-FILE_ID=$(echo $UPLOAD_RES | grep -oP '(?<="file_id":)[0-9]+')
+FILE_ID=$(echo $UPLOAD_RES | grep -oP '(?<="file_id":")[a-f0-9-]+')
 
 if [ -z "$FILE_ID" ]; then
     echo "❌ Upload failed, could not retrieve File ID."
@@ -39,13 +39,14 @@ echo "✅ Extraction Triggered."
 echo "🔍 Verifying Integrated Results..."
 RESULTS=$(curl -s "$API_URL/contract/$FILE_ID")
 
-# Check for SLA data (Includes APR and Payments)
-if echo "$RESULTS" | grep -q "sla_extraction"; then
-    echo "✅ SLA Data Found."
+# Check for analysis data (includes contract terms, APR, payments, etc.)
+if echo "$RESULTS" | grep -q '"analysis"'; then
+    echo "✅ Analysis Data Found."
 else
-    echo "❌ SLA Data Missing."
+    echo "❌ Analysis Data Missing."
     exit 1
 fi
+
 
 # Check for Vehicle data (VIN Info)
 if echo "$RESULTS" | grep -q "vehicle_info"; then

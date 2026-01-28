@@ -4,8 +4,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Settings:
-    GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
-    GEMINI_MODEL: str = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+    # HuggingFace settings (replaced Gemini)
+    HF_TOKEN: str = os.getenv("HF_TOKEN", "")
+    HF_MODEL: str = os.getenv("HF_MODEL", "Qwen/Qwen2.5-7B-Instruct")
     
     # File upload settings
     UPLOAD_DIR: str = "backend/temp_uploads"
@@ -21,5 +22,6 @@ class Settings:
 settings = Settings()
 
 # ✅ then validate
-if not settings.GEMINI_API_KEY:
-    raise ValueError("❌ GEMINI_API_KEY not found. Please set it in .env file")
+if not settings.HF_TOKEN:
+    import warnings
+    warnings.warn("⚠️ HF_TOKEN not found in .env file. AI features will be limited.")

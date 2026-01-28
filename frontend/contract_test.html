@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contract Upload Test - Lease Data Display</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: #2c3e50;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            opacity: 0.9;
+        }
+
+        .upload-section {
+            padding: 40px;
+            text-align: center;
+            border-bottom: 2px solid #eee;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .file-input-wrapper input[type=file] {
+            display: none;
+        }
+
+        .upload-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .results-section {
+            padding: 40px;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .contract-data {
+            display: none;
+        }
+
+        .contract-data.active {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .data-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .data-card h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .data-item {
+            margin-bottom: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .data-item:last-child {
+            border-bottom: none;
+        }
+
+        .data-label {
+            font-weight: 600;
+            color: #555;
+            display: inline-block;
+            min-width: 150px;
+        }
+
+        .data-value {
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        .fairness-score {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 8px;
+            grid-column: 1 / -1;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .score-green {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .score-orange {
+            background: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%);
+        }
+
+        .score-red {
+            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+        }
+
+        .error {
+            background: #fee;
+            color: #c00;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #c00;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🚗 Lease/Loan Contract Analyzer</h1>
+            <p>Upload your contract to see detailed analysis with SLA data</p>
+        </header>
+
+        <div class="upload-section">
+            <div class="file-input-wrapper">
+                <label for="contractFile" class="upload-btn">
+                    📄 Upload Contract PDF
+                </label>
+                <input type="file" id="contractFile" accept=".pdf,.jpg,.jpeg,.png">
+            </div>
+            <p style="margin-top: 20px; color: #666;">Supported formats: PDF, JPG, PNG</p>
+        </div>
+
+        <div class="loading">
+            <div class="spinner"></div>
+            <p>Analyzing your contract...</p>
+        </div>
+
+        <div class="results-section">
+            <div id="results"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8000';
+
+        document.getElementById('contractFile').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            // Show loading
+            document.querySelector('.loading').classList.add('active');
+            document.getElementById('results').innerHTML = '';
+
+            try {
+                // Upload file
+                const formData = new FormData();
+                formData.append('file', file);
+
+                const response = await fetch(`${API_URL}/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Upload failed: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                console.log('API Response:', data);
+
+                // Hide loading
+                document.querySelector('.loading').classList.remove('active');
+
+                // Display results
+                displayContractData(data);
+
+            } catch (error) {
+                document.querySelector('.loading').classList.remove('active');
+                document.getElementById('results').innerHTML = `
+                    <div class="error">
+                        <h3>❌ Error</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        });
+
+        function displayContractData(data) {
+            const { file_id, analysis, risks, fairness_score } = data;
+
+            let html = '<div class="contract-data active">';
+
+            // Fairness Score
+            if (fairness_score) {
+                const score = fairness_score.overall_score || 0;
+                const color = fairness_score.ui_color || 'green';
+                html += `
+                    <div class="fairness-score">
+                        <div class="score-circle score-${color}">
+                            ${score}
+                        </div>
+                        <h2>Fairness Score: ${fairness_score.category || 'N/A'}</h2>
+                        <p style="margin-top: 10px; color: #666;">
+                            ${fairness_score.explanation?.join(', ') || 'Analysis complete'}
+                        </p>
+                    </div>
+                `;
+            }
+
+            // Contract Analysis
+            if (analysis && !analysis.error) {
+                html += `
+                    <div class="data-card">
+                        <h3>📊 Contract Details</h3>
+                        <div class="data-item">
+                            <span class="data-label">Contract Type:</span>
+                            <span class="data-value">${analysis.contract_type || 'N/A'}</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">Monthly Payment:</span>
+                            <span class="data-value">$${analysis.monthly_payment || 0}</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">Interest Rate (APR):</span>
+                            <span class="data-value">${analysis.interest_rate || 0}%</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">Loan Term:</span>
+                            <span class="data-value">${analysis.loan_term_months || 0} months</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">Down Payment:</span>
+                            <span class="data-value">$${analysis.down_payment || 0}</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">Total Amount:</span>
+                            <span class="data-value">$${analysis.total_amount || 0}</span>
+                        </div>
+                    </div>
+                `;
+
+                // Fees
+                if (analysis.hidden_fees && analysis.hidden_fees.length > 0) {
+                    html += `
+                        <div class="data-card">
+                            <h3>💰 Fees Detected</h3>
+                            ${analysis.hidden_fees.map(fee => `
+                                <div class="data-item">
+                                    <span class="data-label">${fee.name}:</span>
+                                    <span class="data-value">$${fee.amount} ${fee.is_junk ? '⚠️ Junk Fee' : ''}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+            } else if (analysis && analysis.error) {
+                html += `
+                    <div class="data-card">
+                        <h3>⚠️ Analysis Status</h3>
+                        <p>${analysis.error}</p>
+                        <p style="margin-top: 10px; font-size: 0.9em; color: #666;">
+                            The contract was uploaded successfully, but AI analysis is temporarily unavailable. 
+                            The data structure is working correctly for frontend integration.
+                        </p>
+                    </div>
+                `;
+            }
+
+            // Risks
+            if (risks && !risks.error) {
+                html += `
+                    <div class="data-card">
+                        <h3>⚠️ Risks & Red Flags</h3>
+                        <div class="data-item">
+                            <span class="data-label">Risk Level:</span>
+                            <span class="data-value">${risks.risk_level || 'UNKNOWN'}</span>
+                        </div>
+                        ${risks.red_flags && risks.red_flags.length > 0 ? `
+                            <div style="margin-top: 15px;">
+                                <strong>Issues Found:</strong>
+                                <ul style="margin-left: 20px; margin-top: 10px;">
+                                    ${risks.red_flags.map(flag => `
+                                        <li style="margin-bottom: 8px;">
+                                            ${flag.issue || flag} 
+                                            ${flag.severity ? `<span style="color: #c00;">(${flag.severity})</span>` : ''}
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }
+
+            html += '</div>';
+
+            // Add file info
+            html += `
+                <div style="margin-top: 30px; padding: 20px; background: #f0f0f0; border-radius: 8px;">
+                    <p><strong>✅ File uploaded successfully!</strong></p>
+                    <p style="margin-top: 10px; color: #666;">File ID: ${file_id}</p>
+                    <p style="margin-top: 5px; color: #666;">Text extracted: ${data.text_length || 0} characters</p>
+                </div>
+            `;
+
+            document.getElementById('results').innerHTML = html;
+        }
+    </script>
+</body>
+
+</html>

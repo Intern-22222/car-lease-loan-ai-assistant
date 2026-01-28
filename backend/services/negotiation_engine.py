@@ -1,22 +1,45 @@
-from backend.services.gemini_service import gemini_service
+from backend.services.huggingface_service import huggingface_service
 from typing import Dict, Any, List
 
 class NegotiationEngine:
     def __init__(self):
-        self.gemini = gemini_service
+        self.hf = huggingface_service
         self.pdf_text = ""
         self.contract_data = {}
+
+    def _safe_float(self, v, default=0.0) -> float:
+        """Safely convert any value to float, handling $, %, commas"""
+        if v is None:
+            return default
+        try:
+            if isinstance(v, str):
+                cleaned = v.replace('%', '').replace('$', '').replace(',', '').strip()
+                return float(cleaned) if cleaned else default
+            return float(v)
+        except (TypeError, ValueError):
+            return default
+    
+    def _sum_fees(self, fees: list) -> float:
+        """Safely sum fee amounts"""
+        total = 0.0
+        for f in fees:
+            amt = f.get('amount', 0)
+            total += self._safe_float(amt, 0.0)
+        return total
 
     def set_context(self, pdf_text: str, contract_data: Dict[str, Any]):
         self.pdf_text = pdf_text
         self.contract_data = contract_data
 
     def chat_negotiate(self, user_message: str, contract_context: Dict[str, Any]) -> str:
-        monthly = contract_context.get('monthly_payment', 0)
-        rate = contract_context.get('interest_rate', 0)
-        term = contract_context.get('loan_term_months', 0)
-        total_amount = contract_context.get('total_amount', 0)
-        score = contract_context.get('fairness_score', {}).get('overall_score', 0)
+        def safe_float(v):
+            return self._safe_float(v, 0.0)
+
+        monthly = safe_float(contract_context.get('monthly_payment', 0))
+        rate = safe_float(contract_context.get('interest_rate_apr') or contract_context.get('interest_rate', 0))
+        term = safe_float(contract_context.get('lease_term_months') or contract_context.get('loan_term_months', 0))
+        total_amount = safe_float(contract_context.get('total_amount', 0))
+        score = safe_float(contract_context.get('fairness_score', {}).get('overall_score', 0))
         fees = contract_context.get('hidden_fees', [])
         contract_type = contract_context.get('contract_type', 'LOAN')
 
@@ -49,7 +72,7 @@ This is approximately {(total_interest/principal)*100:.1f}% of your principal am
             market_apr = 7.5
             target_apr = max(6.5, rate - 2.0)
             junk_fees = [f for f in fees if f.get('is_junk')]
-            total_junk = sum(f.get('amount', 0) for f in junk_fees)
+            total_junk = self._sum_fees(junk_fees)
             savings = ((rate - target_apr)/100 * total_amount * term/12)
             
             advice = f"""Okay, let's talk strategy. Your current deal has a {rate}% APR, which is honestly pretty high compared to the market average of around {market_apr}%. Here's how I'd approach this:
@@ -132,29 +155,32 @@ Want me to write you a specific script you can actually use when you talk to the
 Provide a clear, specific answer based on the contract details above. If calculating costs, show your math. If asked about negotiation, provide step-by-step tactics with specific numbers and phrases to use. Keep your response under 150 words but be thorough.
 """
         try:
-            response = self.gemini.generate_text(prompt)
+            response = self.hf.generate_text(prompt)
             if response and len(response.strip()) > 20:
                 return response
         except Exception as e:
-            print(f"Gemini error in chat: {e}")
+            print(f"HuggingFace error in chat: {e}")
 
         return "I can help you analyze your contract or give negotiation advice. Try asking about interest rate, fees, total cost, or fairness score."
 
     def generate_negotiation_script(self, contract_data: Dict[str, Any], fairness_score: Dict[str, Any]) -> str:
         """Generate a professional, personalized counter-offer email"""
-        monthly = contract_data.get('monthly_payment', 0)
-        rate = contract_data.get('interest_rate', 0)
-        term = contract_data.get('loan_term_months', 0)
-        total = contract_data.get('total_amount', 0)
+        def safe_float(v):
+            return self._safe_float(v, 0.0)
+
+        monthly = safe_float(contract_data.get('monthly_payment', 0))
+        rate = safe_float(contract_data.get('interest_rate_apr') or contract_data.get('interest_rate', 0))
+        term = safe_float(contract_data.get('lease_term_months') or contract_data.get('loan_term_months', 0))
+        total = safe_float(contract_data.get('total_amount', 0))
         fees = contract_data.get('hidden_fees', [])
         vehicle = contract_data.get('vehicle_info', {})
-        score = fairness_score.get('overall_score', 0)
+        score = safe_float(fairness_score.get('overall_score', 0))
         
         # Calculate better terms
         target_rate = max(6.5, rate - 1.5)
         target_monthly = monthly * (target_rate / rate) if rate else monthly
         junk_fees = [f for f in fees if f.get('is_junk')]
-        total_junk = sum(f.get('amount', 0) for f in junk_fees)
+        total_junk = self._sum_fees(junk_fees)
         
         # Estimated savings
         current_total_paid = monthly * term
@@ -188,7 +214,8 @@ This adjustment would save me approximately ${savings:,.2f} over the loan term a
 I noticed the following fees totaling ${total_junk:,.2f} that appear to be optional add-ons:
 """
             for fee in junk_fees[:3]:
-                script += f"• {fee['name']}: ${fee.get('amount', 0):,.2f}\n"
+                fee_amt = self._safe_float(fee.get('amount', 0))
+                script += f"• {fee.get('name', 'Fee')}: ${fee_amt:,.2f}\n"
             
             script += """
 I respectfully request the removal of these fees, as they are not standard charges and significantly increase the total cost. Most competing offers do not include these additional fees.

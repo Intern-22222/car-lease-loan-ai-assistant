@@ -1,68 +1,45 @@
-from fastapi import FastAPI, UploadFile, File
-import time
+"""
+Car Lease/Loan Contract Review AI Assistant - Unified Backend
+Consolidated FastAPI application with all features integrated.
+"""
 
-app = FastAPI()
-
-@app.get("/health")
-def health_check():
-    return {"status": "healthy"}
-
-@app.post("/upload")
-async def upload_file(file: UploadFile = File(...)):
-    # Simulating file saving and returning ID 123 used in tests
-    return {"message": "File received", "file_id": 123}
-
-@app.post("/ocr/{file_id}")
-async def trigger_ocr(file_id: int):
-    # Simulating the trigger for OCR + LLM Extraction
-    return {"message": f"OCR and Extraction started for {file_id}", "status": "processing"}
-
-# INTEGRATED ENDPOINT FOR MILESTONE 2 & 4
-@app.get("/contract/{file_id}")
-async def get_contract_results(file_id: int):
-    """
-    Simulates integrated response from OCR, LLM, and VIN API.
-    Updated to align with Milestone 4 extraction requirements.
-    """
-    return {
-        "file_id": file_id,
-        "status": "completed",
-        "sla_extraction": {
-            "apr": 4.99,
-            "monthly_payment": 350.00,
-            "lease_term": "36 months",
-            "mileage_allowance": 12000,
-            "residual_value": 18000,
-            # Junk fees extracted based on prompts/fee_extraction.json structure
-            "junk_fees": [
-                {"name": "Documentation Fee", "amount": 150, "type": "standard"},
-                {"name": "Window Etching", "amount": 300, "type": "junk"}
-            ],
-            "total_hidden_charges": 450
-        },
-        "vehicle_info": {
-            "vin": "123456789ABC",
-            "make": "Toyota",
-            "model": "RAV4",
-            "year": 2024,
-            "recall_history": "No active recalls"
-        }
-    }
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional, Dict, Any, List
 from datetime import datetime
 from uuid import uuid4
+import os
+import psycopg2
+import sqlite3
+from dotenv import load_dotenv
 
 from backend.config import settings
 from backend.services.pdf_extractor import pdf_extractor
 from backend.services.contract_analyzer import contract_analyzer
 from backend.logic.fairness_scorer import fairness_scorer
 from backend.services.negotiation_engine import negotiation_engine
+from backend.services.vin_decoder import vin_decoder
 
-app = FastAPI(title="Car Lease / Loan AI Negotiator")
+load_dotenv()
 
+# Database Configuration
+DB_HOST = os.getenv("DB_HOST", "localhost")
+DB_PORT = int(os.getenv("DB_PORT", 5432))
+DB_NAME = os.getenv("DB_NAME", "contractdb")
+DB_USER = os.getenv("DB_USER", "admin")
+DB_PASS = os.getenv("DB_PASS", "manvi123")
+
+# File paths
+UPLOAD_DIR = "data/uploads"
+TEXT_DIR = "data/text"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+os.makedirs(TEXT_DIR, exist_ok=True)
+
+# Initialize FastAPI app
+app = FastAPI(title="Car Lease/Loan AI Negotiator", version="1.0.0")
+
+# CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -72,7 +49,7 @@ app.add_middleware(
 )
 
 # ======================
-# MODELS
+# DATA MODELS
 # ======================
 
 class ChatRequest(BaseModel):
@@ -82,64 +59,291 @@ class CounterOfferRequest(BaseModel):
     contract_data: Dict[str, Any]
     target_improvements: List[str]
 
+class UserSignup(BaseModel):
+    email: str
+    name: str
+    password: str
+
+class UserLogin(BaseModel):
+    email: str
+    password: str
+
 # ======================
-# STORAGE (IN-MEMORY)
+# IN-MEMORY STORAGE
 # ======================
 
 uploaded_contracts: Dict[str, Dict[str, Any]] = {}
 
 # ======================
-# HEALTH CHECK
+# DATABASE HELPERS
+# ======================
+
+def get_db_connection():
+    """Get database connection (PostgreSQL with SQLite fallback)"""
+    try:
+        conn = psycopg2.connect(
+            host=DB_HOST,
+            port=DB_PORT,
+            user=DB_USER,
+            password=DB_PASS,
+            database=DB_NAME
+        )
+        return conn, "postgresql"
+    except Exception as e:
+        # Fallback to SQLite
+        sqlite_db = "contract_assistant.db"
+        conn = sqlite3.connect(sqlite_db, check_same_thread=False)
+        
+        # Initialize SQLite tables if needed
+        cur = conn.cursor()
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                email TEXT UNIQUE NOT NULL,
+                name TEXT NOT NULL,
+                password TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS contracts (
+                id TEXT PRIMARY KEY,
+                file_path TEXT,
+                text_path TEXT,
+                extracted_text TEXT,
+                ingested_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                analysis_status TEXT DEFAULT 'PENDING'
+            )
+        """)
+        conn.commit()
+        return conn, "sqlite"
+
+def save_to_db(file_id: str, file_path: str, text_path: str, extracted_text: str):
+    """Save contract data to database"""
+    conn = None
+    try:
+        conn, db_type = get_db_connection()
+        cur = conn.cursor()
+
+        if db_type == "postgresql":
+            cur.execute("""
+                INSERT INTO contracts 
+                (id, file_path, text_path, extracted_text, ingested_at, analysis_status)
+                VALUES (%s, %s, %s, %s, NOW(), 'PENDING')
+                ON CONFLICT (id) DO UPDATE SET
+                    file_path = EXCLUDED.file_path,
+                    text_path = EXCLUDED.text_path,
+                    extracted_text = EXCLUDED.extracted_text,
+                    ingested_at = NOW()
+            """, (file_id, file_path, text_path, extracted_text))
+        else:
+            cur.execute("""
+                INSERT OR REPLACE INTO contracts 
+                (id, file_path, text_path, extracted_text, ingested_at, analysis_status)
+                VALUES (?, ?, ?, ?, datetime('now'), 'PENDING')
+            """, (file_id, file_path, text_path, extracted_text))
+
+        conn.commit()
+        cur.close()
+        conn.close()
+        return True
+    except Exception as e:
+        print(f"Database operation failed: {e}")
+        if conn:
+            conn.close()
+        return False
+
+# ======================
+# API ENDPOINTS
 # ======================
 
 @app.get("/health")
 def health_check():
+    """Health check endpoint"""
     return {
         "status": "healthy",
-        "timestamp": datetime.now().isoformat()
+        "timestamp": datetime.now().isoformat(),
+        "service": "Car Lease/Loan AI Assistant"
     }
 
-# ======================
-# UPLOAD PDF
-# ======================
+@app.post("/signup")
+async def signup(user: UserSignup):
+    """Create a new user account"""
+    conn = None
+    try:
+        conn, db_type = get_db_connection()
+        cur = conn.cursor()
+        
+        if db_type == "postgresql":
+            cur.execute("INSERT INTO users (email, name, password) VALUES (%s, %s, %s)", (user.email, user.name, user.password))
+        else:
+            cur.execute("INSERT INTO users (email, name, password) VALUES (?, ?, ?)", (user.email, user.name, user.password))
+            
+        conn.commit()
+        return {"message": "User created successfully", "name": user.name}
+    except Exception as e:
+        if "UNIQUE constraint failed" in str(e) or "duplicate key value" in str(e):
+            raise HTTPException(status_code=400, detail="Email already exists")
+        raise HTTPException(status_code=500, detail=f"Signup failed: {str(e)}")
+    finally:
+        if conn:
+            conn.close()
+
+@app.post("/login")
+async def login(user: UserLogin):
+    """Login a user"""
+    conn = None
+    try:
+        conn, db_type = get_db_connection()
+        cur = conn.cursor()
+        
+        if db_type == "postgresql":
+            cur.execute("SELECT name, password FROM users WHERE email = %s", (user.email,))
+        else:
+            cur.execute("SELECT name, password FROM users WHERE email = ?", (user.email,))
+            
+        row = cur.fetchone()
+        if not row:
+            raise HTTPException(status_code=401, detail="Invalid email or password")
+        
+        if row[1] != user.password:
+            raise HTTPException(status_code=401, detail="Invalid email or password")
+            
+        return {"message": "Login successful", "name": row[0], "email": user.email}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Login failed: {str(e)}")
+    finally:
+        if conn:
+            conn.close()
 
 @app.post("/upload")
 async def upload_contract(file: UploadFile = File(...)):
-    if not file.filename.lower().endswith(".pdf"):
-        raise HTTPException(status_code=400, detail="Only PDF files allowed")
+    """
+    Upload PDF or image contract file.
+    Automatically analyzes the contract and returns complete data.
+    Returns file_id for tracking.
+    """
+    if not file.filename:
+        raise HTTPException(status_code=400, detail="No file provided")
+    
+    # Validate file type
+    file_ext = os.path.splitext(file.filename)[1].lower()
+    if file_ext not in ['.pdf', '.png', '.jpg', '.jpeg']:
+        raise HTTPException(status_code=400, detail="Only PDF and image files allowed")
 
-    content = await file.read()
-    text = pdf_extractor.extract_text(content)
-
-    if not text:
-        raise HTTPException(status_code=400, detail="Failed to extract text from PDF")
-
+    # Generate unique file ID
     file_id = str(uuid4())
+    
+    # Save file locally
+    filename = f"{file_id}_{file.filename}"
+    file_path = os.path.join(UPLOAD_DIR, filename)
+    
+    content = await file.read()
+    with open(file_path, 'wb') as f:
+        f.write(content)
+    
+    # Extract text using pdfextractor
+    try:
+        text = pdf_extractor.extract_text(content)
+        
+        if not text or len(text.strip()) < 50:
+            raise HTTPException(status_code=400, detail="Failed to extract meaningful text from file")
+        
+        # Save to text file
+        text_path = os.path.join(TEXT_DIR, f"{file_id}.txt")
+        with open(text_path, 'w', encoding='utf-8') as f:
+            f.write(text)
+        
+        # Prepare cleaned text for analysis
+        contract_text = text.replace("\n", " ").strip()
+        
+        # AUTO-ANALYZE: Run contract analysis immediately
+        try:
+            # AI Analysis with HuggingFace
+            analysis = contract_analyzer.analyze_contract(contract_text)
+            risks = contract_analyzer.identify_risks(contract_text)
+            fairness_score = fairness_scorer.calculate_score(analysis)
+            
+            # Color coding for UI
+            score = fairness_score["overall_score"]
+            if score >= 85:
+                fairness_score["ui_color"] = "green"
+            elif score >= 55:
+                fairness_score["ui_color"] = "orange"
+            else:
+                fairness_score["ui_color"] = "red"
+            
+            fairness_score["explanation"] = fairness_score.get("reasons", [])
+            
+            # Set context for chatbot
+            negotiation_engine.set_context(contract_text, analysis)
+            
+            # Store complete data in memory
+            uploaded_contracts[file_id] = {
+                "filename": file.filename,
+                "file_path": file_path,
+                "text_path": text_path,
+                "text_raw": text,
+                "text_cleaned": contract_text,
+                "uploaded_at": datetime.now().isoformat(),
+                "analysis": analysis,
+                "risks": risks,
+                "fairness_score": fairness_score
+            }
+            
+            # Save to database (optional, will fail silently if DB not available)
+            save_to_db(file_id, file_path, text_path, text)
+            
+            return {
+                "file_id": file_id,
+                "filename": file.filename,
+                "text_length": len(text),
+                "analysis": analysis,
+                "risks": risks,
+                "fairness_score": fairness_score,
+                "message": "Contract uploaded and analyzed successfully"
+            }
+            
+        except Exception as analysis_error:
+            # Fallback: Store without analysis if analysis fails
+            uploaded_contracts[file_id] = {
+                "filename": file.filename,
+                "file_path": file_path,
+                "text_path": text_path,
+                "text_raw": text,
+                "text_cleaned": contract_text,
+                "uploaded_at": datetime.now().isoformat()
+            }
+            
+            # Save to database
+            save_to_db(file_id, file_path, text_path, text)
+            
+            return {
+                "file_id": file_id,
+                "filename": file.filename,
+                "text_length": len(text),
+                "message": "Contract uploaded successfully. Analysis available at /analyze endpoint.",
+                "warning": f"Auto-analysis failed: {str(analysis_error)}"
+            }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Text extraction failed: {str(e)}")
 
-    uploaded_contracts[file_id] = {
-        "filename": file.filename,
-        "text_raw": text,
-        "text_cleaned": text.replace("\n", " ").strip(),
-        "uploaded_at": datetime.now().isoformat()
-    }
 
-    return {
-        "file_id": file_id,
-        "filename": file.filename,
-        "text_length": len(text),
-        "message": "Contract uploaded successfully"
-    }
 
-# ======================
-# ANALYZE CONTRACT
-# ======================
 
 @app.post("/analyze/{file_id}")
 async def analyze_contract(file_id: str):
+    """
+    Analyze uploaded contract using AI.
+    Extracts terms, calculates fairness score, identifies risks.
+    """
     if file_id not in uploaded_contracts:
         raise HTTPException(status_code=404, detail="Contract not found")
 
-    # ✅ Return cached result if already analyzed
+    # Return cached result if already analyzed
     if "analysis" in uploaded_contracts[file_id]:
         return {
             "file_id": file_id,
@@ -151,7 +355,7 @@ async def analyze_contract(file_id: str):
 
     contract_text = uploaded_contracts[file_id]["text_cleaned"]
 
-    # Gemini analysis
+    # AI Analysis with HuggingFace
     analysis = contract_analyzer.analyze_contract(contract_text)
     if not analysis:
         raise HTTPException(status_code=500, detail="Contract analysis failed")
@@ -159,9 +363,10 @@ async def analyze_contract(file_id: str):
     # Risk analysis
     risks = contract_analyzer.identify_risks(contract_text)
 
-    # Fairness score
+    # Fairness score calculation
     fairness_score = fairness_scorer.calculate_score(analysis)
 
+    # Color coding for UI
     score = fairness_score["overall_score"]
     if score >= 85:
         fairness_score["ui_color"] = "green"
@@ -175,6 +380,7 @@ async def analyze_contract(file_id: str):
     # Set context for chatbot
     negotiation_engine.set_context(contract_text, analysis)
 
+    # Cache results
     uploaded_contracts[file_id]["analysis"] = analysis
     uploaded_contracts[file_id]["risks"] = risks
     uploaded_contracts[file_id]["fairness_score"] = fairness_score
@@ -186,29 +392,25 @@ async def analyze_contract(file_id: str):
         "fairness_score": fairness_score
     }
 
-# ======================
-# GET CONTRACT DETAILS
-# ======================
 
 @app.get("/contract/{file_id}")
 async def get_contract(file_id: str):
+    """Get contract details by file_id"""
     if file_id not in uploaded_contracts:
         raise HTTPException(status_code=404, detail="Contract not found")
     return uploaded_contracts[file_id]
 
-# ======================
-# NEGOTIATION SCRIPT
-# ======================
 
 @app.post("/negotiate/script/{file_id}")
 async def generate_script(file_id: str):
+    """Generate negotiation email script"""
     if file_id not in uploaded_contracts:
         raise HTTPException(status_code=404, detail="Contract not found")
 
     contract = uploaded_contracts[file_id]
 
     if "analysis" not in contract:
-        raise HTTPException(status_code=400, detail="Contract not analyzed yet")
+        raise HTTPException(status_code=400, detail="Contract not analyzed yet. Call /analyze/{file_id} first")
 
     script = negotiation_engine.generate_negotiation_script(
         contract["analysis"],
@@ -217,12 +419,10 @@ async def generate_script(file_id: str):
 
     return {"script": script}
 
-# ======================
-# CHAT WITH CONTRACT CONTEXT
-# ======================
 
 @app.post("/negotiate/chat/{file_id}")
 async def chat(file_id: str, request: ChatRequest):
+    """Chat with AI negotiation assistant"""
     if file_id not in uploaded_contracts:
         raise HTTPException(status_code=404, detail="Contract not found")
 
@@ -241,12 +441,10 @@ async def chat(file_id: str, request: ChatRequest):
 
     return {"response": response}
 
-# ======================
-# COUNTER OFFER
-# ======================
 
 @app.post("/negotiate/counter-offer")
 async def create_counter_offer(request: CounterOfferRequest):
+    """Generate counter-offer with improved terms"""
     counter_offer = negotiation_engine.generate_counter_offer(
         request.contract_data,
         request.target_improvements
@@ -266,213 +464,32 @@ async def clear_cache(file_id: str):
     uploaded_contracts[file_id].pop("fairness_score", None)
     
     return {"message": "Cache cleared. Re-analyze the contract."}
-# backend/main.py
 
-from fastapi import FastAPI, UploadFile, File, HTTPException
-from fastapi.responses import JSONResponse
-import os
-import uuid
-import json
-from datetime import datetime
-from dotenv import load_dotenv
-import psycopg2
-import boto3
-from botocore.exceptions import BotoCoreError, ClientError
 
-from backend.ocr import run_ocr  # OCR function
+@app.get("/decode-vin/{vin}")
+async def decode_vin_endpoint(vin: str):
+    """
+    Decode VIN using NHTSA API
+    Returns vehicle make, model, year, and other details
+    """
+    result = vin_decoder.decode_vin(vin)
+    
+    if not result.get('success'):
+        raise HTTPException(status_code=400, detail=result.get('error', 'VIN decode failed'))
+    
+    return result
 
-load_dotenv()
 
-# ------------------------------
-# CONFIG
-# ------------------------------
+# ======================
+# RUN SERVER
+# ======================
 
-USE_S3 = os.getenv("USE_S3", "0") == "1"
-S3_BUCKET = os.getenv("S3_BUCKET", "")
-AWS_REGION = os.getenv("AWS_REGION", "us-east-1")
-
-UPLOAD_DIR = "data/uploads"
-TEXT_DIR = "data/text"
-
-os.makedirs(UPLOAD_DIR, exist_ok=True)
-os.makedirs(TEXT_DIR, exist_ok=True)
-
-# DATABASE CONFIG
-DB_HOST = "localhost"
-DB_PORT = 5432
-DB_NAME = "contractdb"
-DB_USER = "admin"
-DB_PASS = "manvi123"
-
-app = FastAPI(title="Car Lease Backend")
-
-# ------------------------------
-# LOCAL FILE UPLOAD
-# ------------------------------
-
-def upload_to_local(file_id: str, file: UploadFile) -> dict:
-    filename = f"{file_id}_{file.filename}"
-    path = os.path.join(UPLOAD_DIR, filename)
-    with open(path, "wb") as f:
-        f.write(file.file.read())
-    return {"file_id": file_id, "filename": filename, "file_path": path}
-
-# ------------------------------
-# S3 UPLOAD (OPTIONAL)
-# ------------------------------
-
-def upload_to_s3(file_id: str, file: UploadFile) -> dict:
-    s3 = boto3.client("s3", region_name=AWS_REGION)
-    key = f"{file_id}/{file.filename}"
-    try:
-        file.file.seek(0)
-        s3.upload_fileobj(file.file, S3_BUCKET, key)
-        return {
-            "file_id": file_id,
-            "filename": file.filename,
-            "s3_path": f"s3://{S3_BUCKET}/{key}"
-        }
-    except (BotoCoreError, ClientError) as e:
-        raise HTTPException(status_code=500, detail=f"S3 upload failed: {e}")
-
-# ------------------------------
-# HEALTH CHECK
-# ------------------------------
-
-@app.get("/health")
-def health():
-    return {"status": "ok"}
-
-# ------------------------------
-# UPLOAD ENDPOINT
-# ------------------------------
-
-@app.post("/upload")
-async def upload(file: UploadFile = File(...)):
-    file_id = str(uuid.uuid4())
-
-    if USE_S3:
-        result = upload_to_s3(file_id, file)
-    else:
-        result = upload_to_local(file_id, file)
-
-    result["uploaded_at"] = datetime.utcnow().isoformat()
-    return JSONResponse(result)
-
-# ------------------------------
-# DB SAVE (OCR DATA)
-# ------------------------------
-
-def save_to_db(file_id, file_path, text_path, extracted_text):
-    try:
-        conn = psycopg2.connect(
-            host=DB_HOST,
-            port=DB_PORT,
-            user=DB_USER,
-            password=DB_PASS,
-            database=DB_NAME
-        )
-        cur = conn.cursor()
-
-        cur.execute("""
-            INSERT INTO contracts 
-            (id, file_path, text_path, extracted_text, ingested_at, analysis_status)
-            VALUES (%s, %s, %s, %s, NOW(), 'PENDING')
-        """, (file_id, file_path, text_path, extracted_text))
-
-        conn.commit()
-        cur.close()
-        conn.close()
-
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"DB insert failed: {e}")
-
-# ------------------------------
-# OCR ENDPOINT
-# ------------------------------
-
-@app.post("/ocr/{file_id}")
-def ocr(file_id: str):
-
-    matches = [f for f in os.listdir(UPLOAD_DIR) if f.startswith(file_id)]
-    if not matches:
-        raise HTTPException(status_code=404, detail="Uploaded file not found")
-
-    filename = matches[0]
-    pdf_path = os.path.join(UPLOAD_DIR, filename)
-    text_output_path = os.path.join(TEXT_DIR, f"{file_id}.txt")
-
-    extracted_text = run_ocr(pdf_path, text_output_path)
-
-    save_to_db(
-        file_id=file_id,
-        file_path=pdf_path,
-        text_path=text_output_path,
-        extracted_text=extracted_text
-    )
-
-    return {
-        "file_id": file_id,
-        "text_path": text_output_path,
-        "text_length": len(extracted_text),
-        "analysis_status": "PENDING"
-    }
-
-# ------------------------------
-# ANALYSIS FUNCTION
-# ------------------------------
-
-def analyze_and_save(file_id: str):
-    try:
-        conn = psycopg2.connect(
-            host=DB_HOST,
-            port=DB_PORT,
-            user=DB_USER,
-            password=DB_PASS,
-            database=DB_NAME
-        )
-        cur = conn.cursor()
-
-        cur.execute("SELECT extracted_text FROM contracts WHERE id = %s", (file_id,))
-        row = cur.fetchone()
-
-        if not row:
-            raise HTTPException(status_code=404, detail="Contract not found")
-
-        extracted_text = row[0]
-
-        # MOCK AI EXTRACTION
-        extracted_data = {
-            "apr": "7.5%",
-            "monthly_payment": "12000",
-            "lease_term": "36 months"
-        }
-
-        cur.execute("""
-            UPDATE contracts
-            SET extracted_data = %s,
-                analysis_status = 'COMPLETED'
-            WHERE id = %s
-        """, (json.dumps(extracted_data), file_id))
-
-        conn.commit()
-        cur.close()
-        conn.close()
-
-        return extracted_data
-
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Analysis failed: {e}")
-
-# ------------------------------
-# ANALYZE ENDPOINT
-# ------------------------------
-
-@app.post("/analyze/{file_id}")
-def analyze(file_id: str):
-    extracted_data = analyze_and_save(file_id)
-    return {
-        "file_id": file_id,
-        "analysis_status": "COMPLETED",
-        "extracted_data": extracted_data
-    }
+if __name__ == "__main__":
+    import uvicorn
+    print("\n" + "="*60)
+    print("🚗 Car Lease/Loan AI Assistant - Backend Server")
+    print("="*60)
+    print("\n📍 Server: http://localhost:8000")
+    print("📖 API Docs: http://localhost:8000/docs")
+    print("\n✅ Ready to accept requests!\n")
+    uvicorn.run(app, host="0.0.0.0", port=8000)

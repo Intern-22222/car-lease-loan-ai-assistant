@@ -1,6 +1,6 @@
 """
-Negotiation Engine - Powered by Google Gemini AI
-Handles intelligent car negotiation advice using real AI with conversation history.
+Negotiation Engine - Powered by HuggingFace AI
+Handles intelligent car negotiation advice using HuggingFace Inference API with conversation history.
 """
 
 import os
@@ -15,41 +15,23 @@ load_dotenv()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Initialize Gemini
+# Initialize HuggingFace
 try:
-    import google.generativeai as genai
-    
-    api_key = os.getenv("GEMINI_API_KEY")
-    if api_key:
-        genai.configure(api_key=api_key)
-        GEMINI_AVAILABLE = True
-        logger.info("✅ Gemini AI initialized successfully")
-    else:
-        GEMINI_AVAILABLE = False
-        logger.warning("⚠️ GEMINI_API_KEY not found in .env - using fallback mode")
-except ImportError:
-    GEMINI_AVAILABLE = False
-    logger.warning("⚠️ google-generativeai not installed - using fallback mode")
+    from backend.services.huggingface_service import huggingface_service
+    HF_AVAILABLE = True
+    logger.info("✅ HuggingFace service initialized successfully")
+except Exception as e:
+    HF_AVAILABLE = False
+    logger.warning(f"⚠️ HuggingFace service not available: {e}")
 
 
 class NegotiationEngine:
     def __init__(self):
-        self.model = None
+        self.hf_service = huggingface_service if HF_AVAILABLE else None
         self.chat_sessions = {}  # Store chat history per session
         
-        if GEMINI_AVAILABLE:
-            try:
-                # gemini-2.5-flash has the best availability on free tier
-                model_names = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-exp']
-                for model_name in model_names:
-                    try:
-                        self.model = genai.GenerativeModel(model_name)
-                        logger.info(f"✅ Gemini model loaded: {model_name}")
-                        break
-                    except Exception:
-                        continue
-            except Exception as e:
-                logger.error(f"Failed to load Gemini model: {e}")
+        if HF_AVAILABLE and self.hf_service:
+            logger.info("✅ HuggingFace Negotiation Engine loaded")
 
     def generate_system_prompt(self, vehicle_details: Dict[str, Any], market_value: Dict[str, Any]) -> str:
         """Creates the system context for the AI based on the specific car and its value."""
@@ -118,8 +100,8 @@ RULES:
 
         response_text = None
 
-        # Try Gemini AI first
-        if GEMINI_AVAILABLE and self.model:
+        # Try HuggingFace AI first
+        if HF_AVAILABLE and self.hf_service:
             try:
                 if has_vehicle_context:
                     system_prompt = self.generate_system_prompt(vehicle_details, market_value)
@@ -142,14 +124,13 @@ Be friendly, professional, and concise in your responses."""
                 # Build prompt with conversation history
                 full_prompt = self._build_conversation_prompt(system_prompt, history[:-1], user_message)
                 
-                response = self.model.generate_content(full_prompt)
+                response_text = self.hf_service.generate_text(full_prompt, max_tokens=300)
                 
-                if response and response.text:
-                    response_text = response.text.strip()
-                    logger.info("✅ Gemini response generated")
+                if response_text:
+                    logger.info("✅ HuggingFace response generated")
                     
             except Exception as e:
-                logger.error(f"Gemini API error: {e}")
+                logger.error(f"HuggingFace API error: {e}")
                 # Fall through to fallback
 
         # Fallback: Rule-based responses
@@ -198,12 +179,12 @@ Be friendly, professional, and concise in your responses."""
 
     def analyze_document_text(self, text: str, user_prompt: str = None) -> Dict[str, Any]:
         """
-        Analyze extracted text from a document using Gemini AI.
+        Analyze extracted text from a document using HuggingFace AI.
         Identifies document type, extracted values, and negotiation insights.
         If user_prompt is provided, answers the user's specific question about the document.
         """
-        if not GEMINI_AVAILABLE or not self.model:
-            logger.warning("Gemini not available for document analysis")
+        if not HF_AVAILABLE or not self.hf_service:
+            logger.warning("HuggingFace not available for document analysis")
             return {
                 "success": False,
                 "error": "AI service unavailable",
@@ -214,94 +195,88 @@ Be friendly, professional, and concise in your responses."""
             # Build prompt based on whether user has a specific question
             if user_prompt:
                 prompt = f"""
-                You are a car negotiation expert. The user has uploaded a document and asked a question about it.
-                
-                DOCUMENT TEXT (extracted via OCR):
-                {text[:4000]}
-                
-                USER'S QUESTION:
-                {user_prompt}
-                
-                INSTRUCTIONS:
-                1. First, provide a clear, concise OVERVIEW (2-3 sentences) of what this document is (e.g., "This is a Buyer's Order for a 2024 Honda Civic showing a total price of...").
-                2. Then, provide a specific ANSWER to the user's question based on the document content.
-                3. Be professional and highlight any red flags if relevant to the answer.
+You are a car negotiation expert. The user has uploaded a document and asked a question about it.
 
-                FORMAT YOUR RESPONSE AS:
-                **Document Overview:**
-                [Overview text here]
+DOCUMENT TEXT (extracted via OCR):
+{text[:4000]}
 
-                **Answer:**
-                [Specific answer here]
-                """
+USER'S QUESTION:
+{user_prompt}
+
+INSTRUCTIONS:
+1. First, provide a clear, concise OVERVIEW (2-3 sentences) of what this document is (e.g., "This is a Buyer's Order for a 2024 Honda Civic showing a total price of...").
+2. Then, provide a specific ANSWER to the user's question based on the document content.
+3. Be professional and highlight any red flags if relevant to the answer.
+
+FORMAT YOUR RESPONSE AS:
+**Document Overview:**
+[Overview text here]
+
+**Answer:**
+[Specific answer here]
+"""
             else:
                 prompt = f"""
-                Analyze the following text extracted from a car dealer document (window sticker, quote, contract, invoice, etc.):
-                
-                TEXT:
-                {text[:4000]}
-                
-                YOUR TASK:
-                1. Identify the Document Type (e.g. Window Sticker, Buyer's Order, Lease Worksheet)
-                2. Extract Key Details: VIN, Year, Make, Model, Trim, Price (MSRP/Selling Price), Fees, Add-ons
-                3. Provide Negotiation Insights: Identify hidden fees, dealer markups (ADM), or non-negotiable items.
-                
-                OUTPUT FORMAT (JSON):
-                {{
-                    "document_type": "string",
-                    "vehicle": {{
-                        "vin": "string (or null)",
-                        "year": "string (or null)",
-                        "make": "string (or null)",
-                        "model": "string (or null)",
-                        "trim": "string (or null)"
-                    }},
-                    "financials": {{
-                        "price": number (or null),
-                        "currency": "USD",
-                        "doc_fee": number (or null),
-                        "freight_fee": number (or null),
-                        "add_ons_total": number (or null)
-                    }},
-                    "insights": [
-                        "insight 1",
-                        "insight 2"
-                    ],
-                    "summary": "Brief summary of what this document represents."
-                }}
-                Return ONLY the valid JSON with no markdown formatting.
-                """
+Analyze the following text extracted from a car dealer document (window sticker, quote, contract, invoice, etc.):
+
+TEXT:
+{text[:4000]}
+
+YOUR TASK:
+1. Identify the Document Type (e.g. Window Sticker, Buyer's Order, Lease Worksheet)
+2. Extract Key Details: VIN, Year, Make, Model, Trim, Price (MSRP/Selling Price), Fees, Add-ons
+3. Provide Negotiation Insights: Identify hidden fees, dealer markups (ADM), or non-negotiable items.
+
+OUTPUT FORMAT (JSON):
+{{
+    "document_type": "string",
+    "vehicle": {{
+        "vin": "string (or null)",
+        "year": "string (or null)",
+        "make": "string (or null)",
+        "model": "string (or null)",
+        "trim": "string (or null)"
+    }},
+    "financials": {{
+        "price": number (or null),
+        "currency": "USD",
+        "doc_fee": number (or null),
+        "freight_fee": number (or null),
+        "add_ons_total": number (or null)
+    }},
+    "insights": [
+        "insight 1",
+        "insight 2"
+    ],
+    "summary": "Brief summary of what this document represents."
+}}
+Return ONLY the valid JSON with no markdown formatting.
+"""
             
-            response = self.model.generate_content(prompt)
+            result = self.hf_service.analyze_with_prompt(prompt, text)
             
-            if response and response.text:
+            if isinstance(result, dict):
                 # If user asked a question, return the text response
-                if user_prompt:
+                if user_prompt and "response" in result:
                     return {
                         "success": True,
-                        "response": response.text.strip(),
+                        "response": result["response"],
                         "is_conversation": True
                     }
                 else:
                     # Parse JSON for auto-analysis
-                    import json
-                    raw_json = response.text.strip().replace('```json', '').replace('```', '')
-                    try:
-                        analysis = json.loads(raw_json)
-                        return {
-                            "success": True,
-                            "analysis": analysis,
-                            "raw_text": text
-                        }
-                    except json.JSONDecodeError:
-                        logger.error("Failed to parse JSON from AI response")
-                        return {
-                            "success": False, 
-                            "error": "AI response parsing failed",
-                            "raw_response": response.text
-                        }
+                    return {
+                        "success": True,
+                        "analysis": result,
+                        "raw_text": text
+                    }
+            else:
+                return {
+                    "success": False,
+                    "error": "Failed to parse AI response",
+                    "raw_response": str(result)
+                }
                     
         except Exception as e:
             logger.error(f"Document analysis error: {e}")
             return {"success": False, "error": str(e)}
-

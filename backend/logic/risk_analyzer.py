@@ -1,5 +1,5 @@
 from typing import Dict, Any
-from backend.services.gemini_service import gemini_service
+from backend.services.huggingface_service import huggingface_service
 
 
 class RiskAnalyzer:
@@ -37,7 +37,7 @@ Rules:
 - Do not add explanations outside JSON
 """
 
-        result = gemini_service.analyze_with_prompt(prompt, text)
+        result = huggingface_service.analyze_with_prompt(prompt, text)
 
         # Safety: always return dict
         if not isinstance(result, dict):
