@@ -2044,6 +2044,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import jsPDF from "jspdf";
 import axios from "axios"; // Ensure axios is installed or use fetch
+import ChatbotWidget from "../components/ChatbotWidget";
 
 const ResultDetailsPage = () => {
   const { id } = useParams();
@@ -2181,7 +2182,12 @@ const ResultDetailsPage = () => {
 
   if (!record) return null;
 
+  // const price = record.pricingAnalysis || {};
+  // 👇 FIXED LOGIC HERE
   const price = record.pricingAnalysis || {};
+  if (price.contractPrice && price.marketFairPrice) {
+    price.difference = price.contractPrice - price.marketFairPrice;
+  }
   const vehicle = record.vehicleDetails || {};
   const fields = record.fields || {};
   const hiddenFees = record.hiddenFees || {};
@@ -2448,6 +2454,8 @@ const DetailRow = ({ label, value, highlight }) => (
     >
       {value && value !== "Not Specified" ? value : "--"}
     </span>
+
+    <ChatbotWidget />
   </div>
 );
 

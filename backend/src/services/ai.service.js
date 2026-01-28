@@ -1143,6 +1143,44 @@ const cleanAndParseJSON = (text) => {
 };
 
 // ✅ 1. Contract Parsing
+// const parseContractTerms = async (contractText) => {
+//   try {
+//     if (!process.env.OPENROUTER_API_KEY) return {};
+
+//     const completion = await openai.chat.completions.create({
+//       model: MODEL_NAME,
+//       messages: [
+//         {
+//           role: "system",
+//           content:
+//             "You are an OCR assistant. Output STRICT VALID JSON with DOUBLE QUOTES.",
+//         },
+//         {
+//           role: "user",
+//           content: `
+//             Extract contract details into JSON.
+//             Keys: loan_amount, interest_rate, tenure_months, monthly_payment, 
+//             down_payment, residual_value, mileage_allowance, early_termination_fee, 
+//             purchase_option_price, maintenance_responsibilities, warranty_coverage, late_payment_penalty.
+            
+//             Use "Not Specified" if missing.
+            
+//             Text: "${contractText.substring(0, 8000)}"
+//           `,
+//         },
+//       ],
+//     });
+
+//     const result = cleanAndParseJSON(completion.choices[0].message.content);
+//     return Array.isArray(result) ? {} : result; // Ensure Object
+//   } catch (error) {
+//     return {};
+//   }
+// };
+
+
+
+// ✅ 1. Contract Parsing (UPDATED to include Summary)
 const parseContractTerms = async (contractText) => {
   try {
     if (!process.env.OPENROUTER_API_KEY) return {};
@@ -1152,18 +1190,22 @@ const parseContractTerms = async (contractText) => {
       messages: [
         {
           role: "system",
-          content:
-            "You are an OCR assistant. Output STRICT VALID JSON with DOUBLE QUOTES.",
+          content: "You are an OCR assistant. Output STRICT VALID JSON with DOUBLE QUOTES.",
         },
         {
           role: "user",
           content: `
             Extract contract details into JSON.
-            Keys: loan_amount, interest_rate, tenure_months, monthly_payment, 
+            
+            REQUIRED KEYS: 
+            loan_amount, interest_rate, tenure_months, monthly_payment, 
             down_payment, residual_value, mileage_allowance, early_termination_fee, 
             purchase_option_price, maintenance_responsibilities, warranty_coverage, late_payment_penalty.
+
+            NEW KEY:
+            "summary": "Provide a 2-sentence summary of any non-financial clauses found (e.g., SLAs, Escalation Matrix, Support hours, or Insurance requirements)."
             
-            Use "Not Specified" if missing.
+            Use "Not Specified" if a field is missing.
             
             Text: "${contractText.substring(0, 8000)}"
           `,
@@ -1177,6 +1219,7 @@ const parseContractTerms = async (contractText) => {
     return {};
   }
 };
+
 
 // ✅ 2. Recommendation
 const generateRecommendation = async (vehicleDetails, pricing, loanTerms) => {
@@ -1254,18 +1297,75 @@ const generateNegotiationEmail = async (
 };
 
 // ✅ 5. Chat
+// const chatWithAI = async (message, contextData = null) => {
+//   try {
+//     const completion = await openai.chat.completions.create({
+//       model: MODEL_NAME,
+//       messages: [
+//         { role: "system", content: "You are a helpful car buying coach." },
+//         { role: "user", content: message },
+//       ],
+//     });
+//     return completion.choices[0].message.content;
+//   } catch (error) {
+//     return "Service unavailable.";
+//   }
+// };
+
+
+// ✅ 5. Chat (Context-Aware + Navigation Knowledge)
 const chatWithAI = async (message, contextData = null) => {
   try {
+    // 👇 BASE KNOWLEDGE: Teach the AI about the App's features
+    let systemPrompt = `
+      You are the AI Assistant for 'AutoLoan AI'.
+      Your goal is to help users negotiate car loans and navigate this application.
+
+      APP NAVIGATION GUIDE:
+      1. **To Compare Contracts**: Go to the 'History' page, select 2 or 3 contracts by clicking them, and click the 'Compare Selected' button.
+      2. **To Analyze a New Contract**: Go to the 'Home' (Upload) page and drop your PDF.
+      3. **To Draft Emails**: Go to the 'Email Generator' page.
+      4. **To View Past Analysis**: Click on 'History' in the navigation bar.
+
+      NEGOTIATION BASICS:
+      - Always advise users to negotiate the interest rate and remove junk fees.
+      - A "Fairness Score" below 50 means the deal is bad.
+    `;
+
+    // 👇 SPECIFIC CONTEXT (If user is looking at a specific file)
+    if (contextData) {
+      systemPrompt += `
+      
+      CURRENT CONTEXT (The user is viewing a specific contract):
+      - Vehicle: ${contextData.vehicle || "Unknown Car"}
+      - Contract Price: ${contextData.price || "N/A"}
+      - Market Fair Price: ${contextData.fairPrice || "N/A"}
+      - Deal Fairness Score: ${contextData.score}/100 (${contextData.verdict})
+      - Interest Rate: ${contextData.interest || "N/A"}
+      - Hidden Fees Detected: ${contextData.fees || "None"}
+      
+      INSTRUCTION: Focus answers on this specific deal.
+      `;
+    } else {
+      // 👇 GENERAL MODE (Dashboard/History)
+      systemPrompt += `
+      
+      CURRENT CONTEXT: General Dashboard Mode.
+      The user is navigating the app. If they ask "Where can I compare?", use the Navigation Guide above to answer.
+      `;
+    }
+
     const completion = await openai.chat.completions.create({
       model: MODEL_NAME,
       messages: [
-        { role: "system", content: "You are a helpful car buying coach." },
+        { role: "system", content: systemPrompt },
         { role: "user", content: message },
       ],
     });
     return completion.choices[0].message.content;
   } catch (error) {
-    return "Service unavailable.";
+    console.error("Chat Error:", error);
+    return "I'm having trouble connecting right now. Please try again.";
   }
 };
 

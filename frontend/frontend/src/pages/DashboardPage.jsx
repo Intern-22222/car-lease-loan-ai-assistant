@@ -178,8 +178,11 @@ const DashboardPage = () => {
 
   useEffect(() => {
     // 1. Get Data safely
-    const storedUser = localStorage.getItem("user");
-    const token = localStorage.getItem("token");
+    // const storedUser = localStorage.getItem("user");
+    // const token = localStorage.getItem("token");
+
+    const storedUser = sessionStorage.getItem("user"); // 👈 Change
+    const token = sessionStorage.getItem("token"); // 👈 Change
 
     if (!token) {
       // If not logged in, go to Login
@@ -201,7 +204,10 @@ const DashboardPage = () => {
   }, [navigate]);
 
   const handleLogout = () => {
-    localStorage.clear();
+    // localStorage.clear();
+    // toast.info("Logged out successfully");
+    // navigate("/login");
+    sessionStorage.clear(); // 👈 Change
     toast.info("Logged out successfully");
     navigate("/login");
   };

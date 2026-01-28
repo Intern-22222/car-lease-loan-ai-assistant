@@ -16,13 +16,22 @@ const LoginPage = () => {
       });
       const data = await res.json();
 
+      // if (data.success) {
+      //   // SAVE TOKEN & USER
+      //   localStorage.setItem("token", data.token);
+      //   localStorage.setItem("user", JSON.stringify(data.user));
+
+      //   toast.success("Welcome back!");
+      //   navigate("/"); // Redirect to Dashboard
+      // }
+      // inside handleLogin function...
       if (data.success) {
-        // SAVE TOKEN & USER
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user));
+        // 👇 CHANGE THIS: Use sessionStorage
+        sessionStorage.setItem("token", data.token);
+        sessionStorage.setItem("user", JSON.stringify(data.user));
 
         toast.success("Welcome back!");
-        navigate("/"); // Redirect to Dashboard
+        navigate("/");
       } else {
         toast.error(data.message);
       }
@@ -45,6 +54,7 @@ const LoginPage = () => {
             <input
               type="email"
               required
+              autoComplete="email" // 👈 ADD THIS
               className="w-full border border-gray-300 rounded-lg p-3 mt-1"
               onChange={(e) =>
                 setFormData({ ...formData, email: e.target.value })
@@ -58,6 +68,7 @@ const LoginPage = () => {
             <input
               type="password"
               required
+              autoComplete="current-password" // 👈 ADD THIS (Fixes the warning)
               className="w-full border border-gray-300 rounded-lg p-3 mt-1"
               onChange={(e) =>
                 setFormData({ ...formData, password: e.target.value })
