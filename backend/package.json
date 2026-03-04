@@ -23,6 +23,7 @@
     "openai": "^6.16.0",
     "pdf-extraction": "^1.0.2",
     "pdf-to-png-converter": "^3.11.0",
+    "resend": "^6.9.3",
     "tesseract.js": "^7.0.0"
   },
   "devDependencies": {

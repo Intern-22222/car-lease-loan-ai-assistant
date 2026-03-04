@@ -79,10 +79,13 @@
 
 const express = require("express");
 const router = express.Router();
-const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
 const OcrResult = require("../models/OcrResult");
 const { generateNegotiationEmail } = require("../services/ai.service");
 require("dotenv").config();
+
+// Initialize Resend
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // 1. GENERATE DRAFT
 router.post("/generate", async (req, res) => {
@@ -116,21 +119,9 @@ router.post("/generate", async (req, res) => {
 router.post("/send", async (req, res) => {
   try {
     const { to, subject, body } = req.body;
-    let transporter;
 
-    if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
-      transporter = nodemailer.createTransport({
-        host: "smtp.gmail.com",
-        port: 587,
-        secure: false, // Use TLS
-        requireTLS: true,
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS,
-        },
-      });
-    } else {
-      console.log("⚠️ No Email Credentials. Mocking send.");
+    if (!process.env.RESEND_API_KEY) {
+      console.log("⚠️ No RESEND_API_KEY. Mocking send.");
       console.log(`To: ${to}, Subject: ${subject}`);
       return res.json({
         success: true,
@@ -138,16 +129,22 @@ router.post("/send", async (req, res) => {
       });
     }
 
-    await transporter.sendMail({
-      from: '"AutoLoan AI" <noreply@autoloanai.com>',
-      to: to,
+    // Send via Resend HTTP API
+    const { data, error } = await resend.emails.send({
+      from: 'AutoLoan AI <onboarding@resend.dev>', // Resend's free testing domain
+      to: [to],
       subject: subject,
       text: body,
     });
 
-    res.json({ success: true, message: "Email sent successfully!" });
+    if (error) {
+      console.error("Resend API Error:", error);
+      return res.status(400).json({ success: false, message: error.message });
+    }
+
+    res.json({ success: true, message: "Email sent successfully!", data });
   } catch (error) {
-    console.error("Email Send Error:", error);
+    console.error("Email Send Server Error:", error);
     res.status(500).json({ success: false, message: "Failed to send email." });
   }
 });
