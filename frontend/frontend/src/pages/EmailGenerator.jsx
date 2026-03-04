@@ -809,8 +809,15 @@ const EmailGeneratorPage = () => {
         }),
       });
       const data = await res.json();
-      if (data.success) toast.success("Email Sent!");
-      else toast.error(data.message);
+      if (data.success) {
+        toast.success("Email Sent!");
+        setGeneratedSubject("");
+        setGeneratedBody("");
+        setRecipientEmail("");
+        setRecipientName("");
+      } else {
+        toast.error(data.message);
+      }
     } catch (err) {
       toast.error("Failed to send email");
     } finally {
