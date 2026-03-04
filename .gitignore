@@ -16,6 +16,12 @@ __pycache__/
 .DS_Store
 Thumbs.db
 
-# Ignore uploads or temporary files (optional)
-uploads/
+# Ignore node_modules
+node_modules/
+backend/node_modules/
+frontend/node_modules/
+
+# Ignore specific uploads or temporary files
+/backend/uploads/
+/uploads/
 temp/
