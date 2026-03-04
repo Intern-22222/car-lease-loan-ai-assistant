@@ -120,7 +120,9 @@ router.post("/send", async (req, res) => {
 
     if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
       transporter = nodemailer.createTransport({
-        service: "gmail",
+        host: "smtp.gmail.com",
+        port: 465,
+        secure: true, // Use `true` for port 465, `false` for port 587
         auth: {
           user: process.env.EMAIL_USER,
           pass: process.env.EMAIL_PASS,
