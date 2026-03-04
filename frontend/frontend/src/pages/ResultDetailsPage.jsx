@@ -12,7 +12,7 @@
 //   useEffect(() => {
 //     const fetchRecord = async () => {
 //       try {
-//         const response = await fetch(`http://localhost:3000/api/results/${id}`);
+//         const response = await fetch(`https://car-lease-loan-ai-assistant.onrender.com/api/results/${id}`);
 //         const data = await response.json();
 
 //         if (!data.success) {
@@ -387,7 +387,7 @@
 //   useEffect(() => {
 //     const fetchRecord = async () => {
 //       try {
-//         const response = await fetch(`http://localhost:3000/api/results/${id}`);
+//         const response = await fetch(`https://car-lease-loan-ai-assistant.onrender.com/api/results/${id}`);
 //         const data = await response.json();
 
 //         if (!data.success) {
@@ -788,7 +788,7 @@
 //   useEffect(() => {
 //     const fetchRecord = async () => {
 //       try {
-//         const response = await fetch(`http://localhost:3000/api/results/${id}`);
+//         const response = await fetch(`https://car-lease-loan-ai-assistant.onrender.com/api/results/${id}`);
 //         const data = await response.json();
 
 //         if (!data.success) {
@@ -1159,7 +1159,7 @@
 //   useEffect(() => {
 //     const fetchRecord = async () => {
 //       try {
-//         const response = await fetch(`http://localhost:3000/api/results/${id}`);
+//         const response = await fetch(`https://car-lease-loan-ai-assistant.onrender.com/api/results/${id}`);
 //         const data = await response.json();
 
 //         if (!data.success) {
@@ -1519,7 +1519,7 @@
 //   useEffect(() => {
 //     const fetchRecord = async () => {
 //       try {
-//         const response = await fetch(`http://localhost:3000/api/results/${id}`);
+//         const response = await fetch(`https://car-lease-loan-ai-assistant.onrender.com/api/results/${id}`);
 //         const data = await response.json();
 //         if (!data.success) {
 //           setError("Record not found");
@@ -1771,7 +1771,7 @@
 //   useEffect(() => {
 //     const fetchRecord = async () => {
 //       try {
-//         const response = await fetch(`http://localhost:3000/api/results/${id}`);
+//         const response = await fetch(`https://car-lease-loan-ai-assistant.onrender.com/api/results/${id}`);
 //         const data = await response.json();
 
 //         if (!data.success) {
@@ -2057,7 +2057,7 @@ const ResultDetailsPage = () => {
       try {
         // 👇 FIXED: Backend sends data in response.data.data
         const response = await axios.get(
-          `http://localhost:3000/api/results/${id}`,
+          `https://car-lease-loan-ai-assistant.onrender.com/api/results/${id}`,
         );
 
         if (response.data.success) {

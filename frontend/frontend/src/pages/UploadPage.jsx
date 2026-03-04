@@ -115,7 +115,7 @@
 
 //     const formData = new FormData();
 //     formData.append("file", selectedFile);
-//     fetch("http://localhost:3000/api/upload", {
+//     fetch("https://car-lease-loan-ai-assistant.onrender.com/api/upload", {
 //       method: "POST",
 //       body: formData,
 //     })
@@ -716,7 +716,7 @@
 //     formData.append("file", selectedFile);
 
 //     // Ensure this URL matches your backend
-//     fetch("http://localhost:3000/api/upload", {
+//     fetch("https://car-lease-loan-ai-assistant.onrender.com/api/upload", {
 //       method: "POST",
 //       body: formData,
 //     })
@@ -1303,7 +1303,7 @@
 //     const formData = new FormData();
 //     formData.append("file", selectedFile);
 
-//     fetch("http://localhost:3000/api/upload", {
+//     fetch("https://car-lease-loan-ai-assistant.onrender.com/api/upload", {
 //       method: "POST",
 //       body: formData,
 //     })
@@ -1799,7 +1799,7 @@
 //     const formData = new FormData();
 //     formData.append("file", selectedFile);
 
-//     fetch("http://localhost:3000/api/upload", {
+//     fetch("https://car-lease-loan-ai-assistant.onrender.com/api/upload", {
 //       method: "POST",
 //       body: formData,
 //     })
@@ -1992,7 +1992,7 @@
 //     const formData = new FormData();
 //     formData.append("file", selectedFile);
 
-//     fetch("http://localhost:3000/api/upload", {
+//     fetch("https://car-lease-loan-ai-assistant.onrender.com/api/upload", {
 //       method: "POST",
 //       body: formData,
 //     })
@@ -2348,7 +2348,7 @@
 //     const formData = new FormData();
 //     formData.append("file", selectedFile);
 
-//     fetch("http://localhost:3000/api/upload", {
+//     fetch("https://car-lease-loan-ai-assistant.onrender.com/api/upload", {
 //       method: "POST",
 //       body: formData,
 //     })
@@ -2686,7 +2686,7 @@
 //     const formData = new FormData();
 //     formData.append("file", selectedFile);
 
-//     fetch("http://localhost:3000/api/upload", {
+//     fetch("https://car-lease-loan-ai-assistant.onrender.com/api/upload", {
 //       method: "POST",
 //       body: formData,
 //     })
@@ -3022,7 +3022,7 @@ const UploadPage = () => {
     const formData = new FormData();
     formData.append("file", selectedFile);
 
-    fetch("http://localhost:3000/api/upload", {
+    fetch("https://car-lease-loan-ai-assistant.onrender.com/api/upload", {
       method: "POST",
       body: formData,
     })

@@ -11,7 +11,7 @@
 
 //   // 1. Fetch History
 //   useEffect(() => {
-//     fetch("http://localhost:3000/api/history")
+//     fetch("https://car-lease-loan-ai-assistant.onrender.com/api/history")
 //       .then((res) => res.json())
 //       .then((data) => {
 //         if (data.success && Array.isArray(data.data)) {
@@ -47,7 +47,7 @@
 
 //     try {
 //       // 👇 This endpoint now exists in the backend file I provided above
-//       const res = await fetch("http://localhost:3000/api/comparison/compare", {
+//       const res = await fetch("https://car-lease-loan-ai-assistant.onrender.com/api/comparison/compare", {
 //         method: "POST",
 //         headers: { "Content-Type": "application/json" },
 //         body: JSON.stringify({ ids: selectedIds }),
@@ -215,7 +215,7 @@ const ComparisonPage = () => {
 
   // 1. Fetch History
   useEffect(() => {
-    fetch("http://localhost:3000/api/history")
+    fetch("https://car-lease-loan-ai-assistant.onrender.com/api/history")
       .then((res) => res.json())
       .then((data) => {
         if (data.success) setHistory(data.data || data.history || []);
@@ -245,7 +245,7 @@ const ComparisonPage = () => {
     setAiVerdict("");
 
     try {
-      const res = await fetch("http://localhost:3000/api/comparison/compare", {
+      const res = await fetch("https://car-lease-loan-ai-assistant.onrender.com/api/comparison/compare", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ids: selectedIds }),

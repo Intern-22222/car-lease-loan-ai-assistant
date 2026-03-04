@@ -15,7 +15,7 @@ const ManualVinLookup = () => {
 
     try {
       // Ensure backend index.js has: app.use("/api/v1/vin", vinRoutes);
-      const response = await fetch("http://localhost:3000/api/v1/vin/decode", {
+      const response = await fetch("https://car-lease-loan-ai-assistant.onrender.com/api/v1/vin/decode", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ vin }),

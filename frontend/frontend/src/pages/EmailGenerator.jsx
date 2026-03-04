@@ -19,7 +19,7 @@
 
 //   // Load Contracts
 //   useEffect(() => {
-//     fetch("http://localhost:3000/api/history")
+//     fetch("https://car-lease-loan-ai-assistant.onrender.com/api/history")
 //       .then((res) => res.json())
 //       .then((data) => {
 //         if (data.success) setHistory(data.data);
@@ -36,7 +36,7 @@
 
 //     setIsGenerating(true);
 //     try {
-//       const res = await fetch("http://localhost:3000/api/email/generate", {
+//       const res = await fetch("https://car-lease-loan-ai-assistant.onrender.com/api/email/generate", {
 //         method: "POST",
 //         headers: { "Content-Type": "application/json" },
 //         body: JSON.stringify({
@@ -75,7 +75,7 @@
 
 //     setIsSending(true);
 //     try {
-//       const res = await fetch("http://localhost:3000/api/email/send", {
+//       const res = await fetch("https://car-lease-loan-ai-assistant.onrender.com/api/email/send", {
 //         method: "POST",
 //         headers: { "Content-Type": "application/json" },
 //         body: JSON.stringify({
@@ -263,7 +263,7 @@
 
 //   // Load Contracts
 //   useEffect(() => {
-//     fetch("http://localhost:3000/api/history")
+//     fetch("https://car-lease-loan-ai-assistant.onrender.com/api/history")
 //       .then((res) => res.json())
 //       .then((data) => {
 //         if (data.success) setHistory(data.data);
@@ -280,7 +280,7 @@
 
 //     setIsGenerating(true);
 //     try {
-//       const res = await fetch("http://localhost:3000/api/email/generate", {
+//       const res = await fetch("https://car-lease-loan-ai-assistant.onrender.com/api/email/generate", {
 //         method: "POST",
 //         headers: { "Content-Type": "application/json" },
 //         body: JSON.stringify({
@@ -318,7 +318,7 @@
 
 //     setIsSending(true);
 //     try {
-//       const res = await fetch("http://localhost:3000/api/email/send", {
+//       const res = await fetch("https://car-lease-loan-ai-assistant.onrender.com/api/email/send", {
 //         method: "POST",
 //         headers: { "Content-Type": "application/json" },
 //         body: JSON.stringify({
@@ -502,7 +502,7 @@
 
 //   // Load Contracts
 //   useEffect(() => {
-//     fetch("http://localhost:3000/api/history")
+//     fetch("https://car-lease-loan-ai-assistant.onrender.com/api/history")
 //       .then((res) => res.json())
 //       .then((data) => {
 //         if (data.success) setHistory(data.data);
@@ -519,7 +519,7 @@
 
 //     setIsGenerating(true);
 //     try {
-//       const res = await fetch("http://localhost:3000/api/email/generate", {
+//       const res = await fetch("https://car-lease-loan-ai-assistant.onrender.com/api/email/generate", {
 //         method: "POST",
 //         headers: { "Content-Type": "application/json" },
 //         body: JSON.stringify({
@@ -557,7 +557,7 @@
 
 //     setIsSending(true);
 //     try {
-//       const res = await fetch("http://localhost:3000/api/email/send", {
+//       const res = await fetch("https://car-lease-loan-ai-assistant.onrender.com/api/email/send", {
 //         method: "POST",
 //         headers: { "Content-Type": "application/json" },
 //         body: JSON.stringify({
@@ -744,7 +744,7 @@ const EmailGeneratorPage = () => {
   const [isSending, setIsSending] = useState(false);
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/history")
+    fetch("https://car-lease-loan-ai-assistant.onrender.com/api/history")
       .then((res) => res.json())
       .then((data) => {
         if (data.success && Array.isArray(data.data)) setHistory(data.data);
@@ -760,7 +760,7 @@ const EmailGeneratorPage = () => {
     }
     setIsGenerating(true);
     try {
-      const res = await fetch("http://localhost:3000/api/email/generate", {
+      const res = await fetch("https://car-lease-loan-ai-assistant.onrender.com/api/email/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -799,7 +799,7 @@ const EmailGeneratorPage = () => {
       return toast.warning("Missing email or body");
     setIsSending(true);
     try {
-      const res = await fetch("http://localhost:3000/api/email/send", {
+      const res = await fetch("https://car-lease-loan-ai-assistant.onrender.com/api/email/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

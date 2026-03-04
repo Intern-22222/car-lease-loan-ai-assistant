@@ -11,7 +11,7 @@ const HistoryPage = () => {
   useEffect(() => {
     const fetchResults = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/results");
+        const response = await fetch("https://car-lease-loan-ai-assistant.onrender.com/api/results");
         const data = await response.json();
 
         if (!data.success) {
@@ -51,7 +51,7 @@ const HistoryPage = () => {
     if (!window.confirm("Delete this record?")) return;
 
     try {
-      const res = await fetch(`http://localhost:3000/api/history/${id}`, {
+      const res = await fetch(`https://car-lease-loan-ai-assistant.onrender.com/api/history/${id}`, {
         method: "DELETE",
       });
       const data = await res.json();
