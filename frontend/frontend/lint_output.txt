@@ -1,0 +1,415 @@
+
+C:\intern222\car-lease-loan-ai-assistant\frontend\frontend\src\App.jsx
+  47:10  error  'useState' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\intern222\car-lease-loan-ai-assistant\frontend\frontend\src\components\ChatbotWidget.jsx
+  57:14  error  'err' is defined but never used  no-unused-vars
+
+C:\intern222\car-lease-loan-ai-assistant\frontend\frontend\src\components\ComparisonPage.jsx
+  263:14  error  'err' is defined but never used  no-unused-vars
+
+C:\intern222\car-lease-loan-ai-assistant\frontend\frontend\src\components\ManualVinLookup.jsx
+  26:14  error  'err' is defined but never used  no-unused-vars
+
+C:\intern222\car-lease-loan-ai-assistant\frontend\frontend\src\context\ThemeContext.jsx
+  5:14  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\intern222\car-lease-loan-ai-assistant\frontend\frontend\src\pages\DashboardPage.jsx
+  196:9  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  194 |           ? JSON.parse(storedUser)
+  195 |           : { name: "User" };
+> 196 |         setUser(parsedUser);
+      |         ^^^^^^^ Avoid calling setState() directly within an effect
+  197 |       } catch (error) {
+  198 |         console.error("User Data Corrupt:", error);
+  199 |         localStorage.clear();  react-hooks/set-state-in-effect
+
+C:\intern222\car-lease-loan-ai-assistant\frontend\frontend\src\pages\EmailGenerator.jsx
+  790:14  error  'err' is defined but never used  no-unused-vars
+  821:14  error  'err' is defined but never used  no-unused-vars
+
+C:\intern222\car-lease-loan-ai-assistant\frontend\frontend\src\pages\HistoryPage.jsx
+  22:16  error  'err' is defined but never used  no-unused-vars
+
+C:\intern222\car-lease-loan-ai-assistant\frontend\frontend\src\pages\LoginPage.jsx
+  40:14  error  'err' is defined but never used  no-unused-vars
+
+C:\intern222\car-lease-loan-ai-assistant\frontend\frontend\src\pages\SignUp.jsx
+  33:14  error  'err' is defined but never used  no-unused-vars
+
+C:\intern222\car-lease-loan-ai-assistant\frontend\frontend\src\pages\UploadPage.jsx
+  3121:18  error  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+  3119 |               </h3>
+  3120 |               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+> 3121 |                 <InfoCard
+       |                  ^^^^^^^^ This component is created during render
+  3122 |                   label="Loan Amount"
+  3123 |                   value={data.loan_amount}
+  3124 |                   highlight
+
+  3004 |
+  3005 |   // Helper to render a field card
+> 3006 |   const InfoCard = ({ label, value, highlight = false }) => (
+       |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 3007 |     <div
+       | ^^^^^^^^
+> 3008 |       className={`p-3 rounded-lg border ${highlight ? "bg-indigo-50 border-indigo-200" : "bg-gray-50 border-gray-200"}`}
+       ΓÇª
+       | ^^^^^^^^
+> 3019 |     </div>
+       | ^^^^^^^^
+> 3020 |   );
+       | ^^^^ The component is created during render here
+  3021 |
+  3022 |   return (
+  3023 |     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">                                                                                                                                                                                                                                                      react-hooks/static-components
+  3126:18  error  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+  3124 |                   highlight
+  3125 |                 />
+> 3126 |                 <InfoCard
+       |                  ^^^^^^^^ This component is created during render
+  3127 |                   label="EMI / Month"
+  3128 |                   value={data.monthly_payment || data.emi}
+  3129 |                   highlight
+
+  3004 |
+  3005 |   // Helper to render a field card
+> 3006 |   const InfoCard = ({ label, value, highlight = false }) => (
+       |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 3007 |     <div
+       | ^^^^^^^^
+> 3008 |       className={`p-3 rounded-lg border ${highlight ? "bg-indigo-50 border-indigo-200" : "bg-gray-50 border-gray-200"}`}
+       ΓÇª
+       | ^^^^^^^^
+> 3019 |     </div>
+       | ^^^^^^^^
+> 3020 |   );
+       | ^^^^ The component is created during render here
+  3021 |
+  3022 |   return (
+  3023 |     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">                                                                                                                                                                                                                                                                                      react-hooks/static-components
+  3131:18  error  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+  3129 |                   highlight
+  3130 |                 />
+> 3131 |                 <InfoCard label="Interest Rate" value={data.interest_rate} />
+       |                  ^^^^^^^^ This component is created during render
+  3132 |                 <InfoCard label="Down Payment" value={data.down_payment} />
+  3133 |               </div>
+  3134 |
+
+  3004 |
+  3005 |   // Helper to render a field card
+> 3006 |   const InfoCard = ({ label, value, highlight = false }) => (
+       |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 3007 |     <div
+       | ^^^^^^^^
+> 3008 |       className={`p-3 rounded-lg border ${highlight ? "bg-indigo-50 border-indigo-200" : "bg-gray-50 border-gray-200"}`}
+       ΓÇª
+       | ^^^^^^^^
+> 3019 |     </div>
+       | ^^^^^^^^
+> 3020 |   );
+       | ^^^^ The component is created during render here
+  3021 |
+  3022 |   return (
+  3023 |     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">                                                                                                                                                                                                                                                              react-hooks/static-components
+  3132:18  error  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+  3130 |                 />
+  3131 |                 <InfoCard label="Interest Rate" value={data.interest_rate} />
+> 3132 |                 <InfoCard label="Down Payment" value={data.down_payment} />
+       |                  ^^^^^^^^ This component is created during render
+  3133 |               </div>
+  3134 |
+  3135 |               {/* SECTION 2: LEASE TERMS */}
+
+  3004 |
+  3005 |   // Helper to render a field card
+> 3006 |   const InfoCard = ({ label, value, highlight = false }) => (
+       |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 3007 |     <div
+       | ^^^^^^^^
+> 3008 |       className={`p-3 rounded-lg border ${highlight ? "bg-indigo-50 border-indigo-200" : "bg-gray-50 border-gray-200"}`}
+       ΓÇª
+       | ^^^^^^^^
+> 3019 |     </div>
+       | ^^^^^^^^
+> 3020 |   );
+       | ^^^^ The component is created during render here
+  3021 |
+  3022 |   return (
+  3023 |     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">                                                                                                                                                                                                                                             react-hooks/static-components
+  3140:18  error  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+  3138 |               </h3>
+  3139 |               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6">
+> 3140 |                 <InfoCard label="Tenure" value={data.tenure_months} />
+       |                  ^^^^^^^^ This component is created during render
+  3141 |                 <InfoCard label="Residual Value" value={data.residual_value} />
+  3142 |                 <InfoCard
+  3143 |                   label="Buyout Price"
+
+  3004 |
+  3005 |   // Helper to render a field card
+> 3006 |   const InfoCard = ({ label, value, highlight = false }) => (
+       |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 3007 |     <div
+       | ^^^^^^^^
+> 3008 |       className={`p-3 rounded-lg border ${highlight ? "bg-indigo-50 border-indigo-200" : "bg-gray-50 border-gray-200"}`}
+       ΓÇª
+       | ^^^^^^^^
+> 3019 |     </div>
+       | ^^^^^^^^
+> 3020 |   );
+       | ^^^^ The component is created during render here
+  3021 |
+  3022 |   return (
+  3023 |     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">                                                                                                                                                                     react-hooks/static-components
+  3141:18  error  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+  3139 |               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6">
+  3140 |                 <InfoCard label="Tenure" value={data.tenure_months} />
+> 3141 |                 <InfoCard label="Residual Value" value={data.residual_value} />
+       |                  ^^^^^^^^ This component is created during render
+  3142 |                 <InfoCard
+  3143 |                   label="Buyout Price"
+  3144 |                   value={data.purchase_option_price}
+
+  3004 |
+  3005 |   // Helper to render a field card
+> 3006 |   const InfoCard = ({ label, value, highlight = false }) => (
+       |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 3007 |     <div
+       | ^^^^^^^^
+> 3008 |       className={`p-3 rounded-lg border ${highlight ? "bg-indigo-50 border-indigo-200" : "bg-gray-50 border-gray-200"}`}
+       ΓÇª
+       | ^^^^^^^^
+> 3019 |     </div>
+       | ^^^^^^^^
+> 3020 |   );
+       | ^^^^ The component is created during render here
+  3021 |
+  3022 |   return (
+  3023 |     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">                                                                                                                                    react-hooks/static-components
+  3142:18  error  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+  3140 |                 <InfoCard label="Tenure" value={data.tenure_months} />
+  3141 |                 <InfoCard label="Residual Value" value={data.residual_value} />
+> 3142 |                 <InfoCard
+       |                  ^^^^^^^^ This component is created during render
+  3143 |                   label="Buyout Price"
+  3144 |                   value={data.purchase_option_price}
+  3145 |                 />
+
+  3004 |
+  3005 |   // Helper to render a field card
+> 3006 |   const InfoCard = ({ label, value, highlight = false }) => (
+       |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 3007 |     <div
+       | ^^^^^^^^
+> 3008 |       className={`p-3 rounded-lg border ${highlight ? "bg-indigo-50 border-indigo-200" : "bg-gray-50 border-gray-200"}`}
+       ΓÇª
+       | ^^^^^^^^
+> 3019 |     </div>
+       | ^^^^^^^^
+> 3020 |   );
+       | ^^^^ The component is created during render here
+  3021 |
+  3022 |   return (
+  3023 |     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">                                                                                                                                                                                            react-hooks/static-components
+  3153:18  error  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+  3151 |               </h3>
+  3152 |               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+> 3153 |                 <InfoCard label="Warranty" value={data.warranty_coverage} />
+       |                  ^^^^^^^^ This component is created during render
+  3154 |                 <InfoCard
+  3155 |                   label="Mileage Limit"
+  3156 |                   value={data.mileage_allowance}
+
+  3004 |
+  3005 |   // Helper to render a field card
+> 3006 |   const InfoCard = ({ label, value, highlight = false }) => (
+       |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 3007 |     <div
+       | ^^^^^^^^
+> 3008 |       className={`p-3 rounded-lg border ${highlight ? "bg-indigo-50 border-indigo-200" : "bg-gray-50 border-gray-200"}`}
+       ΓÇª
+       | ^^^^^^^^
+> 3019 |     </div>
+       | ^^^^^^^^
+> 3020 |   );
+       | ^^^^ The component is created during render here
+  3021 |
+  3022 |   return (
+  3023 |     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">                                                                                                                                                                                             react-hooks/static-components
+  3154:18  error  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+  3152 |               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+  3153 |                 <InfoCard label="Warranty" value={data.warranty_coverage} />
+> 3154 |                 <InfoCard
+       |                  ^^^^^^^^ This component is created during render
+  3155 |                   label="Mileage Limit"
+  3156 |                   value={data.mileage_allowance}
+  3157 |                 />
+
+  3004 |
+  3005 |   // Helper to render a field card
+> 3006 |   const InfoCard = ({ label, value, highlight = false }) => (
+       |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 3007 |     <div
+       | ^^^^^^^^
+> 3008 |       className={`p-3 rounded-lg border ${highlight ? "bg-indigo-50 border-indigo-200" : "bg-gray-50 border-gray-200"}`}
+       ΓÇª
+       | ^^^^^^^^
+> 3019 |     </div>
+       | ^^^^^^^^
+> 3020 |   );
+       | ^^^^ The component is created during render here
+  3021 |
+  3022 |   return (
+  3023 |     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">                                                                                                                                                                                              react-hooks/static-components
+  3158:18  error  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+  3156 |                   value={data.mileage_allowance}
+  3157 |                 />
+> 3158 |                 <InfoCard
+       |                  ^^^^^^^^ This component is created during render
+  3159 |                   label="Early Termination"
+  3160 |                   value={data.early_termination_fee}
+  3161 |                 />
+
+  3004 |
+  3005 |   // Helper to render a field card
+> 3006 |   const InfoCard = ({ label, value, highlight = false }) => (
+       |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 3007 |     <div
+       | ^^^^^^^^
+> 3008 |       className={`p-3 rounded-lg border ${highlight ? "bg-indigo-50 border-indigo-200" : "bg-gray-50 border-gray-200"}`}
+       ΓÇª
+       | ^^^^^^^^
+> 3019 |     </div>
+       | ^^^^^^^^
+> 3020 |   );
+       | ^^^^ The component is created during render here
+  3021 |
+  3022 |   return (
+  3023 |     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">                                                                                                                                                                                                                                                                          react-hooks/static-components
+  3162:18  error  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+  3160 |                   value={data.early_termination_fee}
+  3161 |                 />
+> 3162 |                 <InfoCard
+       |                  ^^^^^^^^ This component is created during render
+  3163 |                   label="Late Penalty"
+  3164 |                   value={data.late_payment_penalty}
+  3165 |                 />
+
+  3004 |
+  3005 |   // Helper to render a field card
+> 3006 |   const InfoCard = ({ label, value, highlight = false }) => (
+       |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 3007 |     <div
+       | ^^^^^^^^
+> 3008 |       className={`p-3 rounded-lg border ${highlight ? "bg-indigo-50 border-indigo-200" : "bg-gray-50 border-gray-200"}`}
+       ΓÇª
+       | ^^^^^^^^
+> 3019 |     </div>
+       | ^^^^^^^^
+> 3020 |   );
+       | ^^^^ The component is created during render here
+  3021 |
+  3022 |   return (
+  3023 |     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">                                                                                                                                                                                                                                                                            react-hooks/static-components
+  3194:18  error  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+  3192 |               </h3>
+  3193 |               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6">
+> 3194 |                 <InfoCard label="VIN" value={data.vin} />
+       |                  ^^^^^^^^ This component is created during render
+  3195 |                 <InfoCard label="Vehicle Make" value={data.vehicle_make} />
+  3196 |                 <div className="bg-indigo-50 p-3 rounded-lg border border-indigo-200 flex flex-col justify-center items-center">
+  3197 |                   <p className="text-[10px] font-bold text-indigo-400 uppercase tracking-wider mb-1">
+
+  3004 |
+  3005 |   // Helper to render a field card
+> 3006 |   const InfoCard = ({ label, value, highlight = false }) => (
+       |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 3007 |     <div
+       | ^^^^^^^^
+> 3008 |       className={`p-3 rounded-lg border ${highlight ? "bg-indigo-50 border-indigo-200" : "bg-gray-50 border-gray-200"}`}
+       ΓÇª
+       | ^^^^^^^^
+> 3019 |     </div>
+       | ^^^^^^^^
+> 3020 |   );
+       | ^^^^ The component is created during render here
+  3021 |
+  3022 |   return (
+  3023 |     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">                react-hooks/static-components
+  3195:18  error  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+  3193 |               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6">
+  3194 |                 <InfoCard label="VIN" value={data.vin} />
+> 3195 |                 <InfoCard label="Vehicle Make" value={data.vehicle_make} />
+       |                  ^^^^^^^^ This component is created during render
+  3196 |                 <div className="bg-indigo-50 p-3 rounded-lg border border-indigo-200 flex flex-col justify-center items-center">
+  3197 |                   <p className="text-[10px] font-bold text-indigo-400 uppercase tracking-wider mb-1">
+  3198 |                     AI Confidence
+
+  3004 |
+  3005 |   // Helper to render a field card
+> 3006 |   const InfoCard = ({ label, value, highlight = false }) => (
+       |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 3007 |     <div
+       | ^^^^^^^^
+> 3008 |       className={`p-3 rounded-lg border ${highlight ? "bg-indigo-50 border-indigo-200" : "bg-gray-50 border-gray-200"}`}
+       ΓÇª
+       | ^^^^^^^^
+> 3019 |     </div>
+       | ^^^^^^^^
+> 3020 |   );
+       | ^^^^ The component is created during render here
+  3021 |
+  3022 |   return (
+  3023 |     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">  react-hooks/static-components
+  3220:30  error  'e' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             no-unused-vars
+
+Γ£û 25 problems (25 errors, 0 warnings)
+

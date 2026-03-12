@@ -224,20 +224,20 @@ const DashboardPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 font-sans">
+    <div className="min-h-screen dynamic-bg font-sans">
       {/* NAVBAR */}
-      <nav className="bg-white shadow-sm border-b border-gray-200 px-6 py-4 flex justify-between items-center">
+      <nav className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-lg shadow-sm border-b border-gray-200/50 dark:border-gray-800/50 px-6 py-4 flex justify-between items-center sticky top-0 z-40">
         <div className="flex items-center gap-2">
           <span className="text-2xl">🚗</span>
-          <h1 className="text-xl font-extrabold text-gray-900 tracking-tight">
+          <h1 className="text-xl font-extrabold text-gray-900 dark:text-white tracking-tight">
             AutoLease AI
           </h1>
         </div>
 
         <div className="flex items-center gap-4">
-          <span className="text-gray-600 font-medium hidden sm:block">
+          <span className="text-gray-600 dark:text-gray-300 font-medium hidden sm:block">
             Welcome,{" "}
-            <span className="text-indigo-600 font-bold">{user.name}</span>
+            <span className="text-indigo-600 dark:text-indigo-400 font-bold">{user.name}</span>
           </span>
           <button
             onClick={handleLogout}
@@ -249,11 +249,11 @@ const DashboardPage = () => {
       </nav>
 
       {/* HERO SECTION */}
-      <div className="bg-indigo-700 text-white py-12 px-6 text-center shadow-md">
-        <h2 className="text-4xl font-extrabold mb-4">
+      <div className="bg-indigo-700/90 dark:bg-indigo-900/80 backdrop-blur-md text-white py-12 px-6 text-center shadow-md">
+        <h2 className="text-4xl font-extrabold mb-4 drop-shadow-md">
           Your Personal Car Buying Assistant
         </h2>
-        <p className="text-indigo-100 text-lg max-w-2xl mx-auto">
+        <p className="text-indigo-100 text-lg max-w-2xl mx-auto drop-shadow-sm">
           Upload contracts, uncover hidden fees, and negotiate like a pro.
         </p>
       </div>
@@ -264,15 +264,15 @@ const DashboardPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Link
             to="/upload"
-            className="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition hover:-translate-y-2 border border-gray-100 group"
+            className="glass-card p-8 group border-none"
           >
-            <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition">
+            <div className="w-16 h-16 bg-blue-100/80 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition">
               📄
             </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-3">
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
               Analyze Contract
             </h3>
-            <p className="text-gray-500 text-sm mb-6">
+            <p className="text-gray-500 dark:text-gray-400 text-sm mb-6">
               Extract terms and find junk fees.
             </p>
             <span className="text-blue-600 font-bold text-sm flex items-center gap-2">
@@ -282,15 +282,15 @@ const DashboardPage = () => {
 
           <Link
             to="/compare"
-            className="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition hover:-translate-y-2 border border-gray-100 group"
+            className="glass-card p-8 group border-none"
           >
-            <div className="w-16 h-16 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition">
+            <div className="w-16 h-16 bg-purple-100/80 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400 rounded-full flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition">
               ⚖️
             </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-3">
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
               Compare Offers
             </h3>
-            <p className="text-gray-500 text-sm mb-6">
+            <p className="text-gray-500 dark:text-gray-400 text-sm mb-6">
               Compare multiple quotes side-by-side.
             </p>
             <span className="text-purple-600 font-bold text-sm flex items-center gap-2">
@@ -300,13 +300,13 @@ const DashboardPage = () => {
 
           <Link
             to="/email"
-            className="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition hover:-translate-y-2 border border-gray-100 group"
+            className="glass-card p-8 group border-none"
           >
-            <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition">
+            <div className="w-16 h-16 bg-green-100/80 dark:bg-green-900/50 text-green-600 dark:text-green-400 rounded-full flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition">
               ✉️
             </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-3">Negotiator</h3>
-            <p className="text-gray-500 text-sm mb-6">
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">Negotiator</h3>
+            <p className="text-gray-500 dark:text-gray-400 text-sm mb-6">
               Generate AI counter-offer emails.
             </p>
             <span className="text-green-600 font-bold text-sm flex items-center gap-2">
@@ -320,17 +320,17 @@ const DashboardPage = () => {
           {/* HISTORY BUTTON */}
           <Link
             to="/history"
-            className="bg-white p-6 rounded-xl shadow border border-gray-200 flex items-center justify-between hover:bg-gray-50 transition cursor-pointer"
+            className="glass-card p-6 flex items-center justify-between group border-none cursor-pointer"
           >
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-gray-100 text-gray-600 rounded-full flex items-center justify-center text-2xl">
                 📜
               </div>
               <div>
-                <h4 className="font-bold text-gray-900 text-lg">
+                <h4 className="font-bold text-gray-900 dark:text-white text-lg">
                   View History
                 </h4>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-500 dark:text-gray-400">
                   Access your past uploads
                 </p>
               </div>
@@ -338,16 +338,15 @@ const DashboardPage = () => {
             <span className="text-gray-400 font-bold text-xl">➔</span>
           </Link>
 
-          {/* 👇 RESTORED: ADVICE / CHATBOT SECTION */}
-          <div className="bg-indigo-50 p-6 rounded-xl border border-indigo-100 flex items-center gap-4">
-            <div className="w-12 h-12 bg-indigo-200 text-indigo-700 rounded-full flex items-center justify-center text-2xl">
+          <div className="glass-card p-6 flex items-center gap-4 border-none">
+            <div className="w-12 h-12 bg-indigo-200 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-400 rounded-full flex items-center justify-center text-2xl">
               🤖
             </div>
             <div>
-              <h4 className="font-bold text-indigo-900 text-lg">
+              <h4 className="font-bold text-indigo-900 dark:text-indigo-300 text-lg">
                 Need Advice?
               </h4>
-              <p className="text-sm text-indigo-700">
+              <p className="text-sm text-indigo-700 dark:text-indigo-400">
                 Click the chat bubble ↘️ to ask the AI Coach!
               </p>
             </div>

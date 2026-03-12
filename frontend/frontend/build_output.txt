@@ -1,0 +1,21 @@
+
+> frontend@0.0.0 build
+> vite build
+
+[36mvite v7.3.0 [32mbuilding client environment for production...[36m[39m
+transforming...
+[32mΓ£ô[39m 23 modules transformed.
+Γ£ù Build failed in 390ms
+error during build:
+[@tailwindcss/vite:generate:build] Cannot apply unknown utility class `glass`
+file: C:/intern222/car-lease-loan-ai-assistant/frontend/frontend/src/App.css
+    at onInvalidCandidate (file:///C:/intern222/car-lease-loan-ai-assistant/frontend/frontend/node_modules/tailwindcss/dist/chunk-CT46QCH7.mjs:21:1511)
+    at Ce (file:///C:/intern222/car-lease-loan-ai-assistant/frontend/frontend/node_modules/tailwindcss/dist/chunk-CT46QCH7.mjs:16:36326)
+    at file:///C:/intern222/car-lease-loan-ai-assistant/frontend/frontend/node_modules/tailwindcss/dist/chunk-CT46QCH7.mjs:21:355
+    at br (file:///C:/intern222/car-lease-loan-ai-assistant/frontend/frontend/node_modules/tailwindcss/dist/chunk-CT46QCH7.mjs:3:1718)
+    at I (file:///C:/intern222/car-lease-loan-ai-assistant/frontend/frontend/node_modules/tailwindcss/dist/chunk-CT46QCH7.mjs:3:1377)
+    at Ae (file:///C:/intern222/car-lease-loan-ai-assistant/frontend/frontend/node_modules/tailwindcss/dist/chunk-CT46QCH7.mjs:21:172)
+    at Wi (file:///C:/intern222/car-lease-loan-ai-assistant/frontend/frontend/node_modules/tailwindcss/dist/chunk-CT46QCH7.mjs:38:294)
+    at async Za (file:///C:/intern222/car-lease-loan-ai-assistant/frontend/frontend/node_modules/tailwindcss/dist/chunk-CT46QCH7.mjs:38:631)
+    at async rf (file:///C:/intern222/car-lease-loan-ai-assistant/frontend/frontend/node_modules/tailwindcss/dist/chunk-CT46QCH7.mjs:38:1406)
+    at async lu (file:///C:/intern222/car-lease-loan-ai-assistant/frontend/frontend/node_modules/@tailwindcss/node/dist/index.mjs:10:3458)

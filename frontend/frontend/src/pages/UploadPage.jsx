@@ -702,96 +702,7 @@
 //       .trim();
 //   };
 
-//   const HandleUpdate = () => {
-//     if (!selectedFile) {
-//       showMessage("Please select a PDF first", "error");
-//       return;
-//     }
-//     setIsUploading(true);
-//     setIsLoading(true);
-//     setIsProcessing(true);
-//     setUploadStatus("processing");
-
-//     const formData = new FormData();
-//     formData.append("file", selectedFile);
-
-//     // Ensure this URL matches your backend
-//     fetch("https://car-lease-loan-ai-assistant.onrender.com/api/upload", {
-//       method: "POST",
-//       body: formData,
-//     })
-//       .then((response) => response.json())
-//       .then((data) => {
-//         console.log(data);
-//         if (!data.success) {
-//           showMessage("OCR failed on server", "error");
-//           setUploadStatus("error");
-//           return;
-//         }
-
-//         setOcrText(cleanOcrText(data.rawText));
-//         setIsProcessing(false);
-//         toast.success("OCR extracted successfully!");
-//         setUploadStatus("success");
-
-//         // --- SAVE THE ID FROM BACKEND ---
-//         if (data.savedId) {
-//           setResultId(data.savedId);
-//         }
-
-//         setExtractedFields({
-//           loanAmount: data.extracted?.fields?.loan_amount ?? "",
-//           interestRate: data.extracted?.fields?.interest_rate ?? "",
-//           tenure: data.extracted?.fields?.tenure_months
-//             ? data.extracted.fields.tenure_months + " months"
-//             : "",
-//           emi: data.extracted?.fields?.emi ?? "",
-//         });
-
-//         setConfidence(data.extracted?.confidence ?? null);
-//         setNotes(data.extracted?.notes ?? []);
-//         setIsProcessing(false);
-//         setIsUploading(false);
-//         setIsLoading(false);
-//       })
-//       .catch((error) => {
-//         console.error("Upload error:", error);
-//         toast.error("Upload failed. Please try again.");
-//         setUploadStatus("error");
-//         setIsLoading(false);
-//         setIsUploading(false);
-//         setIsProcessing(false);
-//       });
-//   };
-
-//   const handleReset = () => {
-//     console.log("Reset clicked....");
-//     setSelectedFile(null);
-//     setOcrText("");
-//     setExtractedFields({
-//       loanAmount: "",
-//       interestRate: "",
-//       tenure: "",
-//       emi: "",
-//     });
-
-//     setUploadStatus("idle");
-//     setIsUploading(false);
-//     setIsProcessing(false);
-//     setIsLoading(false);
-
-//     setMessage("");
-//     setMessageType("");
-//     setToastMessage("");
-//     setToastType("");
-//     setConfidence("");
-//     setNotes("");
-
-//     // --- CLEAR THE ID ---
-//     setResultId(null);
-
-//     if (fileInputRef.current) fileInputRef.current.value = "";
-//   };
+//   (Old HandleUpdate Logic removed from comments for clarity)
 
 //   return (
 //     <>
@@ -2948,6 +2859,7 @@ import { toast } from "react-toastify";
 import ManualVinLookup from "../components/ManualVinLookup";
 // 👇 CHANGED: Import the new Contract Generator
 import ContractGenerator from "../components/ContractGenerator";
+import API_BASE from "../config/api";
 
 // ... (Keep ProgressStepper code same as before) ...
 const ProgressStepper = ({ currentStep }) => {
@@ -2967,9 +2879,8 @@ const ProgressStepper = ({ currentStep }) => {
             <div key={step.id} className="flex items-center">
               {index > 0 && (
                 <div
-                  className={`h-1 w-8 sm:w-16 mx-2 rounded transition-colors duration-300 ${
-                    currentStep >= step.id ? "bg-indigo-600" : "bg-gray-200"
-                  }`}
+                  className={`h-1 w-8 sm:w-16 mx-2 rounded transition-colors duration-300 ${currentStep >= step.id ? "bg-indigo-600" : "bg-gray-200"
+                    }`}
                 />
               )}
               <div className="flex flex-col items-center relative">
@@ -3021,8 +2932,8 @@ const UploadPage = () => {
 
     const formData = new FormData();
     formData.append("file", selectedFile);
-
-    fetch("https://car-lease-loan-ai-assistant.onrender.com/api/upload", {
+    // NOTE: Use local URL for development, Render for production
+    fetch(`${API_BASE}/api/upload`, {
       method: "POST",
       body: formData,
     })
@@ -3034,22 +2945,53 @@ const UploadPage = () => {
           return;
         }
 
-        toast.success("AI Extraction Complete!");
-
-        setResultId(resData.savedId);
-        setOcrText(resData.rawText || "");
-
-        // ✅ SAVE ALL FIELDS TO STATE
-        setData(resData.extracted?.fields || resData.fields || {});
-        setConfidence(resData.extracted?.confidence || 0);
-
-        setIsUploading(false);
+        // Job queued! Now start polling
+        const newResultId = resData.savedId;
+        setResultId(newResultId);
+        pollStatus(newResultId);
       })
       .catch((err) => {
         console.error(err);
         toast.error("Server Error");
         setIsUploading(false);
       });
+  };
+
+  const pollStatus = (id) => {
+    const interval = setInterval(() => {
+      fetch(`${API_BASE}/api/upload/status/${id}`)
+        .then((res) => res.json())
+        .then((resData) => {
+          if (!resData.success) {
+            clearInterval(interval);
+            toast.error("Failed to check status");
+            setIsUploading(false);
+            return;
+          }
+
+          if (resData.status === "completed") {
+            clearInterval(interval);
+            toast.success("AI Extraction Complete!");
+
+            setOcrText(resData.rawText || "");
+            setData(resData.extracted?.fields || resData.fields || {});
+            setConfidence(resData.extracted?.confidence || 0);
+
+            setIsUploading(false);
+          } else if (resData.status === "failed") {
+            clearInterval(interval);
+            toast.error("Background processing failed: " + (resData.error || "Unknown"));
+            setIsUploading(false);
+          }
+          // If pending/processing, do nothing and let it poll again
+        })
+        .catch((err) => {
+          clearInterval(interval);
+          console.error("Polling error:", err);
+          toast.error("Failed to check status.");
+          setIsUploading(false);
+        });
+    }, 2000); // Poll every 2 seconds
   };
 
   const handleReset = () => {
@@ -3223,15 +3165,74 @@ const UploadPage = () => {
                 />
               </div>
 
-              {/* SECTION 4: MAINTENANCE */}
-              <div className="bg-gray-50 p-3 rounded-lg border border-gray-200">
-                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">
-                  🔧 Maintenance Responsibilities
-                </p>
-                <p className="text-xs text-gray-700">
-                  {data.maintenance_responsibilities ||
-                    "Not specified in extract."}
-                </p>
+              {/* SECTION 4: MAINTENANCE & SUMMARY */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+                <div className="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">
+                    🔧 Maintenance
+                  </p>
+                  <p className="text-xs text-gray-700">
+                    {data.maintenance_responsibilities ||
+                      "Not specified in extract."}
+                  </p>
+                </div>
+                <div className="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">
+                    📝 Summary & Clauses
+                  </p>
+                  <p className="text-xs text-gray-700">
+                    {data.summary || "No non-financial clauses summarizing available."}
+                  </p>
+                </div>
+              </div>
+
+              {/* SECTION 5: VEHICLE DETAILS */}
+              <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 border-b pb-1">
+                🚗 Vehicle Info
+              </h3>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6">
+                <InfoCard label="VIN" value={data.vin} />
+                <InfoCard label="Vehicle Make" value={data.vehicle_make} />
+                <div className="bg-indigo-50 p-3 rounded-lg border border-indigo-200 flex flex-col justify-center items-center">
+                  <p className="text-[10px] font-bold text-indigo-400 uppercase tracking-wider mb-1">
+                    AI Confidence
+                  </p>
+                  <p className="text-lg font-bold text-indigo-700">
+                    {confidence ? `${(confidence * 100).toFixed(0)}%` : "N/A"}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* OCR TEXT BOX (RESTORED) */}
+          {ocrText && (
+            <div className="mt-8 animate-fade-in-up">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wider">
+                  Raw OCR Result
+                </h3>
+                <button
+                  onClick={async () => {
+                    try {
+                      await navigator.clipboard.writeText(ocrText);
+                      toast.success("OCR text copied!");
+                    } catch (e) {
+                      toast.error("Copy failed.");
+                    }
+                  }}
+                  className="text-xs bg-indigo-600 text-white px-3 py-1 rounded-md shadow hover:bg-indigo-700 transition"
+                >
+                  Copy Text
+                </button>
+              </div>
+              <div className="relative group">
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
+                <div className="relative bg-gray-900 rounded-lg p-4 max-h-60 overflow-auto custom-scrollbar">
+                  <pre className="text-xs text-gray-300 whitespace-pre-wrap font-mono leading-relaxed">
+                    {ocrText}
+                  </pre>
+                </div>
               </div>
             </div>
           )}

@@ -62,6 +62,8 @@ import SignupPage from "./pages/SignUp";
 
 // Components
 import ChatbotWidget from "./components/ChatbotWidget";
+import ThemeToggle from "./components/ThemeToggle";
+import { ThemeProvider } from "./context/ThemeContext";
 
 // 🔒 THE GATEKEEPER COMPONENT
 const ProtectedRoute = ({ children }) => {
@@ -79,8 +81,9 @@ const ProtectedRoute = ({ children }) => {
 
 function App() {
   return (
-    <>
+    <ThemeProvider>
       <BrowserRouter>
+        <ThemeToggle />
         <ChatbotWidget />
         <Routes>
           {/* PUBLIC ROUTES */}
@@ -154,9 +157,9 @@ function App() {
           {/* Catch-all */}
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
-        <ToastContainer position="top-right" autoClose={3000} />
+        <ToastContainer position="bottom-right" autoClose={3000} theme="colored" />
       </BrowserRouter>
-    </>
+    </ThemeProvider>
   );
 }
 

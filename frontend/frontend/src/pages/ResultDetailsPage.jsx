@@ -2193,7 +2193,7 @@ const ResultDetailsPage = () => {
   const hiddenFees = record.hiddenFees || {};
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6 font-sans">
+    <div className="min-h-screen dynamic-bg p-6 font-sans">
       <div className="max-w-5xl mx-auto space-y-8">
         {/* NAV */}
         <div className="flex justify-between items-center">
@@ -2220,10 +2220,10 @@ const ResultDetailsPage = () => {
         </div>
 
         <div className="flex items-center justify-between">
-          <h2 className="text-3xl font-bold text-gray-900">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white drop-shadow-sm">
             Contract Analysis Result
           </h2>
-          <span className="text-sm text-gray-500 bg-white px-3 py-1 rounded-full border shadow-sm">
+          <span className="text-sm text-gray-700 dark:text-gray-300 bg-white/50 dark:bg-gray-800/50 px-3 py-1 rounded-full border border-gray-200 dark:border-gray-700 shadow-sm backdrop-blur-md">
             ID: {id}
           </span>
         </div>
@@ -2231,14 +2231,14 @@ const ResultDetailsPage = () => {
         {/* --- 1. TOP ROW: VEHICLE & SCORE --- */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* VEHICLE INFO CARD */}
-          <div className="md:col-span-2 bg-white rounded-xl shadow-sm p-6 border-l-4 border-blue-500">
-            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">
+          <div className="md:col-span-2 glass-card p-6 border-l-4 border-blue-500 border-t-0 border-r-0 border-b-0">
+            <h3 className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4">
               Vehicle Identity
             </h3>
             {vehicle.make ? (
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <div className="text-3xl font-bold text-gray-900 mb-1">
+                  <div className="text-3xl font-bold text-gray-900 dark:text-white mb-1">
                     {vehicle.year} {vehicle.make} {vehicle.model}
                   </div>
                   <div className="text-md text-gray-600 font-medium">
@@ -2246,10 +2246,10 @@ const ResultDetailsPage = () => {
                   </div>
                 </div>
                 <div className="flex flex-col justify-center items-end">
-                  <div className="text-xs text-gray-400 uppercase">
+                  <div className="text-xs text-gray-500 dark:text-gray-400 uppercase">
                     VIN Detected
                   </div>
-                  <div className="font-mono text-gray-800 bg-gray-100 px-3 py-1 rounded mt-1">
+                  <div className="font-mono text-gray-800 dark:text-gray-200 bg-gray-100/50 dark:bg-gray-800/50 px-3 py-1 rounded mt-1 border border-gray-200/50 dark:border-gray-700/50">
                     {record.vin || "N/A"}
                   </div>
                 </div>
@@ -2262,8 +2262,8 @@ const ResultDetailsPage = () => {
           </div>
 
           {/* FAIRNESS SCORE CARD */}
-          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 flex flex-col items-center justify-center text-center">
-            <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">
+          <div className="glass-card p-6 border-none flex flex-col items-center justify-center text-center">
+            <div className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
               Fairness Score
             </div>
 
@@ -2294,12 +2294,12 @@ const ResultDetailsPage = () => {
 
         {/* --- 2. AI RECOMMENDATION --- */}
         {price.recommendation && (
-          <div className="bg-gradient-to-r from-indigo-50 to-blue-50 border border-indigo-100 rounded-xl p-6 shadow-sm">
-            <h3 className="flex items-center text-indigo-800 font-bold mb-2">
+          <div className="glass-card bg-indigo-50/50 dark:bg-indigo-900/30 border-indigo-200/50 dark:border-indigo-800/50 p-6">
+            <h3 className="flex items-center text-indigo-800 dark:text-indigo-300 font-bold mb-2">
               <span className="text-2xl mr-2">🤖</span> AI Advisor
               Recommendation
             </h3>
-            <p className="text-gray-800 italic leading-relaxed">
+            <p className="text-gray-800 dark:text-gray-200 italic leading-relaxed">
               "{price.recommendation}"
             </p>
           </div>
@@ -2307,8 +2307,8 @@ const ResultDetailsPage = () => {
 
         {/* --- 3. PRICE ANALYSIS (Only show if price exists) --- */}
         {price.marketFairPrice && (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
-            <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center">
+          <div className="glass-card p-8 border-none">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center">
               💰 Price Fairness Analysis [Image of balance scale icon]
             </h3>
 
@@ -2332,11 +2332,11 @@ const ResultDetailsPage = () => {
               {/* Contract Price Bar */}
               <div>
                 <div className="flex justify-between text-sm mb-2">
-                  <span className="text-gray-600 font-medium">
+                  <span className="text-gray-600 dark:text-gray-300 font-medium">
                     Your Contract Price
                   </span>
                   <span
-                    className={`font-bold ${price.difference > 0 ? "text-red-600" : "text-green-600"}`}
+                    className={`font-bold ${price.difference > 0 ? "text-red-600 dark:text-red-400" : "text-green-600 dark:text-green-400"}`}
                   >
                     ₹{price.contractPrice?.toLocaleString()}
                   </span>
@@ -2367,8 +2367,8 @@ const ResultDetailsPage = () => {
 
         {/* --- 4. LOAN DETAILS GRID --- */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 border-b pb-2">
+          <div className="glass-card p-6 border-none">
+            <h3 className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4 border-b border-gray-200/50 dark:border-gray-700/50 pb-2 text-gray-900 dark:text-gray-100">
               Loan Terms
             </h3>
             <div className="space-y-4">
@@ -2387,8 +2387,8 @@ const ResultDetailsPage = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 border-b pb-2">
+          <div className="glass-card p-6 border-none">
+            <h3 className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4 border-b border-gray-200/50 dark:border-gray-700/50 pb-2 text-gray-900 dark:text-gray-100">
               Hidden Fees & Penalties
             </h3>
 
@@ -2448,9 +2448,9 @@ const ResultDetailsPage = () => {
 // Helper Component for rows
 const DetailRow = ({ label, value, highlight }) => (
   <div className="flex justify-between items-center">
-    <span className="text-gray-500 text-sm">{label}</span>
+    <span className="text-gray-500 dark:text-gray-400 text-sm">{label}</span>
     <span
-      className={`font-medium ${highlight ? "text-blue-600 font-bold" : "text-gray-900"}`}
+      className={`font-medium ${highlight ? "text-blue-600 dark:text-blue-400 font-bold" : "text-gray-900 dark:text-gray-100"}`}
     >
       {value && value !== "Not Specified" ? value : "--"}
     </span>

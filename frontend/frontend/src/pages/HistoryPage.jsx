@@ -304,15 +304,13 @@ const HistoryPage = () => {
     //     </div>
     //)
 
-    <div
+    <div className="dynamic-bg font-sans"
       style={{
         padding: "24px",
-        maxWidth: "1200px",
-        margin: "0 auto",
-        backgroundColor: "#f9fafb",
         minHeight: "100vh",
       }}
     >
+      <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
       {/* Back Button */}
       <div style={{ marginBottom: "24px" }}>
         <Link
@@ -334,12 +332,11 @@ const HistoryPage = () => {
       </div>
 
       {/* Header */}
-      <h2
+      <h2 className="text-gray-900 dark:text-white drop-shadow-sm"
         style={{
           marginBottom: "24px",
           fontSize: "28px",
           fontWeight: "700",
-          color: "#111827",
         }}
       >
         📜 OCR History
@@ -359,12 +356,9 @@ const HistoryPage = () => {
             padding: "12px 16px",
             width: "100%",
             maxWidth: "500px",
-            borderRadius: "10px",
-            border: "1px solid #d1d5db",
             fontSize: "14px",
-            outline: "none",
-            transition: "border-color 0.2s, box-shadow 0.2s",
           }}
+          className="glass-input"
           onFocus={(e) => {
             e.target.style.borderColor = "#2563eb";
             e.target.style.boxShadow = "0 0 0 3px rgba(37, 99, 235, 0.1)";
@@ -443,22 +437,10 @@ const HistoryPage = () => {
           {paginatedResults.map((item) => (
             <div
               key={item._id}
+              className="glass-card text-gray-900 dark:text-gray-100"
               style={{
                 marginBottom: "16px",
                 padding: "20px",
-                borderRadius: "12px",
-                backgroundColor: "white",
-                border: "1px solid #e5e7eb",
-                boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-                transition: "box-shadow 0.2s, transform 0.2s",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
-                e.currentTarget.style.transform = "translateY(-2px)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.1)";
-                e.currentTarget.style.transform = "translateY(0)";
               }}
             >
               {/* Header Row */}
@@ -471,10 +453,9 @@ const HistoryPage = () => {
                 }}
               >
                 <div style={{ flex: 1 }}>
-                  <strong
+                  <strong className="text-gray-900 dark:text-white"
                     style={{
                       fontSize: "18px",
-                      color: "#111827",
                       display: "block",
                       marginBottom: "4px",
                     }}
@@ -511,13 +492,13 @@ const HistoryPage = () => {
 
               {/* Details Grid */}
               <div
+                className="bg-white/20 dark:bg-gray-800/40"
                 style={{
                   display: "grid",
                   gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
                   gap: "12px",
                   marginBottom: "16px",
                   padding: "16px",
-                  backgroundColor: "#f9fafb",
                   borderRadius: "8px",
                 }}
               >
@@ -585,28 +566,15 @@ const HistoryPage = () => {
                 </div>
               </div>
 
-              {/* Action Buttons */}
               <div style={{ display: "flex", gap: "12px" }}>
                 <Link
                   to={`/results/${item._id}`}
+                  className="glass-button w-full text-center"
                   style={{
                     flex: 1,
-                    textAlign: "center",
                     textDecoration: "none",
-                    padding: "10px 16px",
-                    backgroundColor: "#2563eb",
-                    color: "white",
-                    borderRadius: "8px",
-                    fontSize: "14px",
                     fontWeight: "600",
-                    transition: "background-color 0.2s",
                   }}
-                  onMouseEnter={(e) =>
-                    (e.target.style.backgroundColor = "#1d4ed8")
-                  }
-                  onMouseLeave={(e) =>
-                    (e.target.style.backgroundColor = "#2563eb")
-                  }
                 >
                   🔍 View Details
                 </Link>
@@ -640,39 +608,22 @@ const HistoryPage = () => {
 
           {/* Pagination */}
           {filteredResults.length > 0 && (
-            <div
+            <div className="glass-card border-none"
               style={{
                 marginTop: "24px",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
                 padding: "16px",
-                backgroundColor: "white",
-                borderRadius: "12px",
-                border: "1px solid #e5e7eb",
               }}
             >
               <button
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage((p) => p - 1)}
+                className={currentPage === 1 ? "opacity-50 cursor-not-allowed text-gray-500" : "glass-button"}
                 style={{
                   padding: "10px 20px",
-                  borderRadius: "8px",
-                  backgroundColor: currentPage === 1 ? "#f3f4f6" : "#2563eb",
-                  color: currentPage === 1 ? "#9ca3af" : "white",
-                  border: "none",
                   fontSize: "14px",
-                  fontWeight: "600",
-                  cursor: currentPage === 1 ? "not-allowed" : "pointer",
-                  transition: "background-color 0.2s",
-                }}
-                onMouseEnter={(e) => {
-                  if (currentPage !== 1)
-                    e.target.style.backgroundColor = "#1d4ed8";
-                }}
-                onMouseLeave={(e) => {
-                  if (currentPage !== 1)
-                    e.target.style.backgroundColor = "#2563eb";
                 }}
               >
                 ← Previous
@@ -684,26 +635,10 @@ const HistoryPage = () => {
               <button
                 disabled={currentPage === totalPages}
                 onClick={() => setCurrentPage((p) => p + 1)}
+                className={currentPage === totalPages ? "opacity-50 cursor-not-allowed text-gray-500" : "glass-button"}
                 style={{
                   padding: "10px 20px",
-                  borderRadius: "8px",
-                  backgroundColor:
-                    currentPage === totalPages ? "#f3f4f6" : "#2563eb",
-                  color: currentPage === totalPages ? "#9ca3af" : "white",
-                  border: "none",
                   fontSize: "14px",
-                  fontWeight: "600",
-                  cursor:
-                    currentPage === totalPages ? "not-allowed" : "pointer",
-                  transition: "background-color 0.2s",
-                }}
-                onMouseEnter={(e) => {
-                  if (currentPage !== totalPages)
-                    e.target.style.backgroundColor = "#1d4ed8";
-                }}
-                onMouseLeave={(e) => {
-                  if (currentPage !== totalPages)
-                    e.target.style.backgroundColor = "#2563eb";
                 }}
               >
                 Next →
@@ -712,6 +647,7 @@ const HistoryPage = () => {
           )}
         </div>
       )}
+      </div>
     </div>
   );
 };

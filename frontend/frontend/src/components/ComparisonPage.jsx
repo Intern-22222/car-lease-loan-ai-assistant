@@ -285,10 +285,10 @@ const ComparisonPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6 font-sans">
+    <div className="min-h-screen dynamic-bg p-6 font-sans">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-extrabold text-gray-900">
+          <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white drop-shadow-sm">
             ⚖️ Smart Comparison
           </h1>
           <Link to="/" className="text-indigo-600 font-bold hover:underline">
@@ -297,8 +297,8 @@ const ComparisonPage = () => {
         </div>
 
         {/* SELECTION AREA */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 mb-8">
-          <h3 className="text-sm font-bold text-gray-400 uppercase mb-4">
+        <div className="glass-card p-6 mb-8 border-none">
+          <h3 className="text-sm font-bold text-gray-600 dark:text-gray-300 uppercase mb-4">
             Select Contracts (Max 3)
           </h3>
 
@@ -312,8 +312,8 @@ const ComparisonPage = () => {
                   onClick={() => toggleSelection(rec._id)}
                   className={`flex-shrink-0 w-64 p-4 rounded-lg border-2 cursor-pointer transition relative ${
                     selectedIds.includes(rec._id)
-                      ? "border-indigo-600 bg-indigo-50 ring-2 ring-indigo-100"
-                      : "border-gray-200 hover:border-gray-300"
+                      ? "border-indigo-500 bg-indigo-50/50 dark:bg-indigo-900/30 ring-2 ring-indigo-200 dark:ring-indigo-700"
+                      : "border-gray-200/50 dark:border-gray-700/50 hover:border-indigo-300 dark:hover:border-indigo-500 bg-white/40 dark:bg-gray-800/40"
                   }`}
                 >
                   {selectedIds.includes(rec._id) && (
@@ -333,10 +333,10 @@ const ComparisonPage = () => {
           <button
             onClick={runComparison}
             disabled={loading || selectedIds.length < 2}
-            className={`mt-6 px-8 py-3 rounded-lg font-bold text-white shadow-md transition ${
+            className={`mt-6 w-full sm:w-auto flex justify-center py-3 px-8 text-center ${
               loading || selectedIds.length < 2
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-indigo-600 hover:bg-indigo-700 hover:shadow-lg"
+                ? "opacity-60 cursor-not-allowed glass-button text-gray-200"
+                : "glass-button"
             }`}
           >
             {loading ? "🤖 AI Analyzing..." : "Compare Contracts 🚀"}
@@ -359,25 +359,25 @@ const ComparisonPage = () => {
             )}
 
             {/* 2. COMPARISON TABLE */}
-            <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+            <div className="glass-card overflow-hidden border-none text-gray-900 dark:text-gray-100">
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="bg-gray-50 border-b border-gray-200">
-                      <th className="p-4 text-gray-500 font-medium uppercase text-sm w-48">
+                    <tr className="bg-white/40 dark:bg-gray-800/50 border-b border-gray-200 dark:border-gray-700">
+                      <th className="p-4 text-gray-600 dark:text-gray-300 font-bold uppercase text-sm w-48">
                         Feature
                       </th>
                       {comparisonData.map((contract, idx) => (
                         <th key={idx} className="p-4 min-w-[200px]">
                           <div
-                            className="font-bold text-gray-900 text-lg truncate max-w-[200px]"
+                            className="font-extrabold text-gray-900 dark:text-white text-lg truncate max-w-[200px]"
                             title={contract.fileName}
                           >
                             {contract.fileName}
                           </div>
                           <Link
                             to={`/results/${contract._id}`}
-                            className="text-xs text-indigo-600 hover:underline"
+                            className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline"
                           >
                             View Full Analysis ↗
                           </Link>
@@ -385,10 +385,10 @@ const ComparisonPage = () => {
                       ))}
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-100">
+                  <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                     {/* Loan Amount */}
-                    <tr>
-                      <td className="p-4 font-bold text-gray-700">
+                    <tr className="hover:bg-white/20 dark:hover:bg-gray-800/20 transition-colors">
+                      <td className="p-4 font-bold text-gray-700 dark:text-gray-300">
                         Loan Amount
                       </td>
                       {comparisonData.map((c, i) => (
@@ -421,8 +421,8 @@ const ComparisonPage = () => {
                     </tr> */}
 
                     {/* Interest Rate (Highlight Lowest) */}
-                    <tr>
-                      <td className="p-4 font-bold text-gray-700">
+                    <tr className="hover:bg-white/20 dark:hover:bg-gray-800/20 transition-colors">
+                      <td className="p-4 font-bold text-gray-700 dark:text-gray-300">
                         Interest Rate
                       </td>
                       {comparisonData.map((c, i) => {
@@ -450,8 +450,8 @@ const ComparisonPage = () => {
                     </tr>
 
                     {/* Monthly Payment (Highlight Lowest) */}
-                    <tr>
-                      <td className="p-4 font-bold text-gray-700">
+                    <tr className="hover:bg-white/20 dark:hover:bg-gray-800/20 transition-colors">
+                      <td className="p-4 font-bold text-gray-700 dark:text-gray-300">
                         Monthly EMI
                       </td>
                       {comparisonData.map((c, i) => (
@@ -472,8 +472,8 @@ const ComparisonPage = () => {
                     </tr>
 
                     {/* Hidden Fees Count */}
-                    <tr>
-                      <td className="p-4 font-bold text-gray-700">
+                    <tr className="hover:bg-white/20 dark:hover:bg-gray-800/20 transition-colors">
+                      <td className="p-4 font-bold text-gray-700 dark:text-gray-300">
                         Hidden Fees
                       </td>
                       {comparisonData.map((c, i) => (
