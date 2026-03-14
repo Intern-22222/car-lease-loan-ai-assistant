@@ -1,5 +1,430 @@
+// import React, { useState, useEffect } from "react";
+// import { Link } from "react-router-dom";
+// const HistoryPage = () => {
+//   const [results, setResults] = useState([]);
+//   const [isLoading, setIsLoading] = useState(true);
+//   const [error, setError] = useState("");
+//   const [searchQuery, setSearchQuery] = useState("");
+//   const [currentPage, setCurrentPage] = useState(1);
+//   const pageSize = 5;
+
+//   useEffect(() => {
+//     const fetchResults = async () => {
+//       try {
+//         const response = await fetch("https://car-lease-loan-ai-assistant.onrender.com/api/results");
+//         const data = await response.json();
+
+//         if (!data.success) {
+//           setError("Failed to load records");
+//         } else {
+//           setResults(data.records || []);
+//         }
+//       } catch (err) {
+//         setError("Server error — could not fetch records");
+//       } finally {
+//         setIsLoading(false);
+//       }
+//     };
+
+//     fetchResults();
+//   }, []);
+
+//   const filteredResults = results.filter((item) => {
+//     const text = searchQuery.toLowerCase();
+
+//     return (
+//       (item.fileName || "").toLowerCase().includes(text) ||
+//       (item.fields?.loan_amount + "").includes(text) ||
+//       (item.fields?.interest_rate + "").includes(text) ||
+//       (item.fields?.tenure_months + "").includes(text)
+//     );
+//   });
+
+//   const totalPages = Math.ceil(filteredResults.length / pageSize);
+
+//   const paginatedResults = filteredResults.slice(
+//     (currentPage - 1) * pageSize,
+//     currentPage * pageSize,
+//   );
+
+//   const handleDelete = async (id) => {
+//     if (!window.confirm("Delete this record?")) return;
+
+//     try {
+//       const res = await fetch(`https://car-lease-loan-ai-assistant.onrender.com/api/history/${id}`, {
+//         method: "DELETE",
+//       });
+//       const data = await res.json();
+
+//       if (data.success) {
+//         // 👇 FIX: Use 'setResults' and 'results' instead of setHistory/history
+//         setResults(results.filter((item) => item._id !== id));
+//         // If you don't have toast installed, alert is fine
+//         alert("Deleted successfully!");
+//       }
+//     } catch (err) {
+//       console.error("Delete failed", err);
+//     }
+//   };
+
+//   return (
+    
+
+//     <div className="dynamic-bg font-sans"
+//       style={{
+//         padding: "24px",
+//         minHeight: "100vh",
+//       }}
+//     >
+//       <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+//       {/* Back Button */}
+//       <div style={{ marginBottom: "24px" }}>
+//         <Link
+//           to="/"
+//           style={{
+//             display: "inline-flex",
+//             alignItems: "center",
+//             textDecoration: "none",
+//             color: "#6b7280",
+//             fontWeight: "500",
+//             fontSize: "14px",
+//             transition: "color 0.2s",
+//           }}
+//           onMouseEnter={(e) => (e.target.style.color = "#111827")}
+//           onMouseLeave={(e) => (e.target.style.color = "#6b7280")}
+//         >
+//           <span style={{ marginRight: "8px" }}>←</span> Back to Upload
+//         </Link>
+//       </div>
+
+//       {/* Header */}
+//       <h2 className="text-gray-900 dark:text-white drop-shadow-sm"
+//         style={{
+//           marginBottom: "24px",
+//           fontSize: "28px",
+//           fontWeight: "700",
+//         }}
+//       >
+//         📜 OCR History
+//       </h2>
+
+//       {/* Search Bar */}
+//       <div style={{ marginBottom: "24px" }}>
+//         <input
+//           type="text"
+//           placeholder="Search by file name, loan amount, interest rate..."
+//           value={searchQuery}
+//           onChange={(e) => {
+//             setSearchQuery(e.target.value);
+//             setCurrentPage(1);
+//           }}
+//           style={{
+//             padding: "12px 16px",
+//             width: "100%",
+//             maxWidth: "500px",
+//             fontSize: "14px",
+//           }}
+//           className="glass-input"
+//           onFocus={(e) => {
+//             e.target.style.borderColor = "#2563eb";
+//             e.target.style.boxShadow = "0 0 0 3px rgba(37, 99, 235, 0.1)";
+//           }}
+//           onBlur={(e) => {
+//             e.target.style.borderColor = "#d1d5db";
+//             e.target.style.boxShadow = "none";
+//           }}
+//         />
+//       </div>
+
+//       {/* Loading State */}
+//       {isLoading && (
+//         <div style={{ textAlign: "center", padding: "40px", color: "#6b7280" }}>
+//           <p style={{ fontSize: "16px" }}>⏳ Loading records…</p>
+//         </div>
+//       )}
+
+//       {/* Error State */}
+//       {error && (
+//         <div
+//           style={{
+//             padding: "16px",
+//             backgroundColor: "#fef2f2",
+//             border: "1px solid #fecaca",
+//             borderRadius: "10px",
+//             color: "#dc2626",
+//             marginBottom: "16px",
+//           }}
+//         >
+//           ❌ {error}
+//         </div>
+//       )}
+
+//       {/* Empty State */}
+//       {!isLoading && !error && results.length === 0 && (
+//         <div
+//           style={{
+//             textAlign: "center",
+//             padding: "60px 20px",
+//             color: "#6b7280",
+//           }}
+//         >
+//           <p style={{ fontSize: "18px" }}>📭 No OCR records found yet.</p>
+//         </div>
+//       )}
+
+//       {/* No Search Results */}
+//       {!isLoading &&
+//         !error &&
+//         results.length > 0 &&
+//         filteredResults.length === 0 && (
+//           <div
+//             style={{
+//               textAlign: "center",
+//               padding: "60px 20px",
+//               color: "#6b7280",
+//             }}
+//           >
+//             <p style={{ fontSize: "18px" }}>🔍 No results match your search.</p>
+//           </div>
+//         )}
+
+//       {/* Results */}
+//       {results.length > 0 && filteredResults.length > 0 && (
+//         <div>
+//           {/* Total Count */}
+//           <p
+//             style={{ marginBottom: "16px", color: "#6b7280", fontSize: "14px" }}
+//           >
+//             Total Records:{" "}
+//             <strong style={{ color: "#111827" }}>{results.length}</strong>
+//           </p>
+
+//           {/* Results List */}
+//           {paginatedResults.map((item) => (
+//             <div
+//               key={item._id}
+//               className="glass-card text-gray-900 dark:text-gray-100"
+//               style={{
+//                 marginBottom: "16px",
+//                 padding: "20px",
+//               }}
+//             >
+//               {/* Header Row */}
+//               <div
+//                 style={{
+//                   display: "flex",
+//                   justifyContent: "space-between",
+//                   alignItems: "flex-start",
+//                   marginBottom: "16px",
+//                 }}
+//               >
+//                 <div style={{ flex: 1 }}>
+//                   <strong className="text-gray-900 dark:text-white"
+//                     style={{
+//                       fontSize: "18px",
+//                       display: "block",
+//                       marginBottom: "4px",
+//                     }}
+//                   >
+//                     📄 {item.fileName || "Untitled File"}
+//                   </strong>
+//                   <div style={{ color: "#9ca3af", fontSize: "13px" }}>
+//                     {new Date(item.uploadedAt).toLocaleString()}
+//                   </div>
+//                 </div>
+//                 <div
+//                   style={{
+//                     fontWeight: "700",
+//                     fontSize: "16px",
+//                     padding: "6px 12px",
+//                     borderRadius: "8px",
+//                     backgroundColor:
+//                       item.confidence >= 0.7
+//                         ? "#dcfce7"
+//                         : item.confidence >= 0.4
+//                           ? "#fef3c7"
+//                           : "#fee2e2",
+//                     color:
+//                       item.confidence >= 0.7
+//                         ? "#16a34a"
+//                         : item.confidence >= 0.4
+//                           ? "#ca8a04"
+//                           : "#dc2626",
+//                   }}
+//                 >
+//                   {(item.confidence * 100).toFixed(1)}%
+//                 </div>
+//               </div>
+
+//               {/* Details Grid */}
+//               <div
+//                 className="bg-white/20 dark:bg-gray-800/40"
+//                 style={{
+//                   display: "grid",
+//                   gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+//                   gap: "12px",
+//                   marginBottom: "16px",
+//                   padding: "16px",
+//                   borderRadius: "8px",
+//                 }}
+//               >
+//                 <div>
+//                   <div
+//                     style={{
+//                       fontSize: "12px",
+//                       color: "#6b7280",
+//                       marginBottom: "4px",
+//                     }}
+//                   >
+//                     Loan Amount
+//                   </div>
+//                   <strong style={{ fontSize: "15px", color: "#111827" }}>
+//                     {item.fields?.loan_amount
+//                       ? "₹" + item.fields.loan_amount
+//                       : "N/A"}
+//                   </strong>
+//                 </div>
+//                 <div>
+//                   <div
+//                     style={{
+//                       fontSize: "12px",
+//                       color: "#6b7280",
+//                       marginBottom: "4px",
+//                     }}
+//                   >
+//                     Interest Rate
+//                   </div>
+//                   <strong style={{ fontSize: "15px", color: "#111827" }}>
+//                     {item.fields?.interest_rate
+//                       ? item.fields.interest_rate + "%"
+//                       : "N/A"}
+//                   </strong>
+//                 </div>
+//                 <div>
+//                   <div
+//                     style={{
+//                       fontSize: "12px",
+//                       color: "#6b7280",
+//                       marginBottom: "4px",
+//                     }}
+//                   >
+//                     Tenure
+//                   </div>
+//                   <strong style={{ fontSize: "15px", color: "#111827" }}>
+//                     {item.fields?.tenure_months
+//                       ? item.fields.tenure_months + " months"
+//                       : "N/A"}
+//                   </strong>
+//                 </div>
+//                 <div>
+//                   <div
+//                     style={{
+//                       fontSize: "12px",
+//                       color: "#6b7280",
+//                       marginBottom: "4px",
+//                     }}
+//                   >
+//                     EMI
+//                   </div>
+//                   <strong style={{ fontSize: "15px", color: "#111827" }}>
+//                     {item.fields?.emi ? "₹" + item.fields.emi : "N/A"}
+//                   </strong>
+//                 </div>
+//               </div>
+
+//               <div style={{ display: "flex", gap: "12px" }}>
+//                 <Link
+//                   to={`/results/${item._id}`}
+//                   className="glass-button w-full text-center"
+//                   style={{
+//                     flex: 1,
+//                     textDecoration: "none",
+//                     fontWeight: "600",
+//                   }}
+//                 >
+//                   🔍 View Details
+//                 </Link>
+//                 <button
+//                   onClick={() => handleDelete(item._id)}
+//                   style={{
+//                     padding: "10px 16px",
+//                     backgroundColor: "#fef2f2",
+//                     color: "#dc2626",
+//                     border: "1px solid #fecaca",
+//                     borderRadius: "8px",
+//                     fontSize: "14px",
+//                     fontWeight: "600",
+//                     cursor: "pointer",
+//                     transition: "background-color 0.2s, border-color 0.2s",
+//                   }}
+//                   onMouseEnter={(e) => {
+//                     e.target.style.backgroundColor = "#fee2e2";
+//                     e.target.style.borderColor = "#fca5a5";
+//                   }}
+//                   onMouseLeave={(e) => {
+//                     e.target.style.backgroundColor = "#fef2f2";
+//                     e.target.style.borderColor = "#fecaca";
+//                   }}
+//                 >
+//                   🗑️ Delete
+//                 </button>
+//               </div>
+//             </div>
+//           ))}
+
+//           {/* Pagination */}
+//           {filteredResults.length > 0 && (
+//             <div className="glass-card border-none"
+//               style={{
+//                 marginTop: "24px",
+//                 display: "flex",
+//                 justifyContent: "space-between",
+//                 alignItems: "center",
+//                 padding: "16px",
+//               }}
+//             >
+//               <button
+//                 disabled={currentPage === 1}
+//                 onClick={() => setCurrentPage((p) => p - 1)}
+//                 className={currentPage === 1 ? "opacity-50 cursor-not-allowed text-gray-500" : "glass-button"}
+//                 style={{
+//                   padding: "10px 20px",
+//                   fontSize: "14px",
+//                 }}
+//               >
+//                 ← Previous
+//               </button>
+//               <span style={{ color: "#6b7280", fontSize: "14px" }}>
+//                 Page <strong style={{ color: "#111827" }}>{currentPage}</strong>{" "}
+//                 of <strong style={{ color: "#111827" }}>{totalPages}</strong>
+//               </span>
+//               <button
+//                 disabled={currentPage === totalPages}
+//                 onClick={() => setCurrentPage((p) => p + 1)}
+//                 className={currentPage === totalPages ? "opacity-50 cursor-not-allowed text-gray-500" : "glass-button"}
+//                 style={{
+//                   padding: "10px 20px",
+//                   fontSize: "14px",
+//                 }}
+//               >
+//                 Next →
+//               </button>
+//             </div>
+//           )}
+//         </div>
+//       )}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default HistoryPage;
+
+
+
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+
 const HistoryPage = () => {
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -11,27 +436,23 @@ const HistoryPage = () => {
   useEffect(() => {
     const fetchResults = async () => {
       try {
-        const response = await fetch("https://car-lease-loan-ai-assistant.onrender.com/api/results");
+        const response = await fetch(
+          "https://car-lease-loan-ai-assistant.onrender.com/api/results",
+        );
         const data = await response.json();
-
-        if (!data.success) {
-          setError("Failed to load records");
-        } else {
-          setResults(data.records || []);
-        }
+        if (!data.success) setError("Failed to load records");
+        else setResults(data.records || []);
       } catch (err) {
         setError("Server error — could not fetch records");
       } finally {
         setIsLoading(false);
       }
     };
-
     fetchResults();
   }, []);
 
   const filteredResults = results.filter((item) => {
     const text = searchQuery.toLowerCase();
-
     return (
       (item.fileName || "").toLowerCase().includes(text) ||
       (item.fields?.loan_amount + "").includes(text) ||
@@ -41,7 +462,6 @@ const HistoryPage = () => {
   });
 
   const totalPages = Math.ceil(filteredResults.length / pageSize);
-
   const paginatedResults = filteredResults.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize,
@@ -49,17 +469,14 @@ const HistoryPage = () => {
 
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this record?")) return;
-
     try {
-      const res = await fetch(`https://car-lease-loan-ai-assistant.onrender.com/api/history/${id}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(
+        `https://car-lease-loan-ai-assistant.onrender.com/api/history/${id}`,
+        { method: "DELETE" },
+      );
       const data = await res.json();
-
       if (data.success) {
-        // 👇 FIX: Use 'setResults' and 'results' instead of setHistory/history
         setResults(results.filter((item) => item._id !== id));
-        // If you don't have toast installed, alert is fine
         alert("Deleted successfully!");
       }
     } catch (err) {
@@ -67,588 +484,529 @@ const HistoryPage = () => {
     }
   };
 
+  const confidenceStyle = (c) => {
+    if (c >= 0.7)
+      return {
+        bg: "rgba(16,185,129,0.12)",
+        border: "rgba(16,185,129,0.3)",
+        color: "#34d399",
+      };
+    if (c >= 0.4)
+      return {
+        bg: "rgba(245,158,11,0.12)",
+        border: "rgba(245,158,11,0.3)",
+        color: "#fbbf24",
+      };
+    return {
+      bg: "rgba(239,68,68,0.12)",
+      border: "rgba(239,68,68,0.3)",
+      color: "#f87171",
+    };
+  };
+
   return (
-    //     <div style={{ padding: "20px" }}>
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+        *, *::before, *::after { box-sizing: border-box; }
 
-    //       <div style={{ marginBottom: "20px" }}>
-    //         <Link
-    //           to="/"
-    //           style={{
-    //             display: "inline-flex",
-    //             alignItems: "center",
-    //             textDecoration: "none",
-    //             color: "#4b5563",
-    //             fontWeight: "500",
-    //             fontSize: "14px",
-    //           }}
-    //         >
-    //           <span style={{ marginRight: "5px" }}>⬅</span> Back to Upload
-    //         </Link>
-    //       </div>
+        .hi-root {
+          font-family: 'Sora', sans-serif;
+          min-height: 100vh;
+          background: #050816;
+          position: relative;
+          overflow-x: hidden;
+          padding: 2.5rem 1.25rem 5rem;
+        }
+        .hi-orb { position:fixed;border-radius:50%;filter:blur(90px);pointer-events:none;z-index:0;animation:hi-drift 14s ease-in-out infinite alternate; }
+        .hi-orb-1 { width:520px;height:520px;background:radial-gradient(circle,#4f46e5,#1e1b4b);top:-160px;left:-160px;opacity:0.3; }
+        .hi-orb-2 { width:440px;height:440px;background:radial-gradient(circle,#0ea5e9,#0369a1);bottom:-150px;right:-130px;opacity:0.22;animation-delay:-7s; }
+        .hi-orb-3 { width:270px;height:270px;background:radial-gradient(circle,#8b5cf6,#6d28d9);top:38%;left:60%;opacity:0.17;animation-delay:-11s; }
+        @keyframes hi-drift { 0%{transform:translate(0,0) scale(1)} 100%{transform:translate(28px,22px) scale(1.06)} }
+        .hi-grid { position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);background-size:48px 48px; }
 
-    //       <h2 style={{ marginBottom: "15px" }}>📜 OCR History</h2>
-    //       <div style={{ marginTop: "10px", marginBottom: "12px" }}>
-    //         <input
-    //           type="text"
-    //           placeholder="Search by file name, loan amount, interest rate..."
-    //           value={searchQuery}
-    //           onChange={(e) => {
-    //             setSearchQuery(e.target.value);
-    //             setCurrentPage(1);
-    //           }}
-    //           style={{
-    //             padding: "10px",
-    //             width: "100%",
-    //             maxWidth: "420px",
-    //             borderRadius: "8px",
-    //             border: "1px solid #d1d5db",
-    //           }}
-    //         />
-    //       </div>
+        .hi-wrap { position:relative;z-index:1;max-width:900px;margin:0 auto; }
 
-    //       {isLoading && <p>⏳ Loading records…</p>}
+        /* Header */
+        .hi-header { display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:2.5rem;gap:1rem;flex-wrap:wrap; }
+        .hi-badge { display:inline-flex;align-items:center;gap:6px;background:rgba(108,99,255,0.14);border:1px solid rgba(108,99,255,0.3);border-radius:999px;padding:4px 14px;font-size:10px;font-weight:600;letter-spacing:0.08em;color:#a5b4fc;text-transform:uppercase;margin-bottom:0.75rem; }
+        .hi-badge-dot { width:6px;height:6px;border-radius:50%;background:#6c63ff;box-shadow:0 0 6px #6c63ff;animation:hi-pulse 2s ease-in-out infinite; }
+        @keyframes hi-pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.7)} }
+        .hi-title { font-size:clamp(1.6rem,4vw,2.2rem);font-weight:800;color:#fff;letter-spacing:-0.04em;line-height:1.1;margin:0 0 0.3rem; }
+        .hi-sub { font-family:'DM Sans',sans-serif;font-size:0.875rem;color:rgba(255,255,255,0.38); }
 
-    //       {error && <p style={{ color: "red" }}>❌ {error}</p>}
+        .hi-back { display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:11px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.55);font-family:'Sora',sans-serif;font-size:0.8rem;font-weight:600;text-decoration:none;transition:background 0.2s,border-color 0.2s,transform 0.15s;white-space:nowrap;align-self:flex-start; }
+        .hi-back:hover { background:rgba(255,255,255,0.09);border-color:rgba(255,255,255,0.2);transform:translateY(-1px); }
 
-    //       {!isLoading && !error && results.length === 0 && (
-    //         <p>📭 No OCR records found yet.</p>
-    //       )}
+        /* Search */
+        .hi-search-wrap { position:relative;margin-bottom:1.75rem;max-width:520px; }
+        .hi-search-icon { position:absolute;left:14px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,0.25);pointer-events:none;display:flex;align-items:center; }
+        .hi-search {
+          width:100%;padding:12px 14px 12px 42px;
+          background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);
+          border-radius:13px;color:#fff;
+          font-family:'DM Sans',sans-serif;font-size:0.875rem;
+          outline:none;transition:border-color 0.25s,background 0.25s,box-shadow 0.25s;
+        }
+        .hi-search::placeholder { color:rgba(255,255,255,0.22); }
+        .hi-search:focus { border-color:rgba(108,99,255,0.65);background:rgba(108,99,255,0.07);box-shadow:0 0 0 3px rgba(108,99,255,0.13); }
 
-    //       {!isLoading &&
-    //         !error &&
-    //         results.length > 0 &&
-    //         filteredResults.length === 0 && <p>🔍 No results match your search.</p>}
+        /* Stats row */
+        .hi-stats { display:flex;align-items:center;gap:8px;margin-bottom:1.25rem; }
+        .hi-count-pill { display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:999px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.09);font-size:12px;color:rgba(255,255,255,0.45); }
+        .hi-count-pill strong { color:#a5b4fc;font-weight:700; }
 
-    //       {results.length > 0 && (
-    //         <div>
-    //           <p>
-    //             Total Records: <strong>{results.length}</strong>
-    //           </p>
+        /* Result card */
+        .hi-card {
+          background:rgba(255,255,255,0.04);
+          border:1px solid rgba(255,255,255,0.09);
+          border-radius:20px;
+          padding:1.5rem;
+          margin-bottom:1rem;
+          backdrop-filter:blur(20px);
+          -webkit-backdrop-filter:blur(20px);
+          box-shadow:0 16px 48px rgba(0,0,0,0.35);
+          position:relative;
+          animation:hi-cardIn 0.5s cubic-bezier(0.22,1,0.36,1) both;
+          transition:border-color 0.2s,box-shadow 0.2s;
+        }
+        .hi-card:hover { border-color:rgba(255,255,255,0.15);box-shadow:0 20px 56px rgba(0,0,0,0.45); }
+        .hi-card::before { content:'';position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.12),transparent); }
+        @keyframes hi-cardIn { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
 
-    //           {paginatedResults.map((item) => (
-    //             <div
-    //               key={item._id}
-    //               style={{
-    //                 marginTop: "14px",
-    //                 padding: "16px",
-    //                 borderRadius: "12px",
-    //                 backgroundColor: "white",
-    //                 border: "1px solid #e5e7eb",
-    //                 boxShadow: "0 2px 6px rgba(0,0,0,0.06)",
-    //               }}
-    //             >
-    //               {/* HEADER ROW */}
-    //               <div style={{ display: "flex", justifyContent: "space-between" }}>
-    //                 <div>
-    //                   <strong style={{ fontSize: "16px" }}>
-    //                     📄 {item.fileName || "Untitled File"}
-    //                   </strong>
+        /* Card header */
+        .hi-card-top { display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:1.25rem; }
+        .hi-file-icon { width:40px;height:40px;border-radius:11px;background:rgba(108,99,255,0.12);border:1px solid rgba(108,99,255,0.2);display:flex;align-items:center;justify-content:center;color:#a5b4fc;flex-shrink:0; }
+        .hi-file-name { font-size:1rem;font-weight:700;color:#fff;letter-spacing:-0.01em;margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:360px; }
+        .hi-file-date { font-family:'DM Sans',sans-serif;font-size:0.78rem;color:rgba(255,255,255,0.3); }
 
-    //                   <div style={{ color: "#6b7280", fontSize: "13px" }}>
-    //                     Uploaded: {new Date(item.uploadedAt).toLocaleString()}
-    //                   </div>
-    //                 </div>
+        .hi-confidence-badge { padding:5px 12px;border-radius:8px;font-size:0.8rem;font-weight:700;white-space:nowrap;flex-shrink:0; }
 
-    //                 <div
-    //                   style={{
-    //                     fontWeight: "bold",
-    //                     color:
-    //                       item.confidence >= 0.7
-    //                         ? "#16a34a"
-    //                         : item.confidence >= 0.4
-    //                           ? "#ca8a04"
-    //                           : "#dc2626",
-    //                   }}
-    //                 >
-    //                   {(item.confidence * 100).toFixed(1)}%
-    //                 </div>
-    //               </div>
+        /* Fields grid */
+        .hi-fields { display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:1.25rem; }
+        @media(min-width:520px) { .hi-fields { grid-template-columns:repeat(4,1fr); } }
+        .hi-field { padding:10px 12px;border-radius:11px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07); }
+        .hi-field-label { font-size:9px;font-weight:700;letter-spacing:0.09em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:4px; }
+        .hi-field-val { font-size:0.875rem;font-weight:700;color:#fff; }
 
-    //               {/* DETAILS GRID */}
-    //               <div
-    //                 style={{
-    //                   marginTop: "10px",
-    //                   display: "grid",
-    //                   gridTemplateColumns: "repeat(2, 1fr)",
-    //                   gap: "8px",
-    //                 }}
-    //               >
-    //                 <div>
-    //                   <strong>Loan Amount:</strong>{" "}
-    //                   {item.fields?.loan_amount
-    //                     ? "₹" + item.fields.loan_amount
-    //                     : "N/A"}
-    //                 </div>
+        /* Card actions */
+        .hi-actions { display:flex;gap:10px; }
+        .hi-view-btn {
+          flex:1;display:flex;align-items:center;justify-content:center;gap:7px;
+          padding:11px;border-radius:12px;text-decoration:none;
+          background:linear-gradient(135deg,#6c63ff,#4f46e5);
+          color:#fff;font-family:'Sora',sans-serif;font-size:0.82rem;font-weight:600;
+          border:none;cursor:pointer;
+          transition:transform 0.18s,box-shadow 0.18s;
+          box-shadow:0 4px 18px rgba(108,99,255,0.3);
+          position:relative;overflow:hidden;
+        }
+        .hi-view-btn::before { content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent);transition:left 0.45s; }
+        .hi-view-btn:hover::before { left:100%; }
+        .hi-view-btn:hover { transform:translateY(-2px);box-shadow:0 8px 26px rgba(108,99,255,0.45); }
 
-    //                 <div>
-    //                   <strong>Interest Rate:</strong>{" "}
-    //                   {item.fields?.interest_rate
-    //                     ? item.fields.interest_rate + "%"
-    //                     : "N/A"}
-    //                 </div>
+        .hi-del-btn {
+          display:flex;align-items:center;justify-content:center;gap:6px;
+          padding:11px 16px;border-radius:12px;
+          background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);
+          color:#f87171;font-family:'Sora',sans-serif;font-size:0.82rem;font-weight:600;
+          cursor:pointer;transition:background 0.2s,border-color 0.2s,transform 0.15s;
+          white-space:nowrap;
+        }
+        .hi-del-btn:hover { background:rgba(239,68,68,0.16);border-color:rgba(239,68,68,0.4);transform:translateY(-1px); }
 
-    //                 <div>
-    //                   <strong>Tenure:</strong>{" "}
-    //                   {item.fields?.tenure_months
-    //                     ? item.fields.tenure_months + " months"
-    //                     : "N/A"}
-    //                 </div>
+        /* State cards */
+        .hi-state { display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4rem 1rem;text-align:center; }
+        .hi-state-icon { width:60px;height:60px;border-radius:16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.2);margin-bottom:1.1rem; }
+        .hi-state-text { font-family:'DM Sans',sans-serif;font-size:0.9rem;color:rgba(255,255,255,0.3);line-height:1.6; }
 
-    //                 <div>
-    //                   <strong>EMI:</strong>{" "}
-    //                   {item.fields?.emi ? "₹" + item.fields.emi : "N/A"}
-    //                 </div>
-    //               </div>
+        /* Error */
+        .hi-error { padding:14px 18px;border-radius:13px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);color:#f87171;font-family:'DM Sans',sans-serif;font-size:0.875rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:8px; }
 
-    //               {/* <div style={{ marginTop: "10px" }}>
-    //                 <a
-    //                   href={`/history/${item._id}`}
-    //                   style={{
-    //                     textDecoration: "none",
-    //                     padding: "8px 12px",
-    //                     backgroundColor: "#2563eb",
-    //                     color: "white",
-    //                     borderRadius: "8px",
-    //                     fontSize: "13px",
-    //                   }}
-    //                 >
-    //                   🔍 View Details
-    //                 </a>
-    //               </div>
-    //             </div> */}
+        /* Loading dots */
+        .hi-loading { display:flex;align-items:center;justify-content:center;gap:6px;padding:4rem; }
+        .hi-dot { width:8px;height:8px;border-radius:50%;background:#6c63ff;animation:hi-bounce 1.2s ease-in-out infinite; }
+        .hi-dot:nth-child(2) { animation-delay:0.2s; }
+        .hi-dot:nth-child(3) { animation-delay:0.4s; }
+        @keyframes hi-bounce { 0%,80%,100%{transform:scale(0.7);opacity:0.4} 40%{transform:scale(1);opacity:1} }
 
-    //             <div style={{ marginTop: "10px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-    //   <Link
-    //     to={`/results/${item._id}`} // Changed to Link for faster navigation
-    //     style={{
-    //       textDecoration: "none",
-    //       padding: "8px 12px",
-    //       backgroundColor: "#2563eb",
-    //       color: "white",
-    //       borderRadius: "8px",
-    //       fontSize: "13px",
-    //       fontWeight: "500"
-    //     }}
-    //   >
-    //     🔍 View Details
-    //   </Link>
+        /* Pagination */
+        .hi-pager { display:flex;align-items:center;justify-content:space-between;margin-top:1.5rem;padding:1rem 1.25rem;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:16px;backdrop-filter:blur(16px); }
+        .hi-page-btn { display:flex;align-items:center;gap:6px;padding:9px 16px;border-radius:10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.09);color:rgba(255,255,255,0.55);font-family:'Sora',sans-serif;font-size:0.8rem;font-weight:600;cursor:pointer;transition:background 0.2s,border-color 0.2s,transform 0.15s; }
+        .hi-page-btn:hover:not(:disabled) { background:rgba(255,255,255,0.09);border-color:rgba(255,255,255,0.18);transform:translateY(-1px); }
+        .hi-page-btn:disabled { opacity:0.35;cursor:not-allowed; }
+        .hi-page-info { font-family:'DM Sans',sans-serif;font-size:0.82rem;color:rgba(255,255,255,0.35); }
+        .hi-page-info strong { color:#a5b4fc;font-weight:700; }
+      `}</style>
 
-    //   <button
-    //     onClick={() => handleDelete(item._id)}
-    //     style={{
-    //       padding: "8px 12px",
-    //       backgroundColor: "#fee2e2", // Light red background
-    //       color: "#dc2626",           // Dark red text
-    //       border: "1px solid #fca5a5",
-    //       borderRadius: "8px",
-    //       fontSize: "13px",
-    //       fontWeight: "bold",
-    //       cursor: "pointer"
-    //     }}
-    //   >
-    //     🗑️ Delete
-    //   </button>
-    // </div>
+      <div className="hi-root">
+        <div className="hi-orb hi-orb-1" />
+        <div className="hi-orb hi-orb-2" />
+        <div className="hi-orb hi-orb-3" />
+        <div className="hi-grid" />
 
-    // )}
-
-    //           {filteredResults.length > 0 && (
-    //             <div
-    //               style={{
-    //                 marginTop: "16px",
-    //                 display: "flex",
-    //                 justifyContent: "space-between",
-    //                 alignItems: "center",
-    //               }}
-    //             >
-    //               <button
-    //                 disabled={currentPage === 1}
-    //                 onClick={() => setCurrentPage((p) => p - 1)}
-    //                 style={{
-    //                   padding: "8px 12px",
-    //                   borderRadius: "8px",
-    //                   backgroundColor: currentPage === 1 ? "#e5e7eb" : "#2563eb",
-    //                   color: currentPage === 1 ? "#6b7280" : "white",
-    //                   border: "none",
-    //                   cursor: currentPage === 1 ? "not-allowed" : "pointer",
-    //                 }}
-    //               >
-    //                 ⬅ Previous
-    //               </button>
-
-    //               <span>
-    //                 Page <strong>{currentPage}</strong> of{" "}
-    //                 <strong>{totalPages}</strong>
-    //               </span>
-
-    //               <button
-    //                 disabled={currentPage === totalPages}
-    //                 onClick={() => setCurrentPage((p) => p + 1)}
-    //                 style={{
-    //                   padding: "8px 12px",
-    //                   borderRadius: "8px",
-    //                   backgroundColor:
-    //                     currentPage === totalPages ? "#e5e7eb" : "#2563eb",
-    //                   color: currentPage === totalPages ? "#6b7280" : "white",
-    //                   border: "none",
-    //                   cursor:
-    //                     currentPage === totalPages ? "not-allowed" : "pointer",
-    //                 }}
-    //               >
-    //                 Next ➡
-    //               </button>
-    //             </div>
-    //           )}
-    //         </div>
-    //       )}
-    //     </div>
-    //)
-
-    <div className="dynamic-bg font-sans"
-      style={{
-        padding: "24px",
-        minHeight: "100vh",
-      }}
-    >
-      <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
-      {/* Back Button */}
-      <div style={{ marginBottom: "24px" }}>
-        <Link
-          to="/"
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            textDecoration: "none",
-            color: "#6b7280",
-            fontWeight: "500",
-            fontSize: "14px",
-            transition: "color 0.2s",
-          }}
-          onMouseEnter={(e) => (e.target.style.color = "#111827")}
-          onMouseLeave={(e) => (e.target.style.color = "#6b7280")}
-        >
-          <span style={{ marginRight: "8px" }}>←</span> Back to Upload
-        </Link>
-      </div>
-
-      {/* Header */}
-      <h2 className="text-gray-900 dark:text-white drop-shadow-sm"
-        style={{
-          marginBottom: "24px",
-          fontSize: "28px",
-          fontWeight: "700",
-        }}
-      >
-        📜 OCR History
-      </h2>
-
-      {/* Search Bar */}
-      <div style={{ marginBottom: "24px" }}>
-        <input
-          type="text"
-          placeholder="Search by file name, loan amount, interest rate..."
-          value={searchQuery}
-          onChange={(e) => {
-            setSearchQuery(e.target.value);
-            setCurrentPage(1);
-          }}
-          style={{
-            padding: "12px 16px",
-            width: "100%",
-            maxWidth: "500px",
-            fontSize: "14px",
-          }}
-          className="glass-input"
-          onFocus={(e) => {
-            e.target.style.borderColor = "#2563eb";
-            e.target.style.boxShadow = "0 0 0 3px rgba(37, 99, 235, 0.1)";
-          }}
-          onBlur={(e) => {
-            e.target.style.borderColor = "#d1d5db";
-            e.target.style.boxShadow = "none";
-          }}
-        />
-      </div>
-
-      {/* Loading State */}
-      {isLoading && (
-        <div style={{ textAlign: "center", padding: "40px", color: "#6b7280" }}>
-          <p style={{ fontSize: "16px" }}>⏳ Loading records…</p>
-        </div>
-      )}
-
-      {/* Error State */}
-      {error && (
-        <div
-          style={{
-            padding: "16px",
-            backgroundColor: "#fef2f2",
-            border: "1px solid #fecaca",
-            borderRadius: "10px",
-            color: "#dc2626",
-            marginBottom: "16px",
-          }}
-        >
-          ❌ {error}
-        </div>
-      )}
-
-      {/* Empty State */}
-      {!isLoading && !error && results.length === 0 && (
-        <div
-          style={{
-            textAlign: "center",
-            padding: "60px 20px",
-            color: "#6b7280",
-          }}
-        >
-          <p style={{ fontSize: "18px" }}>📭 No OCR records found yet.</p>
-        </div>
-      )}
-
-      {/* No Search Results */}
-      {!isLoading &&
-        !error &&
-        results.length > 0 &&
-        filteredResults.length === 0 && (
-          <div
-            style={{
-              textAlign: "center",
-              padding: "60px 20px",
-              color: "#6b7280",
-            }}
-          >
-            <p style={{ fontSize: "18px" }}>🔍 No results match your search.</p>
-          </div>
-        )}
-
-      {/* Results */}
-      {results.length > 0 && filteredResults.length > 0 && (
-        <div>
-          {/* Total Count */}
-          <p
-            style={{ marginBottom: "16px", color: "#6b7280", fontSize: "14px" }}
-          >
-            Total Records:{" "}
-            <strong style={{ color: "#111827" }}>{results.length}</strong>
-          </p>
-
-          {/* Results List */}
-          {paginatedResults.map((item) => (
-            <div
-              key={item._id}
-              className="glass-card text-gray-900 dark:text-gray-100"
-              style={{
-                marginBottom: "16px",
-                padding: "20px",
-              }}
-            >
-              {/* Header Row */}
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "flex-start",
-                  marginBottom: "16px",
-                }}
-              >
-                <div style={{ flex: 1 }}>
-                  <strong className="text-gray-900 dark:text-white"
-                    style={{
-                      fontSize: "18px",
-                      display: "block",
-                      marginBottom: "4px",
-                    }}
-                  >
-                    📄 {item.fileName || "Untitled File"}
-                  </strong>
-                  <div style={{ color: "#9ca3af", fontSize: "13px" }}>
-                    {new Date(item.uploadedAt).toLocaleString()}
-                  </div>
-                </div>
-                <div
-                  style={{
-                    fontWeight: "700",
-                    fontSize: "16px",
-                    padding: "6px 12px",
-                    borderRadius: "8px",
-                    backgroundColor:
-                      item.confidence >= 0.7
-                        ? "#dcfce7"
-                        : item.confidence >= 0.4
-                          ? "#fef3c7"
-                          : "#fee2e2",
-                    color:
-                      item.confidence >= 0.7
-                        ? "#16a34a"
-                        : item.confidence >= 0.4
-                          ? "#ca8a04"
-                          : "#dc2626",
-                  }}
-                >
-                  {(item.confidence * 100).toFixed(1)}%
-                </div>
+        <div className="hi-wrap">
+          {/* Header */}
+          <div className="hi-header">
+            <div>
+              <div>
+                <span className="hi-badge">
+                  <span className="hi-badge-dot" />
+                  Records
+                </span>
               </div>
-
-              {/* Details Grid */}
-              <div
-                className="bg-white/20 dark:bg-gray-800/40"
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-                  gap: "12px",
-                  marginBottom: "16px",
-                  padding: "16px",
-                  borderRadius: "8px",
-                }}
-              >
-                <div>
-                  <div
-                    style={{
-                      fontSize: "12px",
-                      color: "#6b7280",
-                      marginBottom: "4px",
-                    }}
-                  >
-                    Loan Amount
-                  </div>
-                  <strong style={{ fontSize: "15px", color: "#111827" }}>
-                    {item.fields?.loan_amount
-                      ? "₹" + item.fields.loan_amount
-                      : "N/A"}
-                  </strong>
-                </div>
-                <div>
-                  <div
-                    style={{
-                      fontSize: "12px",
-                      color: "#6b7280",
-                      marginBottom: "4px",
-                    }}
-                  >
-                    Interest Rate
-                  </div>
-                  <strong style={{ fontSize: "15px", color: "#111827" }}>
-                    {item.fields?.interest_rate
-                      ? item.fields.interest_rate + "%"
-                      : "N/A"}
-                  </strong>
-                </div>
-                <div>
-                  <div
-                    style={{
-                      fontSize: "12px",
-                      color: "#6b7280",
-                      marginBottom: "4px",
-                    }}
-                  >
-                    Tenure
-                  </div>
-                  <strong style={{ fontSize: "15px", color: "#111827" }}>
-                    {item.fields?.tenure_months
-                      ? item.fields.tenure_months + " months"
-                      : "N/A"}
-                  </strong>
-                </div>
-                <div>
-                  <div
-                    style={{
-                      fontSize: "12px",
-                      color: "#6b7280",
-                      marginBottom: "4px",
-                    }}
-                  >
-                    EMI
-                  </div>
-                  <strong style={{ fontSize: "15px", color: "#111827" }}>
-                    {item.fields?.emi ? "₹" + item.fields.emi : "N/A"}
-                  </strong>
-                </div>
-              </div>
-
-              <div style={{ display: "flex", gap: "12px" }}>
-                <Link
-                  to={`/results/${item._id}`}
-                  className="glass-button w-full text-center"
-                  style={{
-                    flex: 1,
-                    textDecoration: "none",
-                    fontWeight: "600",
-                  }}
-                >
-                  🔍 View Details
-                </Link>
-                <button
-                  onClick={() => handleDelete(item._id)}
-                  style={{
-                    padding: "10px 16px",
-                    backgroundColor: "#fef2f2",
-                    color: "#dc2626",
-                    border: "1px solid #fecaca",
-                    borderRadius: "8px",
-                    fontSize: "14px",
-                    fontWeight: "600",
-                    cursor: "pointer",
-                    transition: "background-color 0.2s, border-color 0.2s",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = "#fee2e2";
-                    e.target.style.borderColor = "#fca5a5";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = "#fef2f2";
-                    e.target.style.borderColor = "#fecaca";
-                  }}
-                >
-                  🗑️ Delete
-                </button>
-              </div>
+              <h2 className="hi-title">OCR History</h2>
+              <p className="hi-sub">
+                Browse and manage your past contract analyses
+              </p>
             </div>
-          ))}
+            <Link to="/" className="hi-back">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M19 12H5M12 5l-7 7 7 7" />
+              </svg>
+              Back to Upload
+            </Link>
+          </div>
 
-          {/* Pagination */}
-          {filteredResults.length > 0 && (
-            <div className="glass-card border-none"
-              style={{
-                marginTop: "24px",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: "16px",
+          {/* Search */}
+          <div className="hi-search-wrap">
+            <span className="hi-search-icon">
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+            </span>
+            <input
+              type="text"
+              className="hi-search"
+              placeholder="Search by file name, loan amount, interest rate…"
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setCurrentPage(1);
               }}
-            >
-              <button
-                disabled={currentPage === 1}
-                onClick={() => setCurrentPage((p) => p - 1)}
-                className={currentPage === 1 ? "opacity-50 cursor-not-allowed text-gray-500" : "glass-button"}
-                style={{
-                  padding: "10px 20px",
-                  fontSize: "14px",
-                }}
-              >
-                ← Previous
-              </button>
-              <span style={{ color: "#6b7280", fontSize: "14px" }}>
-                Page <strong style={{ color: "#111827" }}>{currentPage}</strong>{" "}
-                of <strong style={{ color: "#111827" }}>{totalPages}</strong>
-              </span>
-              <button
-                disabled={currentPage === totalPages}
-                onClick={() => setCurrentPage((p) => p + 1)}
-                className={currentPage === totalPages ? "opacity-50 cursor-not-allowed text-gray-500" : "glass-button"}
-                style={{
-                  padding: "10px 20px",
-                  fontSize: "14px",
-                }}
-              >
-                Next →
-              </button>
+            />
+          </div>
+
+          {/* Loading */}
+          {isLoading && (
+            <div className="hi-loading">
+              <div className="hi-dot" />
+              <div className="hi-dot" />
+              <div className="hi-dot" />
             </div>
           )}
+
+          {/* Error */}
+          {error && (
+            <div className="hi-error">
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+              {error}
+            </div>
+          )}
+
+          {/* Empty — no records */}
+          {!isLoading && !error && results.length === 0 && (
+            <div className="hi-state">
+              <div className="hi-state-icon">
+                <svg
+                  width="26"
+                  height="26"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <polyline points="14 2 14 8 20 8" />
+                </svg>
+              </div>
+              <p className="hi-state-text">
+                No OCR records found yet.
+                <br />
+                Upload a contract to get started.
+              </p>
+            </div>
+          )}
+
+          {/* Empty — no search results */}
+          {!isLoading &&
+            !error &&
+            results.length > 0 &&
+            filteredResults.length === 0 && (
+              <div className="hi-state">
+                <div className="hi-state-icon">
+                  <svg
+                    width="26"
+                    height="26"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                  </svg>
+                </div>
+                <p className="hi-state-text">
+                  No results match your search.
+                  <br />
+                  Try a different keyword.
+                </p>
+              </div>
+            )}
+
+          {/* Results */}
+          {results.length > 0 && filteredResults.length > 0 && (
+            <>
+              <div className="hi-stats">
+                <span className="hi-count-pill">
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <line x1="8" y1="6" x2="21" y2="6" />
+                    <line x1="8" y1="12" x2="21" y2="12" />
+                    <line x1="8" y1="18" x2="21" y2="18" />
+                    <line x1="3" y1="6" x2="3.01" y2="6" />
+                    <line x1="3" y1="12" x2="3.01" y2="12" />
+                    <line x1="3" y1="18" x2="3.01" y2="18" />
+                  </svg>
+                  Total: <strong>{results.length}</strong>
+                </span>
+                {searchQuery && (
+                  <span className="hi-count-pill">
+                    Showing <strong>{filteredResults.length}</strong> matches
+                  </span>
+                )}
+              </div>
+
+              {paginatedResults.map((item, idx) => {
+                const cs = confidenceStyle(item.confidence || 0);
+                return (
+                  <div
+                    key={item._id}
+                    className="hi-card"
+                    style={{ animationDelay: `${idx * 0.06}s` }}
+                  >
+                    {/* Top */}
+                    <div className="hi-card-top">
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "flex-start",
+                          gap: "12px",
+                          flex: 1,
+                          minWidth: 0,
+                        }}
+                      >
+                        <div className="hi-file-icon">
+                          <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.8"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                            <polyline points="14 2 14 8 20 8" />
+                          </svg>
+                        </div>
+                        <div style={{ minWidth: 0 }}>
+                          <div className="hi-file-name">
+                            {item.fileName || "Untitled File"}
+                          </div>
+                          <div className="hi-file-date">
+                            {new Date(item.uploadedAt).toLocaleString()}
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        className="hi-confidence-badge"
+                        style={{
+                          background: cs.bg,
+                          border: `1px solid ${cs.border}`,
+                          color: cs.color,
+                        }}
+                      >
+                        {(item.confidence * 100).toFixed(1)}%
+                      </div>
+                    </div>
+
+                    {/* Fields */}
+                    <div className="hi-fields">
+                      {[
+                        {
+                          label: "Loan Amount",
+                          val: item.fields?.loan_amount
+                            ? "₹" + item.fields.loan_amount
+                            : "N/A",
+                        },
+                        {
+                          label: "Interest Rate",
+                          val: item.fields?.interest_rate
+                            ? item.fields.interest_rate + "%"
+                            : "N/A",
+                        },
+                        {
+                          label: "Tenure",
+                          val: item.fields?.tenure_months
+                            ? item.fields.tenure_months + " mo"
+                            : "N/A",
+                        },
+                        {
+                          label: "EMI",
+                          val: item.fields?.emi ? "₹" + item.fields.emi : "N/A",
+                        },
+                      ].map((f) => (
+                        <div key={f.label} className="hi-field">
+                          <div className="hi-field-label">{f.label}</div>
+                          <div className="hi-field-val">{f.val}</div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Actions */}
+                    <div className="hi-actions">
+                      <Link to={`/results/${item._id}`} className="hi-view-btn">
+                        <svg
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                          <circle cx="12" cy="12" r="3" />
+                        </svg>
+                        View Details
+                      </Link>
+                      <button
+                        className="hi-del-btn"
+                        onClick={() => handleDelete(item._id)}
+                      >
+                        <svg
+                          width="13"
+                          height="13"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <polyline points="3 6 5 6 21 6" />
+                          <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                          <path d="M10 11v6" />
+                          <path d="M14 11v6" />
+                          <path d="M9 6V4h6v2" />
+                        </svg>
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="hi-pager">
+                  <button
+                    className="hi-page-btn"
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage((p) => p - 1)}
+                  >
+                    <svg
+                      width="13"
+                      height="13"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M19 12H5M12 5l-7 7 7 7" />
+                    </svg>
+                    Previous
+                  </button>
+                  <span className="hi-page-info">
+                    Page <strong>{currentPage}</strong> of{" "}
+                    <strong>{totalPages}</strong>
+                  </span>
+                  <button
+                    className="hi-page-btn"
+                    disabled={currentPage === totalPages}
+                    onClick={() => setCurrentPage((p) => p + 1)}
+                  >
+                    Next
+                    <svg
+                      width="13"
+                      height="13"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+              )}
+            </>
+          )}
         </div>
-      )}
       </div>
-    </div>
+    </>
   );
 };
 

@@ -83,7 +83,7 @@ function App() {
   return (
     <ThemeProvider>
       <BrowserRouter>
-        <ThemeToggle />
+        {/* <ThemeToggle /> */}
         <ChatbotWidget />
         <Routes>
           {/* PUBLIC ROUTES */}
