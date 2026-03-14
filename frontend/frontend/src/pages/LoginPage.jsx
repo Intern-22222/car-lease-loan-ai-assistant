@@ -519,7 +519,7 @@ const LoginPage = () => {
                 <input
                   type="email"
                   required
-                  autoComplete="email"
+                  
                   placeholder="you@example.com"
                   className="glass-field"
                   onFocus={() => setFocused((f) => ({ ...f, email: true }))}
@@ -559,7 +559,7 @@ const LoginPage = () => {
                 <input
                   type={showPassword ? "text" : "password"}
                   required
-                  autoComplete="current-password"
+                  
                   placeholder="••••••••"
                   className="glass-field"
                   style={{ paddingRight: "42px" }}
