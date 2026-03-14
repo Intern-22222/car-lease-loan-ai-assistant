@@ -2478,8 +2478,11 @@ const ResultDetailsPage = () => {
   useEffect(() => {
     const fetchRecord = async () => {
       try {
+        // ✅ FIX: Send auth token so only the owner can view this record
+        const token = sessionStorage.getItem("token");
         const response = await axios.get(
           `https://car-lease-loan-ai-assistant.onrender.com/api/results/${id}`,
+          { headers: token ? { Authorization: "Bearer " + token } : {} }
         );
         if (response.data.success) setRecord(response.data.data);
         else setError("Record not found");
@@ -3168,29 +3171,29 @@ const ResultDetailsPage = () => {
               </div>
               {hiddenFees?.fees?.length > 0
                 ? hiddenFees.fees.map((fee, idx) => (
-                    <div key={idx} className="rd-fee-row">
-                      <span className="rd-fee-name">{fee.name}</span>
-                      <span className="rd-fee-amt">
-                        {fee.amount || "Variable"}
-                      </span>
-                    </div>
-                  ))
+                  <div key={idx} className="rd-fee-row">
+                    <span className="rd-fee-name">{fee.name}</span>
+                    <span className="rd-fee-amt">
+                      {fee.amount || "Variable"}
+                    </span>
+                  </div>
+                ))
                 : [
-                    {
-                      label: "Early Termination",
-                      val: fields.early_termination_fee,
-                    },
-                    { label: "Late Penalty", val: fields.late_payment_penalty },
-                    { label: "Mileage Limit", val: fields.mileage_allowance },
-                    { label: "Residual Value", val: fields.residual_value },
-                  ].map((r) => (
-                    <div key={r.label} className="rd-detail-row">
-                      <span className="rd-detail-label">{r.label}</span>
-                      <span className="rd-detail-val">
-                        {r.val && r.val !== "Not Specified" ? r.val : "—"}
-                      </span>
-                    </div>
-                  ))}
+                  {
+                    label: "Early Termination",
+                    val: fields.early_termination_fee,
+                  },
+                  { label: "Late Penalty", val: fields.late_payment_penalty },
+                  { label: "Mileage Limit", val: fields.mileage_allowance },
+                  { label: "Residual Value", val: fields.residual_value },
+                ].map((r) => (
+                  <div key={r.label} className="rd-detail-row">
+                    <span className="rd-detail-label">{r.label}</span>
+                    <span className="rd-detail-val">
+                      {r.val && r.val !== "Not Specified" ? r.val : "—"}
+                    </span>
+                  </div>
+                ))}
             </div>
           </div>
 

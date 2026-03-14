@@ -68,7 +68,7 @@
 //   };
 
 //   return (
-    
+
 
 //     <div className="dynamic-bg font-sans"
 //       style={{
@@ -436,12 +436,15 @@ const HistoryPage = () => {
   useEffect(() => {
     const fetchResults = async () => {
       try {
+        // ✅ FIX: Use /api/history with auth token so only THIS user's records load
+        const token = sessionStorage.getItem("token");
         const response = await fetch(
-          "https://car-lease-loan-ai-assistant.onrender.com/api/results",
+          "https://car-lease-loan-ai-assistant.onrender.com/api/history",
+          { headers: token ? { Authorization: "Bearer " + token } : {} }
         );
         const data = await response.json();
         if (!data.success) setError("Failed to load records");
-        else setResults(data.records || []);
+        else setResults(data.data || []);
       } catch (err) {
         setError("Server error — could not fetch records");
       } finally {
@@ -470,9 +473,13 @@ const HistoryPage = () => {
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this record?")) return;
     try {
+      const token = sessionStorage.getItem("token");
       const res = await fetch(
         `https://car-lease-loan-ai-assistant.onrender.com/api/history/${id}`,
-        { method: "DELETE" },
+        {
+          method: "DELETE",
+          headers: token ? { Authorization: "Bearer " + token } : {}
+        }
       );
       const data = await res.json();
       if (data.success) {

@@ -164,6 +164,9 @@ const LoginPage = () => {
       const data = await res.json();
 
       if (data.success) {
+        // ✅ FIX: Clear ALL previous session data before storing new user's token
+        // This prevents account leakage when switching between accounts
+        sessionStorage.clear();
         sessionStorage.setItem("token", data.token);
         sessionStorage.setItem("user", JSON.stringify(data.user));
         toast.success("Welcome back!");
@@ -519,7 +522,7 @@ const LoginPage = () => {
                 <input
                   type="email"
                   required
-                  
+
                   placeholder="you@example.com"
                   className="glass-field"
                   onFocus={() => setFocused((f) => ({ ...f, email: true }))}
@@ -559,7 +562,7 @@ const LoginPage = () => {
                 <input
                   type={showPassword ? "text" : "password"}
                   required
-                  
+
                   placeholder="••••••••"
                   className="glass-field"
                   style={{ paddingRight: "42px" }}
