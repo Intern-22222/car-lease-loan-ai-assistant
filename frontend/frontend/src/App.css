@@ -1,5 +1,7 @@
 @import "tailwindcss";
-@custom-variant dark (&:where(.dark, .dark *));@layer base {
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
   body {
     @apply transition-colors duration-300 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100;
   }
@@ -7,22 +9,228 @@
 
 @layer utilities {
   .glass {
-    @apply bg-white/60 dark:bg-gray-800/60 backdrop-blur-lg border border-white/40 dark:border-gray-700/50 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.3)];
+    @apply bg-white/60 dark:bg-gray-800/60 backdrop-blur-lg border border-white/40 dark:border-gray-700/50 shadow-[0_8px_32px_0_rgb(31_38_135_/_0.07)] dark:shadow-[0_8px_32px_0_rgb(0_0_0_/_0.3)];
   }
-  
+
   .glass-card {
-    @apply bg-white/60 dark:bg-gray-800/60 backdrop-blur-lg border border-white/40 dark:border-gray-700/50 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] rounded-2xl transition-all duration-300 hover:shadow-[0_8px_32px_0_rgba(31,38,135,0.15)] dark:hover:shadow-[0_8px_32px_0_rgba(0,0,0,0.5)];
+    @apply bg-white/60 dark:bg-gray-800/60 backdrop-blur-lg border border-white/40 dark:border-gray-700/50 shadow-[0_8px_32px_0_rgb(31_38_135_/_0.07)] dark:shadow-[0_8px_32px_0_rgb(0_0_0_/_0.3)] rounded-2xl transition-all duration-300 hover:shadow-[0_8px_32px_0_rgb(31_38_135_/_0.15)] dark:hover:shadow-[0_8px_32px_0_rgb(0_0_0_/_0.5)];
   }
-  
+
   .glass-input {
     @apply w-full bg-white/50 dark:bg-gray-900/50 border border-gray-200/50 dark:border-gray-700/50 rounded-lg p-3 outline-none focus:ring-2 focus:ring-indigo-500/50 dark:focus:ring-indigo-400/50 transition-all duration-300 placeholder-gray-400 dark:placeholder-gray-500 text-gray-800 dark:text-gray-200;
   }
-  
+
   .glass-button {
-    @apply font-bold text-white bg-indigo-600/90 hover:bg-indigo-600 dark:bg-indigo-500/90 dark:hover:bg-indigo-500 rounded-lg py-3 px-4 shadow-[0_4px_15px_0_rgba(79,70,229,0.4)] backdrop-blur-sm transition-all duration-300 active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed;
+    @apply font-bold text-white bg-indigo-600/90 hover:bg-indigo-600 dark:bg-indigo-500/90 dark:hover:bg-indigo-500 rounded-lg py-3 px-4 shadow-[0_4px_15px_0_rgb(79_70_229_/_0.4)] backdrop-blur-sm transition-all duration-300 active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed;
   }
-  
+
   .dynamic-bg {
     @apply bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 dark:from-slate-900 dark:via-indigo-950 dark:to-slate-900 bg-fixed min-h-screen w-full;
   }
+}
+
+/* ============================================
+   MIDNIGHT STEEL PALETTE — Appended safely
+   ============================================ */
+:root {
+  --brand-primary: #C8A850;
+  --brand-secondary: #1A1F2E;
+  --brand-surface: #111827;
+  --brand-surface-2: #1E2640;
+  --brand-accent: #3B82F6;
+  --brand-accent-glow: rgba(59, 130, 246, 0.18);
+  --brand-gold-glow: rgba(200, 168, 80, 0.15);
+  --brand-text-primary: #F1F5F9;
+  --brand-text-secondary: #94A3B8;
+  --brand-danger: #EF4444;
+  --brand-success: #10B981;
+  --brand-border: rgba(255, 255, 255, 0.07);
+  --brand-border-hover: rgba(200, 168, 80, 0.35);
+}
+
+/* Page enter animation */
+.page-enter {
+  animation: pageIn 0.35s ease forwards;
+}
+
+@keyframes pageIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Blinking cursor for typewriter */
+.blink-cursor {
+  display: inline-block;
+  color: #C8A850;
+  font-weight: 300;
+  animation: blink 1s step-end infinite;
+}
+
+.blink-cursor.hide {
+  animation: none;
+  opacity: 0;
+}
+
+@keyframes blink {
+
+  0%,
+  100% {
+    opacity: 1
+  }
+
+  50% {
+    opacity: 0
+  }
+}
+
+/* Card stagger animation */
+.db-main-card,
+.db-bottom-card {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+.card-visible {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+/* Drag zone pulse */
+@keyframes drag-pulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(200, 168, 80, 0.4);
+  }
+
+  50% {
+    box-shadow: 0 0 0 12px rgba(200, 168, 80, 0);
+  }
+}
+
+.drag-active {
+  border-color: var(--brand-primary) !important;
+  animation: drag-pulse 1s ease-in-out infinite;
+}
+
+/* Chat bubble nudge */
+@keyframes chat-nudge {
+
+  0%,
+  89%,
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+
+  91% {
+    transform: scale(1.1) rotate(-8deg);
+  }
+
+  95% {
+    transform: scale(1.1) rotate(8deg);
+  }
+}
+
+.chat-nudge {
+  animation: chat-nudge 0.6s ease;
+}
+
+/* Keyword highlight marks */
+mark.kw-danger {
+  background: rgba(239, 68, 68, 0.2);
+  color: #FCA5A5;
+  border-radius: 3px;
+  padding: 0 3px;
+}
+
+mark.kw-warning {
+  background: rgba(251, 191, 36, 0.15);
+  color: #FDE68A;
+  border-radius: 3px;
+  padding: 0 3px;
+}
+
+/* Severity bar */
+.severity-bar-wrap {
+  display: flex;
+  height: 10px;
+  border-radius: 8px;
+  overflow: hidden;
+  width: 0;
+  transition: width 1s ease;
+}
+
+.severity-bar-wrap.loaded {
+  width: 100%;
+}
+
+.severity-seg-critical {
+  background: #EF4444;
+  transition: flex 0.8s ease;
+}
+
+.severity-seg-warning {
+  background: #F59E0B;
+  transition: flex 0.8s ease;
+}
+
+.severity-seg-ok {
+  background: #10B981;
+  transition: flex 0.8s ease;
+}
+
+/* Modal overlay */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: pageIn 0.2s ease forwards;
+}
+
+.modal-box {
+  background: #1A1F2E;
+  border: 1px solid rgba(200, 168, 80, 0.2);
+  border-radius: 16px;
+  padding: 2rem;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+/* Profile stat cards */
+.stat-card {
+  background: #1E2640;
+  border: 1px solid var(--brand-border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: border-color 0.2s;
+}
+
+.stat-card:hover {
+  border-color: var(--brand-border-hover);
+}
+
+/* Trophy cards for leaderboard */
+.trophy-card {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 16px;
+  padding: 1.25rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.trophy-card:hover {
+  transform: translateY(-3px);
 }

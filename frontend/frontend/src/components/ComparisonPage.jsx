@@ -545,7 +545,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-
+import API_BASE from "../config/api";
 const ComparisonPage = () => {
   const [history, setHistory] = useState([]);
   const [selectedIds, setSelectedIds] = useState([]);
@@ -555,7 +555,7 @@ const ComparisonPage = () => {
   const [historyLoading, setHistoryLoading] = useState(true);
 
   useEffect(() => {
-    fetch("https://car-lease-loan-ai-assistant.onrender.com/api/history")
+    fetch(`${API_BASE}/api/history`)
       .then((res) => res.json())
       .then((data) => {
         if (data.success) setHistory(data.data || data.history || []);
@@ -585,7 +585,7 @@ const ComparisonPage = () => {
     setAiVerdict("");
     try {
       const res = await fetch(
-        "https://car-lease-loan-ai-assistant.onrender.com/api/comparison/compare",
+        `${API_BASE}/api/comparison/compare`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -758,7 +758,7 @@ const ComparisonPage = () => {
         .cp-fee-amt { color:#f87171;font-weight:600;white-space:nowrap; }
       `}</style>
 
-      <div className="cp-root">
+      <div className="cp-root page-enter">
         <div className="cp-orb cp-orb-1" />
         <div className="cp-orb cp-orb-2" />
         <div className="cp-orb cp-orb-3" />

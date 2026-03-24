@@ -22,41 +22,41 @@
 const express = require("express");
 const router = express.Router();
 const { chatWithAI } = require("../services/ai.service");
-const OcrResult = require("../models/OcrResult"); // Import your DB Model
+const OcrResult = require("../models/OcrResult");
+const auth = require("../middlewares/auth.middleware"); // Added auth to secure the route
 
 // POST /api/chat
-router.post("/", async (req, res) => {
+router.post("/", auth, async (req, res) => {
   try {
-    // Frontend sends 'contractId' (or 'contextData' with an id)
     const { message, contractId, contextData: incomingContext } = req.body;
-
-    // Determine the ID to look up
     const idToFetch = contractId || (incomingContext && incomingContext.id);
 
     let contextData = null;
 
-    // 👇 IF ID PROVIDED, FETCH DATA FROM DB
+    // IF ID PROVIDED, FETCH DATA FROM DB TO GIVE AI SPECIFIC CONTEXT
     if (idToFetch) {
       try {
         const record = await OcrResult.findById(idToFetch);
         if (record) {
-          // Prepare simplified data for the AI
+          // Pass this specific contract data to the AI
           contextData = {
-            vehicle:
-              `${record.vehicleDetails?.year || ""} ${record.vehicleDetails?.make || ""} ${record.vehicleDetails?.model || ""}`.trim(),
+            vehicle: `${record.vehicleDetails?.year || ""} ${record.vehicleDetails?.make || ""} ${record.vehicleDetails?.model || ""}`.trim(),
             price: record.pricingAnalysis?.contractPrice,
             fairPrice: record.pricingAnalysis?.marketFairPrice,
             score: record.pricingAnalysis?.score,
             verdict: record.pricingAnalysis?.verdict,
             interest: record.fields?.interest_rate,
-            fees: record.hiddenFees?.fees
-              ?.map((f) => `${f.name} (${f.amount})`)
-              .join(", "),
+            
+            // Safely extract fees
+            fees: (Array.isArray(record.hiddenFees) 
+                    ? record.hiddenFees 
+                    : record.hiddenFees?.fees || [])
+                  .map((f) => `${f.name} (₹${f.amount || 'Variable'})`)
+                  .join(", ")
           };
         }
       } catch (dbError) {
         console.error("Chat Context Lookup Failed:", dbError.message);
-        // We continue without context rather than failing completely
       }
     }
 

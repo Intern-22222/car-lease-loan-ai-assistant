@@ -424,7 +424,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-
+import API_BASE from "../config/api";
 const HistoryPage = () => {
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -439,7 +439,7 @@ const HistoryPage = () => {
         // ✅ FIX: Use /api/history with auth token so only THIS user's records load
         const token = sessionStorage.getItem("token");
         const response = await fetch(
-          "https://car-lease-loan-ai-assistant.onrender.com/api/history",
+          `${API_BASE}/api/history`,
           { headers: token ? { Authorization: "Bearer " + token } : {} }
         );
         const data = await response.json();
@@ -475,7 +475,7 @@ const HistoryPage = () => {
     try {
       const token = sessionStorage.getItem("token");
       const res = await fetch(
-        `https://car-lease-loan-ai-assistant.onrender.com/api/history/${id}`,
+        `${API_BASE}/api/history/${id}`,
         {
           method: "DELETE",
           headers: token ? { Authorization: "Bearer " + token } : {}
@@ -646,7 +646,7 @@ const HistoryPage = () => {
         .hi-page-info strong { color:#a5b4fc;font-weight:700; }
       `}</style>
 
-      <div className="hi-root">
+      <div className="hi-root page-enter">
         <div className="hi-orb hi-orb-1" />
         <div className="hi-orb hi-orb-2" />
         <div className="hi-orb hi-orb-3" />
@@ -685,6 +685,25 @@ const HistoryPage = () => {
           </div>
 
           {/* Search */}
+          {results.length > 0 && (
+            <div style={{ marginBottom: '2rem' }}>
+              <p style={{ fontSize: '0.8rem', color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700, marginBottom: '1rem' }}>🏆 Top Deals Leaderboard</p>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+                {[...results]
+                  .filter(r => r.pricingAnalysis?.score)
+                  .sort((a, b) => b.pricingAnalysis.score - a.pricingAnalysis.score)
+                  .slice(0, 3)
+                  .map((deal, i) => (
+                    <div key={deal._id} className="trophy-card" style={{ borderTop: `2px solid ${i === 0 ? '#C8A850' : i === 1 ? '#94A3B8' : '#B45309'}`, background: 'rgba(255,255,255,0.04)', borderRadius: '12px', padding: '1rem' }}>
+                      <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>{['🥇', '🥈', '🥉'][i]}</div>
+                      <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{deal.fields?.vehicle_make} {deal.fields?.vehicle_model}</div>
+                      <div style={{ fontSize: '0.8rem', color: '#a5b4fc', marginTop: '0.25rem' }}>Score: {deal.pricingAnalysis.score}/100</div>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          )}
+
           <div className="hi-search-wrap">
             <span className="hi-search-icon">
               <svg

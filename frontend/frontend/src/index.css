@@ -1,0 +1,12 @@
+body, html, #root {
+  background-color: #282E38 !important;
+}
+
+.bg-gray-50, .bg-slate-50, .bg-gray-100 {
+  background-color: #282E38 !important;
+}
+
+/* Adjust text color for dark background if it was dark text on light background */
+.text-gray-900, .text-gray-800 {
+  color: #F1F5F9 !important;
+}

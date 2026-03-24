@@ -146,6 +146,9 @@ const resultRoute = require("./src/routes/result.routes");
 const authRoute = require("./src/routes/auth.routes");
 const healthRoutes = require("./src/routes/health.routes");
 const vinRoutes = require("./src/routes/vin.routes"); // Assuming this exists
+const negotiateRoute = require('./src/routes/negotiate.route');
+const statsRoute = require('./src/routes/stats.route');
+
 
 // Middleware
 const errorHandler = require("./src/middlewares/error.middleware");
@@ -166,9 +169,27 @@ app.use("/api/history", historyRoute);
 app.use("/api", resultRoute); // Usually mounted at root /api for /api/results/:id
 app.use("/api/auth", authRoute);
 app.use("/api/v1/vin", vinRoutes);
+app.use('/api/negotiate', negotiateRoute);
+app.use('/api/user/stats', statsRoute);
+
 
 // Global Error Handler
 app.use(errorHandler);
+
+// const PORT = process.env.PORT || 3000;
+
+// async function startServer() {
+//   try {
+//     await connectToDB();
+//     logger.info("✅ Database connected.");
+//     app.listen(PORT, () => logger.info(`🚀 Server running on  http://localhost:${PORT}`));
+//   } catch (err) {
+//     logger.error(`Startup failed: ${err.message}`);
+//     process.exit(1);
+//   }
+// }
+
+// startServer();
 
 const PORT = process.env.PORT || 3000;
 
@@ -176,7 +197,11 @@ async function startServer() {
   try {
     await connectToDB();
     logger.info("✅ Database connected.");
-    app.listen(PORT, () => logger.info(`🚀 Server running on  http://localhost:${PORT}`));
+    
+    // Explicitly bind to "0.0.0.0" so Render can detect the open port
+    app.listen(PORT, "0.0.0.0", () => {
+      logger.info(`🚀 Server running and listening on 0.0.0.0:${PORT}`);
+    });
   } catch (err) {
     logger.error(`Startup failed: ${err.message}`);
     process.exit(1);

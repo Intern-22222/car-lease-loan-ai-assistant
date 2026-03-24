@@ -59,6 +59,8 @@ import ComparisonPage from "./components/ComparisonPage";
 import EmailGeneratorPage from "./pages/EmailGenerator";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignUp";
+import ProfilePage from "./pages/ProfilePage";
+
 
 // Components
 import ChatbotWidget from "./components/ChatbotWidget";
@@ -108,6 +110,17 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
+
+
 
           <Route
             path="/history"

@@ -133,14 +133,15 @@
 
 
 import React, { useState, useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom"; // Added useNavigate
+import API_BASE from "../config/api"; // Added API_BASE
 
 const ChatbotWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
     {
       role: "bot",
-      text: "Hi! I'm your Negotiation Coach. Ask me about your contract!",
+      text: "Hi! I'm your Negotiation Coach. Ask me about your contract or use the quick links below!",
     },
   ]);
   const [input, setInput] = useState("");
@@ -148,6 +149,17 @@ const ChatbotWidget = () => {
 
   const messagesEndRef = useRef(null);
   const location = useLocation();
+  const navigate = useNavigate(); // Initialize navigator
+  const btnRef = useRef(null);
+
+  useEffect(() => {
+    if (isOpen) return;
+    const iv = setInterval(() => {
+      btnRef.current?.classList.add('chat-nudge');
+      setTimeout(() => btnRef.current?.classList.remove('chat-nudge'), 700);
+    }, 8000);
+    return () => clearInterval(iv);
+  }, [isOpen]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -168,15 +180,18 @@ const ChatbotWidget = () => {
     try {
       const contractId = getContextId();
       const res = await fetch(
-        "https://car-lease-loan-ai-assistant.onrender.com/api/chat",
+        `${API_BASE}/api/chat`, // Fixed hardcoded URL
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${sessionStorage.getItem("token")}` // Added token just in case
+          },
           body: JSON.stringify({
             message: userMsg,
             contextData: contractId ? { id: contractId } : null,
           }),
-        },
+        }
       );
       const data = await res.json();
       if (data.success)
@@ -197,6 +212,12 @@ const ChatbotWidget = () => {
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter" && !e.shiftKey) handleSend();
+  };
+
+  // Quick Action Navigation Handler
+  const handleNavigate = (path) => {
+    navigate(path);
+    setIsOpen(false); // Close chat automatically when navigating
   };
 
   return (
@@ -289,6 +310,17 @@ const ChatbotWidget = () => {
         .cw-typing-dot:nth-child(2) { animation-delay:.2s; }
         .cw-typing-dot:nth-child(3) { animation-delay:.4s; }
         @keyframes cw-typing { 0%,80%,100%{transform:scale(0.7);opacity:.4} 40%{transform:scale(1);opacity:1} }
+
+        /* Quick Actions Navigation */
+        .cw-quick-actions { display:flex; gap:8px; padding: 0 14px 10px; overflow-x:auto; }
+        .cw-quick-actions::-webkit-scrollbar { display:none; }
+        .cw-quick-btn {
+          background: rgba(108,99,255,0.12); border: 1px solid rgba(108,99,255,0.3);
+          color: #a5b4fc; border-radius: 999px; padding: 6px 12px;
+          font-size: 0.75rem; font-weight: 600; cursor: pointer; white-space: nowrap;
+          transition: all 0.2s;
+        }
+        .cw-quick-btn:hover { background: rgba(108,99,255,0.25); color: #fff; }
 
         /* Input area */
         .cw-input-area {
@@ -441,6 +473,16 @@ const ChatbotWidget = () => {
               <div ref={messagesEndRef} />
             </div>
 
+            {/* Quick Navigation Links */}
+            {!isLoading && (
+              <div className="cw-quick-actions">
+                <button onClick={() => handleNavigate('/upload')} className="cw-quick-btn">⬆️ New Upload</button>
+                <button onClick={() => handleNavigate('/compare')} className="cw-quick-btn">📊 Compare Deals</button>
+                <button onClick={() => handleNavigate('/email')} className="cw-quick-btn">📧 Draft Email</button>
+                <button onClick={() => handleNavigate('/history')} className="cw-quick-btn">📂 History</button>
+              </div>
+            )}
+
             {/* Input */}
             <div className="cw-input-area">
               <input
@@ -473,8 +515,12 @@ const ChatbotWidget = () => {
           </div>
         )}
 
-        {/* FAB */}
-        <button className="cw-fab" onClick={() => setIsOpen(!isOpen)}>
+        {/* FAB (FIXED ONCLICK) */}
+        <button
+          ref={btnRef}
+          className="cw-fab"
+          onClick={() => setIsOpen(!isOpen)}
+        >
           {!isOpen && <div className="cw-fab-pulse" />}
           {isOpen ? (
             <svg

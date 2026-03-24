@@ -998,7 +998,17 @@ const extractFields = (cleanedText) => {
 
   console.log("--- DEBUG EXTRACTION END ---");
 
+  // result.confidence = Math.min(result.confidence, 1.0);
+  if (result.hiddenFees && Array.isArray(result.hiddenFees.fees)) {
+    result.hiddenFees.fees = result.hiddenFees.fees.map(fee => {
+      let sev = 'ok';
+      if (fee.type === 'Junk' && Number(fee.amount) > 5000) sev = 'critical';
+      else if (fee.type === 'Junk') sev = 'warning';
+      return Object.assign({}, fee, { severity: sev });
+    });
+  }
   result.confidence = Math.min(result.confidence, 1.0);
+  
   return result;
 };
 

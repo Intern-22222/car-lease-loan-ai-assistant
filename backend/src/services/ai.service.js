@@ -1087,60 +1087,60 @@
 //   chatWithAI,
 // };
 
-const OpenAI = require("openai");
-require("dotenv").config();
+// const OpenAI = require("openai");
+// require("dotenv").config();
 
-// Initialize OpenRouter
-const openai = new OpenAI({
-  baseURL: "https://openrouter.ai/api/v1",
-  apiKey: process.env.OPENROUTER_API_KEY,
-  defaultHeaders: {
-    "HTTP-Referer": "http://localhost:3000",
-    "X-Title": "Car Lease AI",
-  },
-});
+// // Initialize OpenRouter
+// const openai = new OpenAI({
+//   baseURL: "https://openrouter.ai/api/v1",
+//   apiKey: process.env.OPENROUTER_API_KEY,
+//   defaultHeaders: {
+//     "HTTP-Referer": "http://localhost:3000",
+//     "X-Title": "Car Lease AI",
+//   },
+// });
 
-const MODEL_NAME = "meta-llama/llama-3.1-8b-instruct";
+// const MODEL_NAME = "meta-llama/llama-3.1-8b-instruct";
 
-// 🛠️ HELPER: Robust JSON Parser (Fixes Single Quotes Issue)
-const cleanAndParseJSON = (text) => {
-  try {
-    if (!text) return [];
+// // 🛠️ HELPER: Robust JSON Parser (Fixes Single Quotes Issue)
+// const cleanAndParseJSON = (text) => {
+//   try {
+//     if (!text) return [];
 
-    // 1. Strip Markdown Code Blocks
-    let cleanText = text
-      .replace(/```json/g, "")
-      .replace(/```/g, "")
-      .trim();
+//     // 1. Strip Markdown Code Blocks
+//     let cleanText = text
+//       .replace(/```json/g, "")
+//       .replace(/```/g, "")
+//       .trim();
 
-    // 2. Extract JSON Array/Object only
-    const firstOpen = cleanText.indexOf("{");
-    const lastOpen = cleanText.indexOf("[");
-    const lastCloseCurly = cleanText.lastIndexOf("}");
-    const lastCloseSquare = cleanText.lastIndexOf("]");
+//     // 2. Extract JSON Array/Object only
+//     const firstOpen = cleanText.indexOf("{");
+//     const lastOpen = cleanText.indexOf("[");
+//     const lastCloseCurly = cleanText.lastIndexOf("}");
+//     const lastCloseSquare = cleanText.lastIndexOf("]");
 
-    // Prioritize Array extraction if square brackets exist
-    if (lastOpen !== -1 && lastCloseSquare !== -1) {
-      cleanText = cleanText.substring(lastOpen, lastCloseSquare + 1);
-    } else if (firstOpen !== -1 && lastCloseCurly !== -1) {
-      cleanText = cleanText.substring(firstOpen, lastCloseCurly + 1);
-    }
+//     // Prioritize Array extraction if square brackets exist
+//     if (lastOpen !== -1 && lastCloseSquare !== -1) {
+//       cleanText = cleanText.substring(lastOpen, lastCloseSquare + 1);
+//     } else if (firstOpen !== -1 && lastCloseCurly !== -1) {
+//       cleanText = cleanText.substring(firstOpen, lastCloseCurly + 1);
+//     }
 
-    // 3. FIX SINGLE QUOTES (The main source of your crash)
-    // This replaces 'key': 'value' with "key": "value"
-    // Note: It's a simple heuristic, usually sufficient for AI output
-    if (cleanText.includes("'")) {
-      cleanText = cleanText
-        .replace(/([a-zA-Z0-9_]+?):/g, '"$1":') // Fix keys
-        .replace(/'/g, '"'); // Fix values
-    }
+//     // 3. FIX SINGLE QUOTES (The main source of your crash)
+//     // This replaces 'key': 'value' with "key": "value"
+//     // Note: It's a simple heuristic, usually sufficient for AI output
+//     if (cleanText.includes("'")) {
+//       cleanText = cleanText
+//         .replace(/([a-zA-Z0-9_]+?):/g, '"$1":') // Fix keys
+//         .replace(/'/g, '"'); // Fix values
+//     }
 
-    return JSON.parse(cleanText);
-  } catch (error) {
-    console.error("JSON Parse Failed on:", text.substring(0, 50));
-    return []; // Return empty array on failure to prevent DB crash
-  }
-};
+//     return JSON.parse(cleanText);
+//   } catch (error) {
+//     console.error("JSON Parse Failed on:", text.substring(0, 50));
+//     return []; // Return empty array on failure to prevent DB crash
+//   }
+// };
 
 // ✅ 1. Contract Parsing
 // const parseContractTerms = async (contractText) => {
@@ -1179,6 +1179,260 @@ const cleanAndParseJSON = (text) => {
 // };
 
 
+
+// // ✅ 1. Contract Parsing (UPDATED to include Summary)
+// const parseContractTerms = async (contractText) => {
+//   try {
+//     if (!process.env.OPENROUTER_API_KEY) return {};
+
+//     const completion = await openai.chat.completions.create({
+//       model: MODEL_NAME,
+//       messages: [
+//         {
+//           role: "system",
+//           content: "You are an OCR assistant. Output STRICT VALID JSON with DOUBLE QUOTES.",
+//         },
+//         {
+//           role: "user",
+//           content: `
+//             Extract contract details into JSON.
+            
+//             REQUIRED KEYS: 
+//             loan_amount, interest_rate, tenure_months, monthly_payment, 
+//             down_payment, residual_value, mileage_allowance, early_termination_fee, 
+//             purchase_option_price, maintenance_responsibilities, warranty_coverage, late_payment_penalty.
+
+//             NEW KEY:
+//             "summary": "Provide a 2-sentence summary of any non-financial clauses found (e.g., SLAs, Escalation Matrix, Support hours, or Insurance requirements)."
+            
+//             Use "Not Specified" if a field is missing.
+            
+//             Text: "${contractText.substring(0, 8000)}"
+//           `,
+//         },
+//       ],
+//     });
+
+//     const result = cleanAndParseJSON(completion.choices[0].message.content);
+//     return Array.isArray(result) ? {} : result; // Ensure Object
+//   } catch (error) {
+//     return {};
+//   }
+// };
+
+
+// // ✅ 2. Recommendation
+// const generateRecommendation = async (vehicleDetails, pricing, loanTerms) => {
+//   try {
+//     const completion = await openai.chat.completions.create({
+//       model: MODEL_NAME,
+//       messages: [
+//         {
+//           role: "user",
+//           content: `
+//             Act as a financial advisor. Analyze this deal:
+//             Price: ${pricing.contractPrice} (Fair: ${pricing.marketFairPrice}).
+//             Interest: ${loanTerms.interestRate}%.
+            
+//             Give a 2-sentence recommendation.
+//           `,
+//         },
+//       ],
+//     });
+//     return completion.choices[0].message.content;
+//   } catch (error) {
+//     return "Compare quotes.";
+//   }
+// };
+
+// // ✅ 3. Hidden Fees (The Crash Fix)
+// const extractHiddenFees = async (contractText) => {
+//   try {
+//     const completion = await openai.chat.completions.create({
+//       model: MODEL_NAME,
+//       messages: [
+//         {
+//           role: "system",
+//           content: "Output STRICT JSON Array. Use DOUBLE QUOTES only.",
+//         },
+//         {
+//           role: "user",
+//           content: `
+//             Extract fees as a JSON Array:
+//             [ { "name": "Fee Name", "amount": 0, "description": "Reason", "type": "Junk" or "Standard" } ]
+            
+//             Text: "${contractText.substring(0, 8000)}"
+//           `,
+//         },
+//       ],
+//     });
+
+//     const result = cleanAndParseJSON(completion.choices[0].message.content);
+//     return Array.isArray(result) ? result : []; // Ensure Array
+//   } catch (error) {
+//     return [];
+//   }
+// };
+
+// // ✅ 4. Email
+// const generateNegotiationEmail = async (
+//   contractData,
+//   recipientName,
+//   userName,
+// ) => {
+//   try {
+//     const completion = await openai.chat.completions.create({
+//       model: MODEL_NAME,
+//       messages: [
+//         {
+//           role: "user",
+//           content: `Write a negotiation email from ${userName} to ${recipientName} regarding a car loan.`,
+//         },
+//       ],
+//     });
+//     return completion.choices[0].message.content;
+//   } catch (error) {
+//     return "Error generating draft.";
+//   }
+// };
+
+// // ✅ 5. Chat
+// // const chatWithAI = async (message, contextData = null) => {
+// //   try {
+// //     const completion = await openai.chat.completions.create({
+// //       model: MODEL_NAME,
+// //       messages: [
+// //         { role: "system", content: "You are a helpful car buying coach." },
+// //         { role: "user", content: message },
+// //       ],
+// //     });
+// //     return completion.choices[0].message.content;
+// //   } catch (error) {
+// //     return "Service unavailable.";
+// //   }
+// // };
+
+
+// // ✅ 5. Chat (Context-Aware + Navigation Knowledge)
+// const chatWithAI = async (message, contextData = null) => {
+//   try {
+//     // 👇 BASE KNOWLEDGE: Teach the AI about the App's features
+//     let systemPrompt = `
+//       You are the AI Assistant for 'AutoLoan AI'.
+//       Your goal is to help users negotiate car loans and navigate this application.
+
+//       APP NAVIGATION GUIDE:
+//       1. **To Compare Contracts**: Go to the 'History' page, select 2 or 3 contracts by clicking them, and click the 'Compare Selected' button.
+//       2. **To Analyze a New Contract**: Go to the 'Home' (Upload) page and drop your PDF.
+//       3. **To Draft Emails**: Go to the 'Email Generator' page.
+//       4. **To View Past Analysis**: Click on 'History' in the navigation bar.
+
+//       NEGOTIATION BASICS:
+//       - Always advise users to negotiate the interest rate and remove junk fees.
+//       - A "Fairness Score" below 50 means the deal is bad.
+//     `;
+
+//     // 👇 SPECIFIC CONTEXT (If user is looking at a specific file)
+//     if (contextData) {
+//       systemPrompt += `
+      
+//       CURRENT CONTEXT (The user is viewing a specific contract):
+//       - Vehicle: ${contextData.vehicle || "Unknown Car"}
+//       - Contract Price: ${contextData.price || "N/A"}
+//       - Market Fair Price: ${contextData.fairPrice || "N/A"}
+//       - Deal Fairness Score: ${contextData.score}/100 (${contextData.verdict})
+//       - Interest Rate: ${contextData.interest || "N/A"}
+//       - Hidden Fees Detected: ${contextData.fees || "None"}
+      
+//       INSTRUCTION: Focus answers on this specific deal.
+//       `;
+//     } else {
+//       // 👇 GENERAL MODE (Dashboard/History)
+//       systemPrompt += `
+      
+//       CURRENT CONTEXT: General Dashboard Mode.
+//       The user is navigating the app. If they ask "Where can I compare?", use the Navigation Guide above to answer.
+//       `;
+//     }
+
+//     const completion = await openai.chat.completions.create({
+//       model: MODEL_NAME,
+//       messages: [
+//         { role: "system", content: systemPrompt },
+//         { role: "user", content: message },
+//       ],
+//     });
+//     return completion.choices[0].message.content;
+//   } catch (error) {
+//     console.error("Chat Error:", error);
+//     return "I'm having trouble connecting right now. Please try again.";
+//   }
+// };
+
+// module.exports = {
+//   parseContractTerms,
+//   generateRecommendation,
+//   extractHiddenFees,
+//   generateNegotiationEmail,
+//   chatWithAI,
+// };
+
+
+const OpenAI = require("openai");
+require("dotenv").config();
+
+// Use environment variable for the URL, fallback to localhost for local dev
+const SITE_URL = process.env.CLIENT_URL || "http://localhost:3000";
+
+// Initialize OpenRouter
+const openai = new OpenAI({
+  baseURL: "https://openrouter.ai/api/v1",
+  apiKey: process.env.OPENROUTER_API_KEY,
+  defaultHeaders: {
+    "HTTP-Referer": SITE_URL,
+    "X-Title": "AutoLease AI",
+  },
+});
+
+const MODEL_NAME = "meta-llama/llama-3.1-8b-instruct";
+
+// 🛠️ HELPER: Robust JSON Parser (Fixes Single Quotes Issue)
+const cleanAndParseJSON = (text) => {
+  try {
+    if (!text) return [];
+
+    // 1. Strip Markdown Code Blocks
+    let cleanText = text
+      .replace(/```json/g, "")
+      .replace(/```/g, "")
+      .trim();
+
+    // 2. Extract JSON Array/Object only
+    const firstOpen = cleanText.indexOf("{");
+    const lastOpen = cleanText.indexOf("[");
+    const lastCloseCurly = cleanText.lastIndexOf("}");
+    const lastCloseSquare = cleanText.lastIndexOf("]");
+
+    // Prioritize Array extraction if square brackets exist
+    if (lastOpen !== -1 && lastCloseSquare !== -1) {
+      cleanText = cleanText.substring(lastOpen, lastCloseSquare + 1);
+    } else if (firstOpen !== -1 && lastCloseCurly !== -1) {
+      cleanText = cleanText.substring(firstOpen, lastCloseCurly + 1);
+    }
+
+    // 3. FIX SINGLE QUOTES (The main source of your crash)
+    if (cleanText.includes("'")) {
+      cleanText = cleanText
+        .replace(/([a-zA-Z0-9_]+?):/g, '"$1":') // Fix keys
+        .replace(/'/g, '"'); // Fix values
+    }
+
+    return JSON.parse(cleanText);
+  } catch (error) {
+    console.error("JSON Parse Failed on:", text.substring(0, 50));
+    return []; // Return empty array on failure to prevent DB crash
+  }
+};
 
 // ✅ 1. Contract Parsing (UPDATED to include Summary)
 const parseContractTerms = async (contractText) => {
@@ -1219,7 +1473,6 @@ const parseContractTerms = async (contractText) => {
     return {};
   }
 };
-
 
 // ✅ 2. Recommendation
 const generateRecommendation = async (vehicleDetails, pricing, loanTerms) => {
@@ -1296,62 +1549,47 @@ const generateNegotiationEmail = async (
   }
 };
 
-// ✅ 5. Chat
-// const chatWithAI = async (message, contextData = null) => {
-//   try {
-//     const completion = await openai.chat.completions.create({
-//       model: MODEL_NAME,
-//       messages: [
-//         { role: "system", content: "You are a helpful car buying coach." },
-//         { role: "user", content: message },
-//       ],
-//     });
-//     return completion.choices[0].message.content;
-//   } catch (error) {
-//     return "Service unavailable.";
-//   }
-// };
-
-
-// ✅ 5. Chat (Context-Aware + Navigation Knowledge)
+// ✅ 5. Chat (Supercharged Context-Aware + App Navigator)
 const chatWithAI = async (message, contextData = null) => {
   try {
     // 👇 BASE KNOWLEDGE: Teach the AI about the App's features
     let systemPrompt = `
-      You are the AI Assistant for 'AutoLoan AI'.
-      Your goal is to help users negotiate car loans and navigate this application.
+      You are Coach AI, the official expert assistant for AutoLease AI.
+      Your goal is to help users negotiate car deals and easily navigate this application.
 
-      APP NAVIGATION GUIDE:
-      1. **To Compare Contracts**: Go to the 'History' page, select 2 or 3 contracts by clicking them, and click the 'Compare Selected' button.
-      2. **To Analyze a New Contract**: Go to the 'Home' (Upload) page and drop your PDF.
-      3. **To Draft Emails**: Go to the 'Email Generator' page.
-      4. **To View Past Analysis**: Click on 'History' in the navigation bar.
+      APP NAVIGATION & FEATURES (Explain these to users if they ask what to do):
+      1. Analyze Contract (Upload): Go to the Dashboard and click 'Analyze Contract' to upload a PDF. We instantly extract financial terms and uncover hidden 'junk' fees.
+      2. Compare Offers: Go to 'Compare Offers' (or History) to select up to 3 contracts and compare them side-by-side to find the best deal.
+      3. AI Negotiator: Go to 'Negotiator' to generate AI-powered counter-offer emails and negotiation scripts.
+      4. Profile & Stats: Click the avatar in the top right to see your analyzed contracts, average deal score, and most common junk fees.
 
       NEGOTIATION BASICS:
-      - Always advise users to negotiate the interest rate and remove junk fees.
-      - A "Fairness Score" below 50 means the deal is bad.
+      - Always advise users to negotiate the interest rate and demand the removal of junk fees (like admin fees, doc fees, prep fees).
+      - A "Fairness Score" below 50 means the deal is highly overpriced.
+      
+      Your Personality: Be extremely helpful, encouraging, and concise. Format your responses nicely. Do not use markdown asterisks wildly.
     `;
 
     // 👇 SPECIFIC CONTEXT (If user is looking at a specific file)
-    if (contextData) {
+    if (contextData && contextData.vehicle) {
       systemPrompt += `
       
-      CURRENT CONTEXT (The user is viewing a specific contract):
-      - Vehicle: ${contextData.vehicle || "Unknown Car"}
-      - Contract Price: ${contextData.price || "N/A"}
-      - Market Fair Price: ${contextData.fairPrice || "N/A"}
-      - Deal Fairness Score: ${contextData.score}/100 (${contextData.verdict})
-      - Interest Rate: ${contextData.interest || "N/A"}
-      - Hidden Fees Detected: ${contextData.fees || "None"}
+      --- CURRENT CONTEXT ---
+      The user is currently viewing a specific contract for a ${contextData.vehicle}.
+      Contract Price: ₹${contextData.price || "N/A"}.
+      Market Fair Price: ₹${contextData.fairPrice || "N/A"}.
+      Deal Fairness Score: ${contextData.score || 0}/100 (${contextData.verdict || "Pending"}).
+      Interest Rate: ${contextData.interest || "N/A"}%.
+      Hidden Fees Detected: ${contextData.fees || "None"}.
       
-      INSTRUCTION: Focus answers on this specific deal.
+      INSTRUCTION: Focus answers on this specific deal. If the user asks "is this a good deal?" or "what fees did you find?", use the numbers provided above to answer them specifically.
       `;
     } else {
       // 👇 GENERAL MODE (Dashboard/History)
       systemPrompt += `
       
-      CURRENT CONTEXT: General Dashboard Mode.
-      The user is navigating the app. If they ask "Where can I compare?", use the Navigation Guide above to answer.
+      --- CURRENT CONTEXT ---
+      General Dashboard Mode. The user is browsing the app. Use the APP NAVIGATION guide above to help them find what they need.
       `;
     }
 
@@ -1361,6 +1599,7 @@ const chatWithAI = async (message, contextData = null) => {
         { role: "system", content: systemPrompt },
         { role: "user", content: message },
       ],
+      temperature: 0.7,
     });
     return completion.choices[0].message.content;
   } catch (error) {

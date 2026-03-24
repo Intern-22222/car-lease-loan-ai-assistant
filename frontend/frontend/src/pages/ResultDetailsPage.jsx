@@ -2462,23 +2462,903 @@
 // export default ResultDetailsPage;
 
 
+// import React, { useState, useEffect } from "react";
+// import { useParams, Link } from "react-router-dom";
+// import jsPDF from "jspdf";
+// import axios from "axios";
+// import ChatbotWidget from "../components/ChatbotWidget";
+
+// const ResultDetailsPage = () => {
+//   const { id } = useParams();
+//   const [record, setRecord] = useState(null);
+//   const [isLoading, setIsLoading] = useState(true);
+//   const [error, setError] = useState("");
+//   const [rawOpen, setRawOpen] = useState(false);
+
+//   useEffect(() => {
+//     const fetchRecord = async () => {
+//       try {
+//         // ✅ FIX: Send auth token so only the owner can view this record
+//         const token = sessionStorage.getItem("token");
+//         const response = await axios.get(
+//           `https://car-lease-loan-ai-assistant.onrender.com/api/results/${id}`,
+//           { headers: token ? { Authorization: "Bearer " + token } : {} }
+//         );
+//         if (response.data.success) setRecord(response.data.data);
+//         else setError("Record not found");
+//       } catch (err) {
+//         console.error(err);
+//         setError("Server error while fetching record");
+//       } finally {
+//         setIsLoading(false);
+//       }
+//     };
+//     fetchRecord();
+//   }, [id]);
+
+//   const generateAnalysisPDF = () => {
+//     if (!record) return;
+//     const doc = new jsPDF();
+//     doc.setFontSize(20);
+//     doc.setTextColor(40);
+//     doc.text("AutoLoan AI - Analysis Report", 20, 20);
+//     doc.setFontSize(12);
+//     doc.setTextColor(100);
+//     doc.text(`File Name: ${record.fileName}`, 20, 30);
+//     doc.text(`Date: ${new Date().toLocaleDateString()}`, 20, 36);
+//     doc.setDrawColor(200);
+//     doc.line(20, 40, 190, 40);
+//     doc.setFontSize(14);
+//     doc.setTextColor(0);
+//     doc.text("Financial Details", 20, 50);
+//     doc.setFontSize(12);
+//     doc.setTextColor(60);
+//     let y = 60;
+//     if (record.fields) {
+//       doc.text(`Loan Amount: ${record.fields.loan_amount || "N/A"}`, 20, y);
+//       doc.text(
+//         `Interest Rate: ${record.fields.interest_rate || "N/A"}`,
+//         120,
+//         y,
+//       );
+//       y += 10;
+//       doc.text(`Tenure: ${record.fields.tenure_months || "N/A"}`, 20, y);
+//       doc.text(`EMI: ${record.fields.monthly_payment || "N/A"}`, 120, y);
+//     }
+//     if (record.pricingAnalysis) {
+//       y += 20;
+//       doc.setFontSize(14);
+//       doc.setTextColor(0);
+//       doc.text("Market Analysis", 20, y);
+//       y += 10;
+//       doc.setFontSize(12);
+//       doc.setTextColor(60);
+//       doc.text(
+//         `Market Fair Price: Rs ${record.pricingAnalysis.marketFairPrice || "N/A"}`,
+//         20,
+//         y,
+//       );
+//       doc.text(
+//         `Contract Price: Rs ${record.pricingAnalysis.contractPrice || "N/A"}`,
+//         20,
+//         y + 10,
+//       );
+//       doc.text(
+//         `Fairness Score: ${record.pricingAnalysis.score}/100`,
+//         20,
+//         y + 20,
+//       );
+//       doc.text(`Verdict: ${record.pricingAnalysis.verdict}`, 120, y + 20);
+//       if (record.pricingAnalysis.recommendation) {
+//         y += 35;
+//         doc.setFontSize(11);
+//         doc.setTextColor(0);
+//         doc.text("AI Recommendation:", 20, y);
+//         const splitText = doc.splitTextToSize(
+//           record.pricingAnalysis.recommendation,
+//           170,
+//         );
+//         doc.text(splitText, 20, y + 7);
+//       }
+//     }
+//     doc.save(`Analysis_${record.fileName}.pdf`);
+//   };
+
+//   const getScoreColor = (score) => {
+//     if (score === undefined || score === null) return "#6b7280";
+//     if (score >= 80) return "#10b981";
+//     if (score >= 60) return "#f59e0b";
+//     return "#ef4444";
+//   };
+
+//   if (isLoading)
+//     return (
+//       <div
+//         style={{
+//           minHeight: "100vh",
+//           background: "#050816",
+//           display: "flex",
+//           alignItems: "center",
+//           justifyContent: "center",
+//         }}
+//       >
+//         <style>{`@import url('https://fonts.googleapis.com/css2?family=Sora:wght@600&display=swap');.rd-dot{width:9px;height:9px;border-radius:50%;background:#6c63ff;animation:rd-b 1.2s ease-in-out infinite}.rd-dot:nth-child(2){animation-delay:.2s}.rd-dot:nth-child(3){animation-delay:.4s}@keyframes rd-b{0%,80%,100%{transform:scale(0.7);opacity:.4}40%{transform:scale(1);opacity:1}}`}</style>
+//         <div style={{ display: "flex", gap: "7px" }}>
+//           <div className="rd-dot" />
+//           <div className="rd-dot" />
+//           <div className="rd-dot" />
+//         </div>
+//       </div>
+//     );
+
+//   if (error)
+//     return (
+//       <div
+//         style={{
+//           minHeight: "100vh",
+//           background: "#050816",
+//           display: "flex",
+//           alignItems: "center",
+//           justifyContent: "center",
+//         }}
+//       >
+//         <div
+//           style={{
+//             fontFamily: "'Sora',sans-serif",
+//             color: "#f87171",
+//             fontSize: "1rem",
+//             fontWeight: 600,
+//           }}
+//         >
+//           {error}
+//         </div>
+//       </div>
+//     );
+
+//   if (!record) return null;
+
+//   const price = record.pricingAnalysis || {};
+//   if (price.contractPrice && price.marketFairPrice)
+//     price.difference = price.contractPrice - price.marketFairPrice;
+//   const vehicle = record.vehicleDetails || {};
+//   const fields = record.fields || {};
+//   const hiddenFees = record.hiddenFees || {};
+//   const sc = getScoreColor(price.score);
+
+//   return (
+//     <>
+//       <style>{`
+//         @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+//         *, *::before, *::after { box-sizing: border-box; }
+
+//         .rd-root {
+//           font-family: 'Sora', sans-serif;
+//           min-height: 100vh;
+//           background: #050816;
+//           position: relative;
+//           overflow-x: hidden;
+//           padding: 2.5rem 1.25rem 6rem;
+//         }
+//         .rd-orb { position:fixed;border-radius:50%;filter:blur(90px);pointer-events:none;z-index:0;animation:rd-drift 14s ease-in-out infinite alternate; }
+//         .rd-orb-1 { width:520px;height:520px;background:radial-gradient(circle,#4f46e5,#1e1b4b);top:-150px;left:-160px;opacity:0.3; }
+//         .rd-orb-2 { width:440px;height:440px;background:radial-gradient(circle,#0ea5e9,#0369a1);bottom:-140px;right:-120px;opacity:0.22;animation-delay:-7s; }
+//         .rd-orb-3 { width:270px;height:270px;background:radial-gradient(circle,#8b5cf6,#6d28d9);top:35%;left:60%;opacity:0.17;animation-delay:-11s; }
+//         @keyframes rd-drift { 0%{transform:translate(0,0) scale(1)} 100%{transform:translate(28px,22px) scale(1.06)} }
+//         .rd-grid-bg { position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);background-size:48px 48px; }
+
+//         .rd-wrap { position:relative;z-index:1;max-width:960px;margin:0 auto; }
+
+//         /* Nav */
+//         .rd-nav { display:flex;justify-content:space-between;align-items:center;margin-bottom:2.5rem;flex-wrap:wrap;gap:12px; }
+//         .rd-nav-left { display:flex;align-items:center;gap:10px; }
+//         .rd-nav-right { display:flex;align-items:center;gap:10px; }
+
+//         .rd-pill-btn { display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:11px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.55);font-family:'Sora',sans-serif;font-size:0.8rem;font-weight:600;text-decoration:none;cursor:pointer;transition:background 0.2s,border-color 0.2s,transform 0.15s;white-space:nowrap; }
+//         .rd-pill-btn:hover { background:rgba(255,255,255,0.09);border-color:rgba(255,255,255,0.2);transform:translateY(-1px); }
+
+//         .rd-pdf-btn { display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:11px;background:linear-gradient(135deg,#6c63ff,#4f46e5);border:none;color:#fff;font-family:'Sora',sans-serif;font-size:0.8rem;font-weight:600;cursor:pointer;transition:transform 0.18s,box-shadow 0.18s;box-shadow:0 4px 18px rgba(108,99,255,0.3); }
+//         .rd-pdf-btn:hover { transform:translateY(-2px);box-shadow:0 8px 26px rgba(108,99,255,0.45); }
+
+//         /* Page header */
+//         .rd-page-header { margin-bottom:2rem; }
+//         .rd-badge { display:inline-flex;align-items:center;gap:6px;background:rgba(108,99,255,0.14);border:1px solid rgba(108,99,255,0.3);border-radius:999px;padding:4px 14px;font-size:10px;font-weight:600;letter-spacing:0.08em;color:#a5b4fc;text-transform:uppercase;margin-bottom:0.75rem; }
+//         .rd-badge-dot { width:6px;height:6px;border-radius:50%;background:#6c63ff;box-shadow:0 0 6px #6c63ff;animation:rd-pulse 2s ease-in-out infinite; }
+//         @keyframes rd-pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.7)} }
+//         .rd-page-title { font-size:clamp(1.6rem,4vw,2.1rem);font-weight:800;color:#fff;letter-spacing:-0.04em;line-height:1.1;margin:0 0 0.4rem; }
+//         .rd-id-chip { display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);font-family:'DM Sans',monospace;font-size:0.75rem;color:rgba(255,255,255,0.3); }
+
+//         /* Glass card */
+//         .rd-card {
+//           background:rgba(255,255,255,0.04);
+//           border:1px solid rgba(255,255,255,0.09);
+//           border-radius:22px;
+//           padding:1.75rem;
+//           backdrop-filter:blur(22px);
+//           -webkit-backdrop-filter:blur(22px);
+//           box-shadow:0 20px 56px rgba(0,0,0,0.4),0 0 0 1px rgba(255,255,255,0.03) inset;
+//           position:relative;
+//           animation:rd-cardIn 0.55s cubic-bezier(0.22,1,0.36,1) both;
+//         }
+//         @keyframes rd-cardIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+//         .rd-card::before { content:'';position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.12),transparent); }
+
+//         .rd-section-label { font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:1rem;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:6px; }
+
+//         /* Two-col grid */
+//         .rd-two-col { display:grid;grid-template-columns:1fr;gap:1.25rem; }
+//         @media(min-width:680px) { .rd-two-col { grid-template-columns:1fr 1fr; } }
+//         .rd-three-col { display:grid;grid-template-columns:1fr;gap:1.25rem; }
+//         @media(min-width:700px) { .rd-three-col { grid-template-columns:2fr 1fr; } }
+
+//         /* Vehicle */
+//         .rd-vehicle-big { font-size:clamp(1.4rem,3.5vw,1.9rem);font-weight:800;color:#fff;letter-spacing:-0.03em;line-height:1.15;margin-bottom:4px; }
+//         .rd-vehicle-sub { font-family:'DM Sans',sans-serif;font-size:0.875rem;color:rgba(255,255,255,0.4); }
+//         .rd-vin-wrap { display:flex;flex-direction:column;align-items:flex-end;gap:4px; }
+//         .rd-vin-label { font-size:9px;font-weight:700;letter-spacing:0.09em;text-transform:uppercase;color:rgba(255,255,255,0.3); }
+//         .rd-vin-code { font-family:monospace;font-size:0.8rem;color:#a5b4fc;background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.2);padding:5px 12px;border-radius:8px; }
+
+//         /* Score gauge */
+//         .rd-score-wrap { display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem; }
+//         .rd-score-circle { position:relative;width:100px;height:100px;border-radius:50%;display:flex;align-items:center;justify-content:center; }
+//         .rd-score-num { font-size:2.2rem;font-weight:800;line-height:1; }
+//         .rd-verdict-pill { padding:5px 14px;border-radius:999px;font-size:0.75rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase; }
+
+//         /* Recommendation */
+//         .rd-rec-card { background:rgba(108,99,255,0.08);border:1px solid rgba(108,99,255,0.2);border-radius:18px;padding:1.5rem;position:relative; }
+//         .rd-rec-card::before { content:'';position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,rgba(108,99,255,0.25),transparent); }
+//         .rd-rec-icon { width:40px;height:40px;border-radius:11px;background:rgba(108,99,255,0.15);border:1px solid rgba(108,99,255,0.25);display:flex;align-items:center;justify-content:center;color:#a5b4fc;margin-bottom:1rem; }
+//         .rd-rec-title { font-size:0.85rem;font-weight:700;color:#c4b5fd;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.06em; }
+//         .rd-rec-text { font-family:'DM Sans',sans-serif;font-size:0.9rem;color:rgba(255,255,255,0.65);line-height:1.7;font-style:italic; }
+
+//         /* Price bars */
+//         .rd-bar-label { display:flex;justify-content:space-between;margin-bottom:6px; }
+//         .rd-bar-key { font-family:'DM Sans',sans-serif;font-size:0.82rem;color:rgba(255,255,255,0.45); }
+//         .rd-bar-val { font-size:0.88rem;font-weight:700;color:#fff; }
+//         .rd-bar-track { width:100%;height:8px;background:rgba(255,255,255,0.06);border-radius:999px;overflow:hidden; }
+//         .rd-bar-fill { height:100%;border-radius:999px;transition:width 0.8s ease; }
+//         .rd-diff-chip { display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:10px;font-size:0.82rem;font-weight:700; }
+
+//         /* Detail rows */
+//         .rd-detail-row { display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.05); }
+//         .rd-detail-row:last-child { border-bottom:none; }
+//         .rd-detail-label { font-family:'DM Sans',sans-serif;font-size:0.82rem;color:rgba(255,255,255,0.38); }
+//         .rd-detail-val { font-size:0.88rem;font-weight:700;color:#fff; }
+//         .rd-detail-val.highlight { color:#a5b4fc; }
+
+//         /* Fee row */
+//         .rd-fee-row { display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05); }
+//         .rd-fee-row:last-child { border-bottom:none; }
+//         .rd-fee-name { font-family:'DM Sans',sans-serif;font-size:0.82rem;color:rgba(255,255,255,0.45); }
+//         .rd-fee-amt { font-size:0.82rem;font-weight:700;color:#f87171; }
+
+//         /* Raw text */
+//         .rd-raw-toggle { display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.8rem;color:rgba(255,255,255,0.35);transition:background 0.2s;width:100%;justify-content:center; }
+//         .rd-raw-toggle:hover { background:rgba(255,255,255,0.07); }
+//         .rd-raw-box { margin-top:10px;background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.07);border-radius:13px;padding:14px;max-height:180px;overflow:auto; }
+//         .rd-raw-box pre { font-family:monospace;font-size:11px;color:rgba(255,255,255,0.5);white-space:pre-wrap;line-height:1.65;margin:0; }
+//         .rd-raw-box::-webkit-scrollbar { width:4px; }
+//         .rd-raw-box::-webkit-scrollbar-thumb { background:rgba(108,99,255,0.3);border-radius:99px; }
+
+//         /* Spacer */
+//         .rd-space { height: 1.25rem; }
+//       `}</style>
+
+//       <div className="rd-root">
+//         <div className="rd-orb rd-orb-1" />
+//         <div className="rd-orb rd-orb-2" />
+//         <div className="rd-orb rd-orb-3" />
+//         <div className="rd-grid-bg" />
+
+//         <div className="rd-wrap">
+//           {/* Nav */}
+//           <div className="rd-nav">
+//             <div className="rd-nav-left">
+//               <Link to="/" className="rd-pill-btn">
+//                 <svg
+//                   width="13"
+//                   height="13"
+//                   viewBox="0 0 24 24"
+//                   fill="none"
+//                   stroke="currentColor"
+//                   strokeWidth="2.5"
+//                   strokeLinecap="round"
+//                   strokeLinejoin="round"
+//                 >
+//                   <path d="M19 12H5M12 5l-7 7 7 7" />
+//                 </svg>
+//                 Upload
+//               </Link>
+//               <Link to="/history" className="rd-pill-btn">
+//                 <svg
+//                   width="13"
+//                   height="13"
+//                   viewBox="0 0 24 24"
+//                   fill="none"
+//                   stroke="currentColor"
+//                   strokeWidth="2"
+//                   strokeLinecap="round"
+//                   strokeLinejoin="round"
+//                 >
+//                   <circle cx="12" cy="12" r="10" />
+//                   <polyline points="12 6 12 12 16 14" />
+//                 </svg>
+//                 History
+//               </Link>
+//             </div>
+//             <button onClick={generateAnalysisPDF} className="rd-pdf-btn">
+//               <svg
+//                 width="14"
+//                 height="14"
+//                 viewBox="0 0 24 24"
+//                 fill="none"
+//                 stroke="currentColor"
+//                 strokeWidth="2"
+//                 strokeLinecap="round"
+//                 strokeLinejoin="round"
+//               >
+//                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+//                 <polyline points="14 2 14 8 20 8" />
+//                 <line x1="12" y1="18" x2="12" y2="12" />
+//                 <line x1="9" y1="15" x2="15" y2="15" />
+//               </svg>
+//               Download Report
+//             </button>
+//           </div>
+
+//           {/* Page header */}
+//           <div className="rd-page-header">
+//             <div>
+//               <span className="rd-badge">
+//                 <span className="rd-badge-dot" />
+//                 Analysis Result
+//               </span>
+//             </div>
+//             <div
+//               style={{
+//                 display: "flex",
+//                 alignItems: "center",
+//                 justifyContent: "space-between",
+//                 flexWrap: "wrap",
+//                 gap: "10px",
+//               }}
+//             >
+//               <h2 className="rd-page-title">Contract Analysis</h2>
+//               <span className="rd-id-chip">
+//                 <svg
+//                   width="11"
+//                   height="11"
+//                   viewBox="0 0 24 24"
+//                   fill="none"
+//                   stroke="currentColor"
+//                   strokeWidth="2"
+//                   strokeLinecap="round"
+//                   strokeLinejoin="round"
+//                 >
+//                   <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+//                   <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+//                 </svg>
+//                 {id}
+//               </span>
+//             </div>
+//           </div>
+
+//           {/* Row 1: Vehicle + Score */}
+//           <div className="rd-three-col" style={{ marginBottom: "1.25rem" }}>
+//             {/* Vehicle */}
+//             <div className="rd-card" style={{ animationDelay: "0.05s" }}>
+//               <div className="rd-section-label">
+//                 <svg
+//                   width="12"
+//                   height="12"
+//                   viewBox="0 0 24 24"
+//                   fill="none"
+//                   stroke="currentColor"
+//                   strokeWidth="2"
+//                   strokeLinecap="round"
+//                   strokeLinejoin="round"
+//                 >
+//                   <rect x="1" y="3" width="15" height="13" />
+//                   <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+//                   <circle cx="5.5" cy="18.5" r="2.5" />
+//                   <circle cx="18.5" cy="18.5" r="2.5" />
+//                 </svg>
+//                 Vehicle Identity
+//               </div>
+//               {vehicle.make ? (
+//                 <div
+//                   style={{
+//                     display: "flex",
+//                     justifyContent: "space-between",
+//                     alignItems: "flex-start",
+//                     gap: "12px",
+//                     flexWrap: "wrap",
+//                   }}
+//                 >
+//                   <div>
+//                     <div className="rd-vehicle-big">
+//                       {vehicle.year} {vehicle.make} {vehicle.model}
+//                     </div>
+//                     <div className="rd-vehicle-sub">
+//                       {vehicle.trim} {vehicle.bodyClass}
+//                     </div>
+//                   </div>
+//                   <div className="rd-vin-wrap">
+//                     <div className="rd-vin-label">VIN Detected</div>
+//                     <div className="rd-vin-code">{record.vin || "N/A"}</div>
+//                   </div>
+//                 </div>
+//               ) : (
+//                 <p
+//                   style={{
+//                     fontFamily: "'DM Sans',sans-serif",
+//                     fontSize: "0.875rem",
+//                     color: "rgba(255,255,255,0.3)",
+//                     fontStyle: "italic",
+//                   }}
+//                 >
+//                   Vehicle details could not be extracted automatically.
+//                 </p>
+//               )}
+//             </div>
+
+//             {/* Score */}
+//             <div className="rd-card" style={{ animationDelay: "0.1s" }}>
+//               <div className="rd-section-label">
+//                 <svg
+//                   width="12"
+//                   height="12"
+//                   viewBox="0 0 24 24"
+//                   fill="none"
+//                   stroke="currentColor"
+//                   strokeWidth="2"
+//                   strokeLinecap="round"
+//                   strokeLinejoin="round"
+//                 >
+//                   <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+//                 </svg>
+//                 Fairness Score
+//               </div>
+//               <div className="rd-score-wrap">
+//                 <div
+//                   className="rd-score-circle"
+//                   style={{
+//                     border: `3px solid ${sc}`,
+//                     boxShadow: `0 0 24px ${sc}30`,
+//                   }}
+//                 >
+//                   <span className="rd-score-num" style={{ color: sc }}>
+//                     {price.score ?? "--"}
+//                   </span>
+//                 </div>
+//                 <span
+//                   className="rd-verdict-pill"
+//                   style={{
+//                     background: `${sc}18`,
+//                     border: `1px solid ${sc}40`,
+//                     color: sc,
+//                   }}
+//                 >
+//                   {price.verdict || "Pending"}
+//                 </span>
+//               </div>
+//             </div>
+//           </div>
+
+//           {/* Row 2: AI Recommendation */}
+//           {price.recommendation && (
+//             <>
+//               <div
+//                 className="rd-rec-card"
+//                 style={{
+//                   marginBottom: "1.25rem",
+//                   animation: "rd-cardIn 0.55s 0.15s both",
+//                 }}
+//               >
+//                 <div className="rd-rec-icon">
+//                   <svg
+//                     width="20"
+//                     height="20"
+//                     viewBox="0 0 24 24"
+//                     fill="none"
+//                     stroke="currentColor"
+//                     strokeWidth="1.8"
+//                     strokeLinecap="round"
+//                     strokeLinejoin="round"
+//                   >
+//                     <path d="M12 2a10 10 0 1 0 10 10" />
+//                     <path d="M12 8v4l3 3" />
+//                     <circle
+//                       cx="19"
+//                       cy="5"
+//                       r="3"
+//                       fill="currentColor"
+//                       opacity="0.5"
+//                       stroke="none"
+//                     />
+//                   </svg>
+//                 </div>
+//                 <div className="rd-rec-title">AI Advisor Recommendation</div>
+//                 <div className="rd-rec-text">"{price.recommendation}"</div>
+//               </div>
+//             </>
+//           )}
+
+//           {/* Row 3: Price Analysis */}
+//           {price.marketFairPrice && (
+//             <div
+//               className="rd-card"
+//               style={{ marginBottom: "1.25rem", animationDelay: "0.18s" }}
+//             >
+//               <div className="rd-section-label">
+//                 <svg
+//                   width="12"
+//                   height="12"
+//                   viewBox="0 0 24 24"
+//                   fill="none"
+//                   stroke="currentColor"
+//                   strokeWidth="2"
+//                   strokeLinecap="round"
+//                   strokeLinejoin="round"
+//                 >
+//                   <line x1="12" y1="1" x2="12" y2="23" />
+//                   <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+//                 </svg>
+//                 Price Fairness Analysis
+//               </div>
+
+//               <div
+//                 style={{
+//                   display: "flex",
+//                   flexDirection: "column",
+//                   gap: "1.1rem",
+//                   marginBottom: "1.25rem",
+//                 }}
+//               >
+//                 {/* Market */}
+//                 <div>
+//                   <div className="rd-bar-label">
+//                     <span className="rd-bar-key">Market Fair Value</span>
+//                     <span className="rd-bar-val">
+//                       ₹{price.marketFairPrice.toLocaleString()}
+//                     </span>
+//                   </div>
+//                   <div className="rd-bar-track">
+//                     <div
+//                       className="rd-bar-fill"
+//                       style={{
+//                         width: "75%",
+//                         background: "linear-gradient(90deg,#6c63ff,#818cf8)",
+//                       }}
+//                     />
+//                   </div>
+//                 </div>
+//                 {/* Contract */}
+//                 <div>
+//                   <div className="rd-bar-label">
+//                     <span className="rd-bar-key">Your Contract Price</span>
+//                     <span
+//                       className="rd-bar-val"
+//                       style={{
+//                         color: price.difference > 0 ? "#f87171" : "#34d399",
+//                       }}
+//                     >
+//                       ₹{price.contractPrice?.toLocaleString()}
+//                     </span>
+//                   </div>
+//                   <div className="rd-bar-track">
+//                     <div
+//                       className="rd-bar-fill"
+//                       style={{
+//                         width: `${Math.min((price.contractPrice / price.marketFairPrice) * 75, 100)}%`,
+//                         background:
+//                           price.difference > 0
+//                             ? "linear-gradient(90deg,#ef4444,#f87171)"
+//                             : "linear-gradient(90deg,#10b981,#34d399)",
+//                       }}
+//                     />
+//                   </div>
+//                 </div>
+//               </div>
+
+//               <div
+//                 style={{
+//                   borderTop: "1px solid rgba(255,255,255,0.06)",
+//                   paddingTop: "1rem",
+//                   display: "flex",
+//                   justifyContent: "flex-end",
+//                 }}
+//               >
+//                 <span
+//                   className="rd-diff-chip"
+//                   style={{
+//                     background:
+//                       price.difference > 0
+//                         ? "rgba(239,68,68,0.1)"
+//                         : "rgba(16,185,129,0.1)",
+//                     border: `1px solid ${price.difference > 0 ? "rgba(239,68,68,0.3)" : "rgba(16,185,129,0.3)"}`,
+//                     color: price.difference > 0 ? "#f87171" : "#34d399",
+//                   }}
+//                 >
+//                   {price.difference > 0 ? (
+//                     <svg
+//                       width="13"
+//                       height="13"
+//                       viewBox="0 0 24 24"
+//                       fill="none"
+//                       stroke="currentColor"
+//                       strokeWidth="2.5"
+//                       strokeLinecap="round"
+//                       strokeLinejoin="round"
+//                     >
+//                       <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+//                       <line x1="12" y1="9" x2="12" y2="13" />
+//                       <line x1="12" y1="17" x2="12.01" y2="17" />
+//                     </svg>
+//                   ) : (
+//                     <svg
+//                       width="13"
+//                       height="13"
+//                       viewBox="0 0 24 24"
+//                       fill="none"
+//                       stroke="currentColor"
+//                       strokeWidth="2.5"
+//                       strokeLinecap="round"
+//                       strokeLinejoin="round"
+//                     >
+//                       <polyline points="20 6 9 17 4 12" />
+//                     </svg>
+//                   )}
+//                   {price.difference > 0
+//                     ? `Overpriced by ₹${price.difference.toLocaleString()}`
+//                     : `Underpriced by ₹${Math.abs(price.difference).toLocaleString()}`}
+//                 </span>
+//               </div>
+//             </div>
+//           )}
+
+//           {/* Row 4: Loan Terms + Fees */}
+//           <div className="rd-two-col" style={{ marginBottom: "1.25rem" }}>
+//             <div className="rd-card" style={{ animationDelay: "0.22s" }}>
+//               <div className="rd-section-label">
+//                 <svg
+//                   width="12"
+//                   height="12"
+//                   viewBox="0 0 24 24"
+//                   fill="none"
+//                   stroke="currentColor"
+//                   strokeWidth="2"
+//                   strokeLinecap="round"
+//                   strokeLinejoin="round"
+//                 >
+//                   <rect x="2" y="5" width="20" height="14" rx="2" />
+//                   <line x1="2" y1="10" x2="22" y2="10" />
+//                 </svg>
+//                 Loan Terms
+//               </div>
+//               {[
+//                 { label: "Loan Amount", val: fields.loan_amount },
+//                 { label: "Interest Rate", val: fields.interest_rate, hi: true },
+//                 { label: "Tenure", val: fields.tenure_months },
+//                 { label: "Monthly Payment", val: fields.monthly_payment },
+//                 { label: "Down Payment", val: fields.down_payment },
+//               ].map((r) => (
+//                 <div key={r.label} className="rd-detail-row">
+//                   <span className="rd-detail-label">{r.label}</span>
+//                   <span className={`rd-detail-val${r.hi ? " highlight" : ""}`}>
+//                     {r.val && r.val !== "Not Specified" ? r.val : "—"}
+//                   </span>
+//                 </div>
+//               ))}
+//             </div>
+
+//             <div className="rd-card" style={{ animationDelay: "0.27s" }}>
+//               <div className="rd-section-label">
+//                 <svg
+//                   width="12"
+//                   height="12"
+//                   viewBox="0 0 24 24"
+//                   fill="none"
+//                   stroke="currentColor"
+//                   strokeWidth="2"
+//                   strokeLinecap="round"
+//                   strokeLinejoin="round"
+//                 >
+//                   <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+//                   <line x1="12" y1="9" x2="12" y2="13" />
+//                   <line x1="12" y1="17" x2="12.01" y2="17" />
+//                 </svg>
+//                 Hidden Fees & Penalties
+//               </div>
+//               {hiddenFees?.fees?.length > 0
+//                 ? hiddenFees.fees.map((fee, idx) => (
+//                   <div key={idx} className="rd-fee-row">
+//                     <span className="rd-fee-name">{fee.name}</span>
+//                     <span className="rd-fee-amt">
+//                       {fee.amount || "Variable"}
+//                     </span>
+//                   </div>
+//                 ))
+//                 : [
+//                   {
+//                     label: "Early Termination",
+//                     val: fields.early_termination_fee,
+//                   },
+//                   { label: "Late Penalty", val: fields.late_payment_penalty },
+//                   { label: "Mileage Limit", val: fields.mileage_allowance },
+//                   { label: "Residual Value", val: fields.residual_value },
+//                 ].map((r) => (
+//                   <div key={r.label} className="rd-detail-row">
+//                     <span className="rd-detail-label">{r.label}</span>
+//                     <span className="rd-detail-val">
+//                       {r.val && r.val !== "Not Specified" ? r.val : "—"}
+//                     </span>
+//                   </div>
+//                 ))}
+//             </div>
+//           </div>
+
+//           {/* Raw text */}
+//           {record.rawText && (
+//             <div style={{ marginBottom: "1.25rem" }}>
+//               <button
+//                 className="rd-raw-toggle"
+//                 onClick={() => setRawOpen((v) => !v)}
+//               >
+//                 <svg
+//                   width="13"
+//                   height="13"
+//                   viewBox="0 0 24 24"
+//                   fill="none"
+//                   stroke="currentColor"
+//                   strokeWidth="2"
+//                   strokeLinecap="round"
+//                   strokeLinejoin="round"
+//                 >
+//                   <polyline points="16 18 22 12 16 6" />
+//                   <polyline points="8 6 2 12 8 18" />
+//                 </svg>
+//                 {rawOpen ? "Hide" : "View"} Raw Extracted Text
+//                 <svg
+//                   width="13"
+//                   height="13"
+//                   viewBox="0 0 24 24"
+//                   fill="none"
+//                   stroke="currentColor"
+//                   strokeWidth="2.5"
+//                   strokeLinecap="round"
+//                   strokeLinejoin="round"
+//                   style={{
+//                     transition: "transform 0.2s",
+//                     transform: rawOpen ? "rotate(180deg)" : "none",
+//                   }}
+//                 >
+//                   <polyline points="6 9 12 15 18 9" />
+//                 </svg>
+//               </button>
+//               {rawOpen && (
+//                 <div className="rd-raw-box">
+//                   <pre>{record.rawText}</pre>
+//                 </div>
+//               )}
+//             </div>
+//           )}
+//         </div>
+
+//         <ChatbotWidget />
+//       </div>
+//     </>
+//   );
+// };
+
+// const DetailRow = ({ label, value, highlight }) => (
+//   <div
+//     style={{
+//       display: "flex",
+//       justifyContent: "space-between",
+//       alignItems: "center",
+//       padding: "9px 0",
+//       borderBottom: "1px solid rgba(255,255,255,0.05)",
+//     }}
+//   >
+//     <span
+//       style={{
+//         fontFamily: "'DM Sans',sans-serif",
+//         fontSize: "0.82rem",
+//         color: "rgba(255,255,255,0.38)",
+//       }}
+//     >
+//       {label}
+//     </span>
+//     <span
+//       style={{
+//         fontSize: "0.88rem",
+//         fontWeight: 700,
+//         color: highlight ? "#a5b4fc" : "#fff",
+//       }}
+//     >
+//       {value && value !== "Not Specified" ? value : "—"}
+//     </span>
+//   </div>
+// );
+
+// export default ResultDetailsPage;
+
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import jsPDF from "jspdf";
 import axios from "axios";
 import ChatbotWidget from "../components/ChatbotWidget";
+import API_BASE from "../config/api";
+
+const PriceBar = ({ contractPrice, marketPrice }) => {
+  const cp = Number(contractPrice) || 0;
+  const mp = Number(marketPrice) || 0;
+  if (!cp || !mp) return null;
+  const max = Math.max(cp, mp) * 1.1;
+  const cpPct = (cp / max) * 100;
+  const mpPct = (mp / max) * 100;
+  const diff = (((cp - mp) / mp) * 100).toFixed(1);
+  const isOver = cp > mp;
+  const [w, setW] = useState({ cp: 0, mp: 0 });
+  useEffect(() => { setTimeout(() => setW({ cp: cpPct, mp: mpPct }), 200); }, [cpPct, mpPct]);
+  return (
+    <div style={{ marginTop: '1.2rem' }}>
+      <p style={{ color: '#94A3B8', fontSize: '0.8rem', marginBottom: '10px', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.05em' }}>Price vs Market</p>
+      {[{ label: 'Market Avg', pct: w.mp, color: '#10B981', val: mp }, { label: 'Your Deal', pct: w.cp, color: isOver ? '#EF4444' : '#10B981', val: cp }].map(row => (
+        <div key={row.label} style={{ marginBottom: '8px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', marginBottom: '4px' }}>
+            <span style={{ color: '#94A3B8' }}>{row.label}</span>
+            <span style={{ color: row.color, fontWeight: 600 }}>₹{row.val.toLocaleString('en-IN')}</span>
+          </div>
+          <div style={{ height: '8px', background: 'rgba(255,255,255,0.07)', borderRadius: '4px', overflow: 'hidden' }}>
+            <div style={{ height: '100%', width: `${row.pct}%`, background: row.color, borderRadius: '4px', transition: 'width 0.9s cubic-bezier(0.4,0,0.2,1)' }} />
+          </div>
+        </div>
+      ))}
+      <p style={{ fontSize: '0.78rem', marginTop: '6px', color: isOver ? '#EF4444' : '#10B981', fontWeight: 600 }}>
+        {isOver ? `⚠️ Overpriced by ${diff}%` : `✅ Below market by ${Math.abs(diff)}%`}
+      </p>
+    </div>
+  );
+};
+
+const SeverityMeter = ({ fees }) => {
+  const counts = { critical: 0, warning: 0, ok: 0 };
+  (fees || []).forEach(f => counts[f.severity || 'ok']++);
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => { setTimeout(() => setLoaded(true), 300); }, []);
+  return (
+    <div style={{ marginTop: '1.2rem', marginBottom: '0.5rem', background: 'rgba(0,0,0,0.2)', padding: '12px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+      <p style={{ color: '#94A3B8', fontSize: '0.75rem', marginBottom: '8px', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.05em' }}>Fee Risk Breakdown</p>
+      <div className={`severity-bar-wrap ${loaded ? 'loaded' : ''}`}>
+        <div className="severity-seg-critical" style={{ flex: counts.critical || 0.01 }} />
+        <div className="severity-seg-warning" style={{ flex: counts.warning || 0.01 }} />
+        <div className="severity-seg-ok" style={{ flex: counts.ok || 0.01 }} />
+      </div>
+      <div style={{ display: 'flex', gap: '1rem', marginTop: '8px', fontSize: '0.75rem', fontWeight: 600 }}>
+        <span style={{ color: '#EF4444' }}>🔴 High Risk: {counts.critical}</span>
+        <span style={{ color: '#F59E0B' }}>🟡 Warning: {counts.warning}</span>
+        <span style={{ color: '#10B981' }}>🟢 Normal: {counts.ok}</span>
+      </div>
+    </div>
+  );
+};
 
 const ResultDetailsPage = () => {
   const { id } = useParams();
   const [record, setRecord] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
-  const [rawOpen, setRawOpen] = useState(false);
+  const [displayScore, setDisplayScore] = useState(0);
+  const [activeTab, setActiveTab] = useState('analysis');
+
+  const [scriptModal, setScriptModal] = useState(false);
+  const [negotiationScript, setNegotiationScript] = useState('');
+  const [scriptLoading, setScriptLoading] = useState(false);
 
   useEffect(() => {
     const fetchRecord = async () => {
       try {
-        // ✅ FIX: Send auth token so only the owner can view this record
         const token = sessionStorage.getItem("token");
         const response = await axios.get(
           `https://car-lease-loan-ai-assistant.onrender.com/api/results/${id}`,
@@ -2496,72 +3376,125 @@ const ResultDetailsPage = () => {
     fetchRecord();
   }, [id]);
 
+  useEffect(() => {
+    const score = record?.pricingAnalysis?.score;
+    if (!score) return;
+    const duration = 1200;
+    const start = performance.now();
+    const tick = (now) => {
+      const p = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setDisplayScore(Math.round(eased * score));
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }, [record]);
+
+  const generateScript = async () => {
+    setScriptLoading(true);
+    setScriptModal(true);
+    try {
+      const token = sessionStorage.getItem('token');
+      const res = await fetch(`${API_BASE}/api/negotiate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          pricingAnalysis: record.pricingAnalysis,
+          hiddenFees: record.hiddenFees,
+          vehicleDetails: record.vehicleDetails,
+        }),
+      });
+      const data = await res.json();
+      setNegotiationScript(data.script || 'No script returned.');
+    } catch (e) {
+      setNegotiationScript('Error generating script. Please try again.');
+    } finally {
+      setScriptLoading(false);
+    }
+  };
+
   const generateAnalysisPDF = () => {
     if (!record) return;
     const doc = new jsPDF();
+    const gold = [200, 168, 80];
+    const white = [241, 245, 249];
+    const muted = [148, 163, 184];
+    const danger = [239, 68, 68];
+    const success = [16, 185, 129];
+
+    doc.setFillColor(17, 24, 39);
+    doc.rect(0, 0, 210, 297, 'F');
     doc.setFontSize(20);
-    doc.setTextColor(40);
-    doc.text("AutoLoan AI - Analysis Report", 20, 20);
+    doc.setTextColor(...gold);
+    doc.setFont(undefined, 'bold');
+    doc.text('AutoLease AI', 20, 22);
+    doc.setFontSize(10);
+    doc.setTextColor(...muted);
+    doc.text('Contract Analysis Report', 20, 30);
+    doc.setDrawColor(...gold);
+    doc.setLineWidth(0.5);
+    doc.line(20, 34, 190, 34);
+
+    doc.setFontSize(11);
+    doc.setTextColor(...white);
+    doc.setFont(undefined, 'normal');
+    const vehicle = record.vehicleDetails ? `${record.vehicleDetails.year} ${record.vehicleDetails.make} ${record.vehicleDetails.model}` : 'Vehicle details not available';
+    doc.text(`Vehicle: ${vehicle}`, 20, 45);
+    doc.text(`VIN: ${record.vin || 'Not detected'}`, 20, 53);
+    doc.text(`Analyzed: ${new Date().toLocaleDateString('en-IN')}`, 20, 61);
+
+    doc.setDrawColor(30, 38, 64);
+    doc.line(20, 66, 190, 66);
+
     doc.setFontSize(12);
-    doc.setTextColor(100);
-    doc.text(`File Name: ${record.fileName}`, 20, 30);
-    doc.text(`Date: ${new Date().toLocaleDateString()}`, 20, 36);
-    doc.setDrawColor(200);
-    doc.line(20, 40, 190, 40);
-    doc.setFontSize(14);
-    doc.setTextColor(0);
-    doc.text("Financial Details", 20, 50);
+    doc.setTextColor(...gold);
+    doc.text('Pricing Analysis', 20, 75);
+    doc.setFontSize(10);
+    doc.setTextColor(...white);
+    doc.text(`Contract Price: ₹${(record.pricingAnalysis?.contractPrice || 0).toLocaleString('en-IN')}`, 20, 84);
+    doc.text(`Market Fair Price: ₹${(record.pricingAnalysis?.marketFairPrice || 0).toLocaleString('en-IN')}`, 20, 92);
+
+    const verdict = record.pricingAnalysis?.verdict || 'N/A';
+    doc.setTextColor(...(verdict === 'Overpriced' ? danger : success));
+    doc.text(`Verdict: ${verdict}`, 20, 100);
+
+    const score = record.pricingAnalysis?.score || 0;
+    doc.setTextColor(...white);
+    doc.text(`Deal Score: ${score}/100`, 20, 112);
+    doc.setFillColor(30, 38, 64);
+    doc.roundedRect(20, 116, 120, 6, 2, 2, 'F');
+    doc.setFillColor(...(score >= 70 ? success : score >= 40 ? [245, 158, 11] : danger));
+    doc.roundedRect(20, 116, 120 * (score / 100), 6, 2, 2, 'F');
+
+    doc.setDrawColor(30, 38, 64);
+    doc.line(20, 128, 190, 128);
     doc.setFontSize(12);
-    doc.setTextColor(60);
-    let y = 60;
-    if (record.fields) {
-      doc.text(`Loan Amount: ${record.fields.loan_amount || "N/A"}`, 20, y);
-      doc.text(
-        `Interest Rate: ${record.fields.interest_rate || "N/A"}`,
-        120,
-        y,
-      );
-      y += 10;
-      doc.text(`Tenure: ${record.fields.tenure_months || "N/A"}`, 20, y);
-      doc.text(`EMI: ${record.fields.monthly_payment || "N/A"}`, 120, y);
-    }
-    if (record.pricingAnalysis) {
-      y += 20;
-      doc.setFontSize(14);
-      doc.setTextColor(0);
-      doc.text("Market Analysis", 20, y);
-      y += 10;
-      doc.setFontSize(12);
-      doc.setTextColor(60);
-      doc.text(
-        `Market Fair Price: Rs ${record.pricingAnalysis.marketFairPrice || "N/A"}`,
-        20,
-        y,
-      );
-      doc.text(
-        `Contract Price: Rs ${record.pricingAnalysis.contractPrice || "N/A"}`,
-        20,
-        y + 10,
-      );
-      doc.text(
-        `Fairness Score: ${record.pricingAnalysis.score}/100`,
-        20,
-        y + 20,
-      );
-      doc.text(`Verdict: ${record.pricingAnalysis.verdict}`, 120, y + 20);
-      if (record.pricingAnalysis.recommendation) {
-        y += 35;
-        doc.setFontSize(11);
-        doc.setTextColor(0);
-        doc.text("AI Recommendation:", 20, y);
-        const splitText = doc.splitTextToSize(
-          record.pricingAnalysis.recommendation,
-          170,
-        );
-        doc.text(splitText, 20, y + 7);
-      }
-    }
-    doc.save(`Analysis_${record.fileName}.pdf`);
+    doc.setTextColor(...gold);
+    doc.text('AI Recommendation', 20, 137);
+    doc.setFontSize(9);
+    doc.setTextColor(...white);
+    const rec = record.pricingAnalysis?.recommendation || 'Compare with other lenders.';
+    const lines = doc.splitTextToSize(rec, 170);
+    doc.text(lines, 20, 146);
+
+    doc.setFontSize(8);
+    doc.setTextColor(...muted);
+    doc.text(`Generated by AutoLease AI · ${new Date().toLocaleString('en-IN')}`, 20, 285);
+    doc.setDrawColor(...muted);
+    doc.line(20, 280, 190, 280);
+
+    doc.save(`AutoLease_Report_${record._id || 'analysis'}.pdf`);
+  };
+
+  const highlightKeywords = (text) => {
+    if (!text) return '';
+    const safe = text.replace(/<script[\s\S]*?<\/script>/gi, '');
+    const dangerWords = ['prepayment penalty', 'balloon payment', 'termination fee', 'excess mileage charge'];
+    const warnWords = ['gap insurance', 'origination fee', 'documentation fee', 'admin fee', 'doc fee'];
+    let result = safe;
+    dangerWords.forEach(w => { result = result.replace(new RegExp(w, 'gi'), `<mark class="kw-danger">${w}</mark>`); });
+    warnWords.forEach(w => { result = result.replace(new RegExp(w, 'gi'), `<mark class="kw-warning">${w}</mark>`); });
+    return result;
   };
 
   const getScoreColor = (score) => {
@@ -2571,55 +3504,12 @@ const ResultDetailsPage = () => {
     return "#ef4444";
   };
 
-  if (isLoading)
-    return (
-      <div
-        style={{
-          minHeight: "100vh",
-          background: "#050816",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <style>{`@import url('https://fonts.googleapis.com/css2?family=Sora:wght@600&display=swap');.rd-dot{width:9px;height:9px;border-radius:50%;background:#6c63ff;animation:rd-b 1.2s ease-in-out infinite}.rd-dot:nth-child(2){animation-delay:.2s}.rd-dot:nth-child(3){animation-delay:.4s}@keyframes rd-b{0%,80%,100%{transform:scale(0.7);opacity:.4}40%{transform:scale(1);opacity:1}}`}</style>
-        <div style={{ display: "flex", gap: "7px" }}>
-          <div className="rd-dot" />
-          <div className="rd-dot" />
-          <div className="rd-dot" />
-        </div>
-      </div>
-    );
-
-  if (error)
-    return (
-      <div
-        style={{
-          minHeight: "100vh",
-          background: "#050816",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <div
-          style={{
-            fontFamily: "'Sora',sans-serif",
-            color: "#f87171",
-            fontSize: "1rem",
-            fontWeight: 600,
-          }}
-        >
-          {error}
-        </div>
-      </div>
-    );
-
+  if (isLoading) return <div style={{ minHeight: "100vh", background: "#050816", display: "flex", alignItems: "center", justifyContent: "center" }}><div style={{ color: "#C8A850" }}>Loading Results...</div></div>;
+  if (error) return <div style={{ minHeight: "100vh", background: "#050816", display: "flex", alignItems: "center", justifyContent: "center" }}><div style={{ color: "#ef4444" }}>{error}</div></div>;
   if (!record) return null;
 
   const price = record.pricingAnalysis || {};
-  if (price.contractPrice && price.marketFairPrice)
-    price.difference = price.contractPrice - price.marketFairPrice;
+  if (price.contractPrice && price.marketFairPrice) price.difference = price.contractPrice - price.marketFairPrice;
   const vehicle = record.vehicleDetails || {};
   const fields = record.fields || {};
   const hiddenFees = record.hiddenFees || {};
@@ -2630,655 +3520,176 @@ const ResultDetailsPage = () => {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
         *, *::before, *::after { box-sizing: border-box; }
-
-        .rd-root {
-          font-family: 'Sora', sans-serif;
-          min-height: 100vh;
-          background: #050816;
-          position: relative;
-          overflow-x: hidden;
-          padding: 2.5rem 1.25rem 6rem;
-        }
+        .rd-root { font-family: 'Sora', sans-serif; min-height: 100vh; background: #050816; position: relative; overflow-x: hidden; padding: 2.5rem 1.25rem 6rem; }
         .rd-orb { position:fixed;border-radius:50%;filter:blur(90px);pointer-events:none;z-index:0;animation:rd-drift 14s ease-in-out infinite alternate; }
         .rd-orb-1 { width:520px;height:520px;background:radial-gradient(circle,#4f46e5,#1e1b4b);top:-150px;left:-160px;opacity:0.3; }
         .rd-orb-2 { width:440px;height:440px;background:radial-gradient(circle,#0ea5e9,#0369a1);bottom:-140px;right:-120px;opacity:0.22;animation-delay:-7s; }
         .rd-orb-3 { width:270px;height:270px;background:radial-gradient(circle,#8b5cf6,#6d28d9);top:35%;left:60%;opacity:0.17;animation-delay:-11s; }
         @keyframes rd-drift { 0%{transform:translate(0,0) scale(1)} 100%{transform:translate(28px,22px) scale(1.06)} }
-        .rd-grid-bg { position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);background-size:48px 48px; }
-
         .rd-wrap { position:relative;z-index:1;max-width:960px;margin:0 auto; }
-
-        /* Nav */
         .rd-nav { display:flex;justify-content:space-between;align-items:center;margin-bottom:2.5rem;flex-wrap:wrap;gap:12px; }
         .rd-nav-left { display:flex;align-items:center;gap:10px; }
         .rd-nav-right { display:flex;align-items:center;gap:10px; }
-
-        .rd-pill-btn { display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:11px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.55);font-family:'Sora',sans-serif;font-size:0.8rem;font-weight:600;text-decoration:none;cursor:pointer;transition:background 0.2s,border-color 0.2s,transform 0.15s;white-space:nowrap; }
-        .rd-pill-btn:hover { background:rgba(255,255,255,0.09);border-color:rgba(255,255,255,0.2);transform:translateY(-1px); }
-
-        .rd-pdf-btn { display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:11px;background:linear-gradient(135deg,#6c63ff,#4f46e5);border:none;color:#fff;font-family:'Sora',sans-serif;font-size:0.8rem;font-weight:600;cursor:pointer;transition:transform 0.18s,box-shadow 0.18s;box-shadow:0 4px 18px rgba(108,99,255,0.3); }
-        .rd-pdf-btn:hover { transform:translateY(-2px);box-shadow:0 8px 26px rgba(108,99,255,0.45); }
-
-        /* Page header */
-        .rd-page-header { margin-bottom:2rem; }
-        .rd-badge { display:inline-flex;align-items:center;gap:6px;background:rgba(108,99,255,0.14);border:1px solid rgba(108,99,255,0.3);border-radius:999px;padding:4px 14px;font-size:10px;font-weight:600;letter-spacing:0.08em;color:#a5b4fc;text-transform:uppercase;margin-bottom:0.75rem; }
-        .rd-badge-dot { width:6px;height:6px;border-radius:50%;background:#6c63ff;box-shadow:0 0 6px #6c63ff;animation:rd-pulse 2s ease-in-out infinite; }
-        @keyframes rd-pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.7)} }
-        .rd-page-title { font-size:clamp(1.6rem,4vw,2.1rem);font-weight:800;color:#fff;letter-spacing:-0.04em;line-height:1.1;margin:0 0 0.4rem; }
-        .rd-id-chip { display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);font-family:'DM Sans',monospace;font-size:0.75rem;color:rgba(255,255,255,0.3); }
-
-        /* Glass card */
-        .rd-card {
-          background:rgba(255,255,255,0.04);
-          border:1px solid rgba(255,255,255,0.09);
-          border-radius:22px;
-          padding:1.75rem;
-          backdrop-filter:blur(22px);
-          -webkit-backdrop-filter:blur(22px);
-          box-shadow:0 20px 56px rgba(0,0,0,0.4),0 0 0 1px rgba(255,255,255,0.03) inset;
-          position:relative;
-          animation:rd-cardIn 0.55s cubic-bezier(0.22,1,0.36,1) both;
-        }
+        .rd-pill-btn { display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:11px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.55);font-size:0.8rem;font-weight:600;text-decoration:none;transition:background 0.2s,transform 0.15s; }
+        .rd-pdf-btn { display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:11px;background:linear-gradient(135deg,#6c63ff,#4f46e5);border:none;color:#fff;font-size:0.8rem;font-weight:600;cursor:pointer; }
+        .rd-page-header { margin-bottom:1.5rem; }
+        .rd-page-title { font-size:clamp(1.6rem,4vw,2.1rem);font-weight:800;color:#fff;margin:0 0 0.4rem; }
+        .rd-card { background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);border-radius:22px;padding:1.75rem;backdrop-filter:blur(22px);box-shadow:0 20px 56px rgba(0,0,0,0.4);position:relative;animation:rd-cardIn 0.55s cubic-bezier(0.22,1,0.36,1) both; }
         @keyframes rd-cardIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
-        .rd-card::before { content:'';position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.12),transparent); }
-
         .rd-section-label { font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:1rem;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:6px; }
-
-        /* Two-col grid */
         .rd-two-col { display:grid;grid-template-columns:1fr;gap:1.25rem; }
         @media(min-width:680px) { .rd-two-col { grid-template-columns:1fr 1fr; } }
         .rd-three-col { display:grid;grid-template-columns:1fr;gap:1.25rem; }
         @media(min-width:700px) { .rd-three-col { grid-template-columns:2fr 1fr; } }
-
-        /* Vehicle */
-        .rd-vehicle-big { font-size:clamp(1.4rem,3.5vw,1.9rem);font-weight:800;color:#fff;letter-spacing:-0.03em;line-height:1.15;margin-bottom:4px; }
-        .rd-vehicle-sub { font-family:'DM Sans',sans-serif;font-size:0.875rem;color:rgba(255,255,255,0.4); }
-        .rd-vin-wrap { display:flex;flex-direction:column;align-items:flex-end;gap:4px; }
-        .rd-vin-label { font-size:9px;font-weight:700;letter-spacing:0.09em;text-transform:uppercase;color:rgba(255,255,255,0.3); }
-        .rd-vin-code { font-family:monospace;font-size:0.8rem;color:#a5b4fc;background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.2);padding:5px 12px;border-radius:8px; }
-
-        /* Score gauge */
+        .rd-vehicle-big { font-size:clamp(1.4rem,3.5vw,1.9rem);font-weight:800;color:#fff;margin-bottom:4px; }
+        .rd-vin-code { font-family:monospace;font-size:0.8rem;color:#C8A850;background:rgba(200,168,80,0.1);padding:5px 12px;border-radius:8px; }
         .rd-score-wrap { display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem; }
         .rd-score-circle { position:relative;width:100px;height:100px;border-radius:50%;display:flex;align-items:center;justify-content:center; }
         .rd-score-num { font-size:2.2rem;font-weight:800;line-height:1; }
-        .rd-verdict-pill { padding:5px 14px;border-radius:999px;font-size:0.75rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase; }
-
-        /* Recommendation */
-        .rd-rec-card { background:rgba(108,99,255,0.08);border:1px solid rgba(108,99,255,0.2);border-radius:18px;padding:1.5rem;position:relative; }
-        .rd-rec-card::before { content:'';position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,rgba(108,99,255,0.25),transparent); }
-        .rd-rec-icon { width:40px;height:40px;border-radius:11px;background:rgba(108,99,255,0.15);border:1px solid rgba(108,99,255,0.25);display:flex;align-items:center;justify-content:center;color:#a5b4fc;margin-bottom:1rem; }
-        .rd-rec-title { font-size:0.85rem;font-weight:700;color:#c4b5fd;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.06em; }
-        .rd-rec-text { font-family:'DM Sans',sans-serif;font-size:0.9rem;color:rgba(255,255,255,0.65);line-height:1.7;font-style:italic; }
-
-        /* Price bars */
-        .rd-bar-label { display:flex;justify-content:space-between;margin-bottom:6px; }
-        .rd-bar-key { font-family:'DM Sans',sans-serif;font-size:0.82rem;color:rgba(255,255,255,0.45); }
-        .rd-bar-val { font-size:0.88rem;font-weight:700;color:#fff; }
-        .rd-bar-track { width:100%;height:8px;background:rgba(255,255,255,0.06);border-radius:999px;overflow:hidden; }
-        .rd-bar-fill { height:100%;border-radius:999px;transition:width 0.8s ease; }
-        .rd-diff-chip { display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:10px;font-size:0.82rem;font-weight:700; }
-
-        /* Detail rows */
+        .rd-verdict-pill { padding:5px 14px;border-radius:999px;font-size:0.75rem;font-weight:700;text-transform:uppercase; }
+        .rd-rec-card { background:rgba(200,168,80,0.08);border:1px solid rgba(200,168,80,0.2);border-radius:18px;padding:1.5rem; }
+        .rd-rec-icon { width:40px;height:40px;border-radius:11px;background:rgba(200,168,80,0.15);display:flex;align-items:center;justify-content:center;color:#C8A850;margin-bottom:1rem; }
         .rd-detail-row { display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.05); }
-        .rd-detail-row:last-child { border-bottom:none; }
         .rd-detail-label { font-family:'DM Sans',sans-serif;font-size:0.82rem;color:rgba(255,255,255,0.38); }
         .rd-detail-val { font-size:0.88rem;font-weight:700;color:#fff; }
-        .rd-detail-val.highlight { color:#a5b4fc; }
-
-        /* Fee row */
         .rd-fee-row { display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05); }
-        .rd-fee-row:last-child { border-bottom:none; }
         .rd-fee-name { font-family:'DM Sans',sans-serif;font-size:0.82rem;color:rgba(255,255,255,0.45); }
         .rd-fee-amt { font-size:0.82rem;font-weight:700;color:#f87171; }
-
-        /* Raw text */
-        .rd-raw-toggle { display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.8rem;color:rgba(255,255,255,0.35);transition:background 0.2s;width:100%;justify-content:center; }
-        .rd-raw-toggle:hover { background:rgba(255,255,255,0.07); }
-        .rd-raw-box { margin-top:10px;background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.07);border-radius:13px;padding:14px;max-height:180px;overflow:auto; }
-        .rd-raw-box pre { font-family:monospace;font-size:11px;color:rgba(255,255,255,0.5);white-space:pre-wrap;line-height:1.65;margin:0; }
-        .rd-raw-box::-webkit-scrollbar { width:4px; }
-        .rd-raw-box::-webkit-scrollbar-thumb { background:rgba(108,99,255,0.3);border-radius:99px; }
-
-        /* Spacer */
-        .rd-space { height: 1.25rem; }
       `}</style>
 
-      <div className="rd-root">
+      <div className="rd-root page-enter">
         <div className="rd-orb rd-orb-1" />
         <div className="rd-orb rd-orb-2" />
         <div className="rd-orb rd-orb-3" />
-        <div className="rd-grid-bg" />
 
         <div className="rd-wrap">
-          {/* Nav */}
           <div className="rd-nav">
             <div className="rd-nav-left">
-              <Link to="/" className="rd-pill-btn">
-                <svg
-                  width="13"
-                  height="13"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M19 12H5M12 5l-7 7 7 7" />
-                </svg>
-                Upload
-              </Link>
-              <Link to="/history" className="rd-pill-btn">
-                <svg
-                  width="13"
-                  height="13"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <circle cx="12" cy="12" r="10" />
-                  <polyline points="12 6 12 12 16 14" />
-                </svg>
-                History
-              </Link>
+              <Link to="/" className="rd-pill-btn">Upload</Link>
+              <Link to="/history" className="rd-pill-btn">History</Link>
             </div>
-            <button onClick={generateAnalysisPDF} className="rd-pdf-btn">
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                <polyline points="14 2 14 8 20 8" />
-                <line x1="12" y1="18" x2="12" y2="12" />
-                <line x1="9" y1="15" x2="15" y2="15" />
-              </svg>
-              Download Report
-            </button>
+            <div className="rd-nav-right">
+              <button onClick={generateScript} style={{ background: 'linear-gradient(135deg,#C8A850,#a07830)', color: '#0F172A', fontWeight: 700, border: 'none', borderRadius: '11px', padding: '9px 18px', cursor: 'pointer', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                🗣️ Negotiate
+              </button>
+              <button onClick={generateAnalysisPDF} className="rd-pdf-btn">Download Report</button>
+            </div>
           </div>
 
-          {/* Page header */}
           <div className="rd-page-header">
-            <div>
-              <span className="rd-badge">
-                <span className="rd-badge-dot" />
-                Analysis Result
-              </span>
-            </div>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                flexWrap: "wrap",
-                gap: "10px",
-              }}
-            >
-              <h2 className="rd-page-title">Contract Analysis</h2>
-              <span className="rd-id-chip">
-                <svg
-                  width="11"
-                  height="11"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
-                  <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
-                </svg>
-                {id}
-              </span>
-            </div>
+            <h2 className="rd-page-title">Contract Analysis</h2>
           </div>
 
-          {/* Row 1: Vehicle + Score */}
-          <div className="rd-three-col" style={{ marginBottom: "1.25rem" }}>
-            {/* Vehicle */}
-            <div className="rd-card" style={{ animationDelay: "0.05s" }}>
-              <div className="rd-section-label">
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <rect x="1" y="3" width="15" height="13" />
-                  <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
-                  <circle cx="5.5" cy="18.5" r="2.5" />
-                  <circle cx="18.5" cy="18.5" r="2.5" />
-                </svg>
-                Vehicle Identity
-              </div>
-              {vehicle.make ? (
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "flex-start",
-                    gap: "12px",
-                    flexWrap: "wrap",
-                  }}
-                >
-                  <div>
-                    <div className="rd-vehicle-big">
-                      {vehicle.year} {vehicle.make} {vehicle.model}
-                    </div>
-                    <div className="rd-vehicle-sub">
-                      {vehicle.trim} {vehicle.bodyClass}
-                    </div>
-                  </div>
-                  <div className="rd-vin-wrap">
-                    <div className="rd-vin-label">VIN Detected</div>
-                    <div className="rd-vin-code">{record.vin || "N/A"}</div>
-                  </div>
-                </div>
-              ) : (
-                <p
-                  style={{
-                    fontFamily: "'DM Sans',sans-serif",
-                    fontSize: "0.875rem",
-                    color: "rgba(255,255,255,0.3)",
-                    fontStyle: "italic",
-                  }}
-                >
-                  Vehicle details could not be extracted automatically.
-                </p>
-              )}
-            </div>
-
-            {/* Score */}
-            <div className="rd-card" style={{ animationDelay: "0.1s" }}>
-              <div className="rd-section-label">
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                </svg>
-                Fairness Score
-              </div>
-              <div className="rd-score-wrap">
-                <div
-                  className="rd-score-circle"
-                  style={{
-                    border: `3px solid ${sc}`,
-                    boxShadow: `0 0 24px ${sc}30`,
-                  }}
-                >
-                  <span className="rd-score-num" style={{ color: sc }}>
-                    {price.score ?? "--"}
-                  </span>
-                </div>
-                <span
-                  className="rd-verdict-pill"
-                  style={{
-                    background: `${sc}18`,
-                    border: `1px solid ${sc}40`,
-                    color: sc,
-                  }}
-                >
-                  {price.verdict || "Pending"}
-                </span>
-              </div>
-            </div>
+          <div style={{ display: 'flex', gap: '8px', marginBottom: '1.5rem' }}>
+            {['analysis', 'rawtext'].map(tab => (
+              <button key={tab} onClick={() => setActiveTab(tab)} style={{ padding: '8px 18px', borderRadius: '8px', border: 'none', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem', background: activeTab === tab ? '#3B82F6' : 'rgba(255,255,255,0.06)', color: activeTab === tab ? '#fff' : '#94A3B8' }}>
+                {tab === 'analysis' ? '📊 Analysis' : '🔍 Raw Text'}
+              </button>
+            ))}
           </div>
 
-          {/* Row 2: AI Recommendation */}
-          {price.recommendation && (
+          {activeTab === 'analysis' && (
             <>
-              <div
-                className="rd-rec-card"
-                style={{
-                  marginBottom: "1.25rem",
-                  animation: "rd-cardIn 0.55s 0.15s both",
-                }}
-              >
-                <div className="rd-rec-icon">
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M12 2a10 10 0 1 0 10 10" />
-                    <path d="M12 8v4l3 3" />
-                    <circle
-                      cx="19"
-                      cy="5"
-                      r="3"
-                      fill="currentColor"
-                      opacity="0.5"
-                      stroke="none"
-                    />
-                  </svg>
+              <div className="rd-three-col" style={{ marginBottom: "1.25rem" }}>
+                <div className="rd-card" style={{ animationDelay: "0.05s" }}>
+                  <div className="rd-section-label">Vehicle Identity</div>
+                  {vehicle.make ? (
+                    <div>
+                      <div className="rd-vehicle-big">{vehicle.year} {vehicle.make} {vehicle.model}</div>
+                      <div style={{ marginTop: '10px' }}><span className="rd-vin-code">{record.vin || "N/A"}</span></div>
+                    </div>
+                  ) : (
+                    <p style={{ color: "rgba(255,255,255,0.3)", fontStyle: "italic" }}>Details not extracted.</p>
+                  )}
                 </div>
-                <div className="rd-rec-title">AI Advisor Recommendation</div>
-                <div className="rd-rec-text">"{price.recommendation}"</div>
+
+                <div className="rd-card" style={{ animationDelay: "0.1s" }}>
+                  <div className="rd-section-label">Fairness Score</div>
+                  <div className="rd-score-wrap">
+                    <div className="rd-score-circle" style={{ border: `3px solid ${sc}`, boxShadow: `0 0 24px ${sc}30` }}>
+                      <span className="rd-score-num" style={{ color: sc }}>{displayScore}</span>
+                    </div>
+                    <span className="rd-verdict-pill" style={{ background: `${sc}18`, border: `1px solid ${sc}40`, color: sc }}>{price.verdict || "Pending"}</span>
+                  </div>
+                </div>
+              </div>
+
+              {price.recommendation && (
+                <div className="rd-rec-card" style={{ marginBottom: "1.25rem", animation: "rd-cardIn 0.55s 0.15s both" }}>
+                  <div className="rd-rec-icon">💡</div>
+                  <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#C8A850', marginBottom: '6px', textTransform: 'uppercase' }}>AI Advisor Recommendation</div>
+                  <div style={{ fontStyle: 'italic', color: 'rgba(255,255,255,0.7)' }}>"{price.recommendation}"</div>
+                </div>
+              )}
+
+              {price.marketFairPrice && (
+                <div className="rd-card" style={{ marginBottom: "1.25rem", animationDelay: "0.18s" }}>
+                  <div className="rd-section-label">Price Fairness Analysis</div>
+                  <PriceBar contractPrice={price.contractPrice} marketPrice={price.marketFairPrice} />
+                </div>
+              )}
+
+              <div className="rd-two-col" style={{ marginBottom: "1.25rem" }}>
+                <div className="rd-card" style={{ animationDelay: "0.22s" }}>
+                  <div className="rd-section-label">Loan Terms</div>
+                  {[
+                    { label: "Loan Amount", val: fields.loan_amount },
+                    { label: "Interest Rate", val: fields.interest_rate },
+                    { label: "Tenure", val: fields.tenure_months },
+                    { label: "Monthly Payment", val: fields.monthly_payment },
+                  ].map((r) => (
+                    <div key={r.label} className="rd-detail-row">
+                      <span className="rd-detail-label">{r.label}</span>
+                      <span className="rd-detail-val">{r.val ? r.val : "—"}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="rd-card" style={{ animationDelay: "0.27s" }}>
+                  <div className="rd-section-label">Hidden Fees & Penalties</div>
+                  <SeverityMeter fees={hiddenFees?.fees} />
+                  {hiddenFees?.fees?.length > 0 ? hiddenFees.fees.map((fee, idx) => (
+                    <div key={idx} className="rd-fee-row">
+                      <span className="rd-fee-name" style={{ color: fee.severity === 'critical' ? '#EF4444' : fee.severity === 'warning' ? '#F59E0B' : '#94A3B8' }}>{fee.name}</span>
+                      <span className="rd-fee-amt">{fee.amount || "Variable"}</span>
+                    </div>
+                  )) : <p style={{ color: '#10B981', fontSize: '0.85rem' }}>No hidden fees detected!</p>}
+                </div>
               </div>
             </>
           )}
 
-          {/* Row 3: Price Analysis */}
-          {price.marketFairPrice && (
-            <div
-              className="rd-card"
-              style={{ marginBottom: "1.25rem", animationDelay: "0.18s" }}
-            >
-              <div className="rd-section-label">
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <line x1="12" y1="1" x2="12" y2="23" />
-                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-                </svg>
-                Price Fairness Analysis
-              </div>
-
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "1.1rem",
-                  marginBottom: "1.25rem",
-                }}
-              >
-                {/* Market */}
-                <div>
-                  <div className="rd-bar-label">
-                    <span className="rd-bar-key">Market Fair Value</span>
-                    <span className="rd-bar-val">
-                      ₹{price.marketFairPrice.toLocaleString()}
-                    </span>
-                  </div>
-                  <div className="rd-bar-track">
-                    <div
-                      className="rd-bar-fill"
-                      style={{
-                        width: "75%",
-                        background: "linear-gradient(90deg,#6c63ff,#818cf8)",
-                      }}
-                    />
-                  </div>
-                </div>
-                {/* Contract */}
-                <div>
-                  <div className="rd-bar-label">
-                    <span className="rd-bar-key">Your Contract Price</span>
-                    <span
-                      className="rd-bar-val"
-                      style={{
-                        color: price.difference > 0 ? "#f87171" : "#34d399",
-                      }}
-                    >
-                      ₹{price.contractPrice?.toLocaleString()}
-                    </span>
-                  </div>
-                  <div className="rd-bar-track">
-                    <div
-                      className="rd-bar-fill"
-                      style={{
-                        width: `${Math.min((price.contractPrice / price.marketFairPrice) * 75, 100)}%`,
-                        background:
-                          price.difference > 0
-                            ? "linear-gradient(90deg,#ef4444,#f87171)"
-                            : "linear-gradient(90deg,#10b981,#34d399)",
-                      }}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div
-                style={{
-                  borderTop: "1px solid rgba(255,255,255,0.06)",
-                  paddingTop: "1rem",
-                  display: "flex",
-                  justifyContent: "flex-end",
-                }}
-              >
-                <span
-                  className="rd-diff-chip"
-                  style={{
-                    background:
-                      price.difference > 0
-                        ? "rgba(239,68,68,0.1)"
-                        : "rgba(16,185,129,0.1)",
-                    border: `1px solid ${price.difference > 0 ? "rgba(239,68,68,0.3)" : "rgba(16,185,129,0.3)"}`,
-                    color: price.difference > 0 ? "#f87171" : "#34d399",
-                  }}
-                >
-                  {price.difference > 0 ? (
-                    <svg
-                      width="13"
-                      height="13"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-                      <line x1="12" y1="9" x2="12" y2="13" />
-                      <line x1="12" y1="17" x2="12.01" y2="17" />
-                    </svg>
-                  ) : (
-                    <svg
-                      width="13"
-                      height="13"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
-                  )}
-                  {price.difference > 0
-                    ? `Overpriced by ₹${price.difference.toLocaleString()}`
-                    : `Underpriced by ₹${Math.abs(price.difference).toLocaleString()}`}
-                </span>
-              </div>
-            </div>
-          )}
-
-          {/* Row 4: Loan Terms + Fees */}
-          <div className="rd-two-col" style={{ marginBottom: "1.25rem" }}>
-            <div className="rd-card" style={{ animationDelay: "0.22s" }}>
-              <div className="rd-section-label">
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <rect x="2" y="5" width="20" height="14" rx="2" />
-                  <line x1="2" y1="10" x2="22" y2="10" />
-                </svg>
-                Loan Terms
-              </div>
-              {[
-                { label: "Loan Amount", val: fields.loan_amount },
-                { label: "Interest Rate", val: fields.interest_rate, hi: true },
-                { label: "Tenure", val: fields.tenure_months },
-                { label: "Monthly Payment", val: fields.monthly_payment },
-                { label: "Down Payment", val: fields.down_payment },
-              ].map((r) => (
-                <div key={r.label} className="rd-detail-row">
-                  <span className="rd-detail-label">{r.label}</span>
-                  <span className={`rd-detail-val${r.hi ? " highlight" : ""}`}>
-                    {r.val && r.val !== "Not Specified" ? r.val : "—"}
-                  </span>
-                </div>
-              ))}
-            </div>
-
-            <div className="rd-card" style={{ animationDelay: "0.27s" }}>
-              <div className="rd-section-label">
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-                  <line x1="12" y1="9" x2="12" y2="13" />
-                  <line x1="12" y1="17" x2="12.01" y2="17" />
-                </svg>
-                Hidden Fees & Penalties
-              </div>
-              {hiddenFees?.fees?.length > 0
-                ? hiddenFees.fees.map((fee, idx) => (
-                  <div key={idx} className="rd-fee-row">
-                    <span className="rd-fee-name">{fee.name}</span>
-                    <span className="rd-fee-amt">
-                      {fee.amount || "Variable"}
-                    </span>
-                  </div>
-                ))
-                : [
-                  {
-                    label: "Early Termination",
-                    val: fields.early_termination_fee,
-                  },
-                  { label: "Late Penalty", val: fields.late_payment_penalty },
-                  { label: "Mileage Limit", val: fields.mileage_allowance },
-                  { label: "Residual Value", val: fields.residual_value },
-                ].map((r) => (
-                  <div key={r.label} className="rd-detail-row">
-                    <span className="rd-detail-label">{r.label}</span>
-                    <span className="rd-detail-val">
-                      {r.val && r.val !== "Not Specified" ? r.val : "—"}
-                    </span>
-                  </div>
-                ))}
-            </div>
-          </div>
-
-          {/* Raw text */}
-          {record.rawText && (
-            <div style={{ marginBottom: "1.25rem" }}>
-              <button
-                className="rd-raw-toggle"
-                onClick={() => setRawOpen((v) => !v)}
-              >
-                <svg
-                  width="13"
-                  height="13"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <polyline points="16 18 22 12 16 6" />
-                  <polyline points="8 6 2 12 8 18" />
-                </svg>
-                {rawOpen ? "Hide" : "View"} Raw Extracted Text
-                <svg
-                  width="13"
-                  height="13"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  style={{
-                    transition: "transform 0.2s",
-                    transform: rawOpen ? "rotate(180deg)" : "none",
-                  }}
-                >
-                  <polyline points="6 9 12 15 18 9" />
-                </svg>
-              </button>
-              {rawOpen && (
-                <div className="rd-raw-box">
-                  <pre>{record.rawText}</pre>
-                </div>
-              )}
+          {activeTab === 'rawtext' && (
+            <div style={{ background: '#111827', borderRadius: '10px', padding: '1.5rem', border: '1px solid rgba(255,255,255,0.07)', lineHeight: 1.8, fontSize: '0.85rem', color: '#94A3B8', animation: "rd-cardIn 0.3s both" }}>
+              <p style={{ color: '#C8A850', fontWeight: 600, marginTop: 0 }}>Raw OCR Text</p>
+              <div dangerouslySetInnerHTML={{ __html: highlightKeywords(record?.rawText || record?.extractedText || 'No raw text available.') }} />
             </div>
           )}
         </div>
+
+        {scriptModal && (
+          <div className="modal-overlay" onClick={() => setScriptModal(false)}>
+            <div className="modal-box" onClick={e => e.stopPropagation()}>
+              <h3 style={{ color: '#C8A850', marginTop: 0 }}>🗣️ Your Negotiation Script</h3>
+              {scriptLoading ? (
+                <p style={{ color: '#94A3B8' }}>Generating your script...</p>
+              ) : (
+                <>
+                  <pre style={{ color: '#F1F5F9', whiteSpace: 'pre-wrap', lineHeight: 1.7, fontSize: '0.9rem', fontFamily: 'inherit' }}>
+                    {negotiationScript}
+                  </pre>
+                  <button onClick={() => navigator.clipboard.writeText(negotiationScript)} style={{ marginTop: '1rem', background: '#3B82F6', color: '#fff', border: 'none', borderRadius: '8px', padding: '8px 18px', cursor: 'pointer', fontWeight: 600 }}>📋 Copy Script</button>
+                </>
+              )}
+              <button onClick={() => setScriptModal(false)} style={{ marginTop: '0.5rem', marginLeft: '0.5rem', background: 'transparent', color: '#94A3B8', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '8px 18px', cursor: 'pointer' }}>Close</button>
+            </div>
+          </div>
+        )}
 
         <ChatbotWidget />
       </div>
     </>
   );
 };
-
-const DetailRow = ({ label, value, highlight }) => (
-  <div
-    style={{
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      padding: "9px 0",
-      borderBottom: "1px solid rgba(255,255,255,0.05)",
-    }}
-  >
-    <span
-      style={{
-        fontFamily: "'DM Sans',sans-serif",
-        fontSize: "0.82rem",
-        color: "rgba(255,255,255,0.38)",
-      }}
-    >
-      {label}
-    </span>
-    <span
-      style={{
-        fontSize: "0.88rem",
-        fontWeight: 700,
-        color: highlight ? "#a5b4fc" : "#fff",
-      }}
-    >
-      {value && value !== "Not Specified" ? value : "—"}
-    </span>
-  </div>
-);
 
 export default ResultDetailsPage;

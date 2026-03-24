@@ -118,6 +118,7 @@ const UploadPage = () => {
   const [data, setData] = useState(null);          // extracted fields object
   const [confidence, setConfidence] = useState(null);
   const [dragOver, setDragOver] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef(null);
 
   // Stepper logic
@@ -335,7 +336,7 @@ const UploadPage = () => {
         .up-ocr-box::-webkit-scrollbar-thumb { background:rgba(108,99,255,0.3);border-radius:99px; }
       `}</style>
 
-      <div className="up-root">
+      <div className="up-root page-enter">
         <div className="up-orb up-orb-1" />
         <div className="up-orb up-orb-2" />
         <div className="up-orb up-orb-3" />
@@ -363,10 +364,11 @@ const UploadPage = () => {
           {!resultId && (
             <>
               <div
-                className={`up-dropzone${dragOver ? " dragover" : ""}`}
+                className={`up-dropzone${dragOver ? " dragover" : ""}${isDragging ? " drag-active" : ""}`}
                 onClick={() => fileInputRef.current?.click()}
                 onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
-                onDragLeave={() => setDragOver(false)}
+                onDragEnter={() => setIsDragging(true)}
+                onDragLeave={() => setIsDragging(false)}
                 onDrop={(e) => {
                   e.preventDefault();
                   setDragOver(false);

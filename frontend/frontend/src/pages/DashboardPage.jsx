@@ -360,6 +360,649 @@
 // export default DashboardPage;
 
 
+// import React, { useState, useEffect } from "react";
+// import { Link, useNavigate } from "react-router-dom";
+// import { toast } from "react-toastify";
+
+// const DashboardPage = () => {
+//   const navigate = useNavigate();
+//   const [user, setUser] = useState({ name: "Guest" });
+//   const [loading, setLoading] = useState(true);
+
+//   useEffect(() => {
+//     const storedUser = sessionStorage.getItem("user");
+//     const token = sessionStorage.getItem("token");
+
+//     if (!token) {
+//       navigate("/login");
+//     } else {
+//       try {
+//         const parsedUser = storedUser
+//           ? JSON.parse(storedUser)
+//           : { name: "User" };
+//         setUser(parsedUser);
+//       } catch (error) {
+//         console.error("User Data Corrupt:", error);
+//         localStorage.clear();
+//         navigate("/login");
+//       }
+//     }
+//     setLoading(false);
+//   }, [navigate]);
+
+//   const handleLogout = () => {
+//     sessionStorage.clear();
+//     toast.info("Logged out successfully");
+//     navigate("/login");
+//   };
+
+//   if (loading) {
+//     return (
+//       <div
+//         className="min-h-screen flex items-center justify-center"
+//         style={{ background: "#050816" }}
+//       >
+//         <style>{`
+//           @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap');
+//           .loading-pulse { animation: loadpulse 1.4s ease-in-out infinite; }
+//           @keyframes loadpulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+//         `}</style>
+//         <div
+//           className="loading-pulse"
+//           style={{
+//             fontFamily: "'Sora',sans-serif",
+//             fontSize: "1.1rem",
+//             fontWeight: 600,
+//             color: "#a5b4fc",
+//             letterSpacing: "0.05em",
+//           }}
+//         >
+//           Loading Dashboard…
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   const mainCards = [
+//     {
+//       to: "/upload",
+//       icon: (
+//         <svg
+//           width="28"
+//           height="28"
+//           viewBox="0 0 24 24"
+//           fill="none"
+//           stroke="currentColor"
+//           strokeWidth="1.8"
+//           strokeLinecap="round"
+//           strokeLinejoin="round"
+//         >
+//           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+//           <polyline points="14 2 14 8 20 8" />
+//           <line x1="12" y1="18" x2="12" y2="12" />
+//           <line x1="9" y1="15" x2="15" y2="15" />
+//         </svg>
+//       ),
+//       iconBg: "rgba(59,130,246,0.15)",
+//       iconColor: "#60a5fa",
+//       glowColor: "rgba(59,130,246,0.18)",
+//       borderColor: "rgba(59,130,246,0.2)",
+//       label: "Analyze Contract",
+//       desc: "Extract terms and uncover hidden junk fees instantly.",
+//       cta: "Start Analysis",
+//       ctaColor: "#60a5fa",
+//     },
+//     {
+//       to: "/compare",
+//       icon: (
+//         <svg
+//           width="28"
+//           height="28"
+//           viewBox="0 0 24 24"
+//           fill="none"
+//           stroke="currentColor"
+//           strokeWidth="1.8"
+//           strokeLinecap="round"
+//           strokeLinejoin="round"
+//         >
+//           <line x1="18" y1="20" x2="18" y2="10" />
+//           <line x1="12" y1="20" x2="12" y2="4" />
+//           <line x1="6" y1="20" x2="6" y2="14" />
+//         </svg>
+//       ),
+//       iconBg: "rgba(139,92,246,0.15)",
+//       iconColor: "#a78bfa",
+//       glowColor: "rgba(139,92,246,0.18)",
+//       borderColor: "rgba(139,92,246,0.2)",
+//       label: "Compare Offers",
+//       desc: "Lay multiple quotes side-by-side for a clear winner.",
+//       cta: "Go to Comparison",
+//       ctaColor: "#a78bfa",
+//     },
+//     {
+//       to: "/email",
+//       icon: (
+//         <svg
+//           width="28"
+//           height="28"
+//           viewBox="0 0 24 24"
+//           fill="none"
+//           stroke="currentColor"
+//           strokeWidth="1.8"
+//           strokeLinecap="round"
+//           strokeLinejoin="round"
+//         >
+//           <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+//           <polyline points="22,6 12,13 2,6" />
+//         </svg>
+//       ),
+//       iconBg: "rgba(16,185,129,0.15)",
+//       iconColor: "#34d399",
+//       glowColor: "rgba(16,185,129,0.18)",
+//       borderColor: "rgba(16,185,129,0.2)",
+//       label: "Negotiator",
+//       desc: "Generate AI-powered counter-offer emails in seconds.",
+//       cta: "Draft Email",
+//       ctaColor: "#34d399",
+//     },
+//   ];
+
+//   return (
+//     <>
+//       <style>{`
+//         @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+//         *, *::before, *::after { box-sizing: border-box; }
+
+//         .db-root {
+//           font-family: 'Sora', sans-serif;
+//           min-height: 100vh;
+//           background: #050816;
+//           position: relative;
+//           overflow-x: hidden;
+//         }
+
+//         /* Orbs */
+//         .db-orb {
+//           position: fixed;
+//           border-radius: 50%;
+//           filter: blur(90px);
+//           pointer-events: none;
+//           z-index: 0;
+//           animation: orbdrift 14s ease-in-out infinite alternate;
+//         }
+//         .db-orb-1 { width:600px;height:600px; background:radial-gradient(circle,#4f46e5,#1e1b4b); top:-200px;left:-200px; opacity:0.35; animation-delay:0s; }
+//         .db-orb-2 { width:500px;height:500px; background:radial-gradient(circle,#0ea5e9,#0369a1); bottom:-180px;right:-150px; opacity:0.28; animation-delay:-6s; }
+//         .db-orb-3 { width:300px;height:300px; background:radial-gradient(circle,#8b5cf6,#6d28d9); top:40%;left:55%; opacity:0.2; animation-delay:-10s; }
+//         @keyframes orbdrift {
+//           0%   { transform: translate(0,0) scale(1); }
+//           100% { transform: translate(30px,25px) scale(1.06); }
+//         }
+
+//         .db-grid {
+//           position: fixed; inset: 0; z-index: 0; pointer-events: none;
+//           background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+//                             linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+//           background-size: 48px 48px;
+//         }
+
+//         /* Navbar */
+//         .db-nav {
+//           position: sticky; top: 0; z-index: 50;
+//           background: rgba(5,8,22,0.75);
+//           border-bottom: 1px solid rgba(255,255,255,0.08);
+//           backdrop-filter: blur(24px);
+//           -webkit-backdrop-filter: blur(24px);
+//           padding: 0 2rem;
+//           height: 64px;
+//           display: flex;
+//           align-items: center;
+//           justify-content: space-between;
+//         }
+//         .db-nav-logo {
+//           display: flex; align-items: center; gap: 10px;
+//         }
+//         .db-nav-logo-icon {
+//           width: 36px; height: 36px;
+//           background: linear-gradient(135deg, #6c63ff, #4f46e5);
+//           border-radius: 10px;
+//           display: flex; align-items: center; justify-content: center;
+//           font-size: 18px;
+//           box-shadow: 0 4px 16px rgba(108,99,255,0.35);
+//         }
+//         .db-nav-title {
+//           font-size: 1.1rem; font-weight: 700;
+//           color: #fff; letter-spacing: -0.02em;
+//         }
+//         .db-nav-right { display: flex; align-items: center; gap: 14px; }
+//         .db-welcome {
+//           font-family: 'DM Sans', sans-serif;
+//           font-size: 0.875rem;
+//           color: rgba(255,255,255,0.45);
+//         }
+//         .db-welcome span { color: #a5b4fc; font-weight: 600; }
+
+//         .db-avatar {
+//           width: 34px; height: 34px; border-radius: 50%;
+//           background: linear-gradient(135deg, #6c63ff, #4f46e5);
+//           display: flex; align-items: center; justify-content: center;
+//           font-size: 0.8rem; font-weight: 700; color: #fff;
+//           border: 2px solid rgba(108,99,255,0.4);
+//           flex-shrink: 0;
+//         }
+
+//         .db-logout-btn {
+//           display: flex; align-items: center; gap: 6px;
+//           background: rgba(239,68,68,0.1);
+//           border: 1px solid rgba(239,68,68,0.25);
+//           color: #f87171;
+//           font-family: 'Sora', sans-serif;
+//           font-size: 0.8rem; font-weight: 600;
+//           padding: 7px 14px; border-radius: 10px;
+//           cursor: pointer;
+//           transition: background 0.2s, border-color 0.2s, transform 0.15s;
+//         }
+//         .db-logout-btn:hover {
+//           background: rgba(239,68,68,0.18);
+//           border-color: rgba(239,68,68,0.45);
+//           transform: translateY(-1px);
+//         }
+
+//         /* Hero */
+//         .db-hero {
+//           position: relative; z-index: 1;
+//           text-align: center;
+//           padding: 4rem 1.5rem 6rem;
+//         }
+//         .db-hero-badge {
+//           display: inline-flex; align-items: center; gap: 6px;
+//           background: rgba(108,99,255,0.14);
+//           border: 1px solid rgba(108,99,255,0.3);
+//           border-radius: 999px;
+//           padding: 5px 16px;
+//           font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+//           color: #a5b4fc; text-transform: uppercase;
+//           margin-bottom: 1.5rem;
+//         }
+//         .db-hero-dot {
+//           width: 6px; height: 6px; border-radius: 50%;
+//           background: #6c63ff; box-shadow: 0 0 6px #6c63ff;
+//           animation: pulse-dot 2s ease-in-out infinite;
+//         }
+//         @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.7)} }
+
+//         .db-hero-title {
+//           font-size: clamp(2rem, 5vw, 3.2rem);
+//           font-weight: 800; color: #fff;
+//           letter-spacing: -0.04em; line-height: 1.1;
+//           margin-bottom: 1rem;
+//         }
+//         .db-hero-title span {
+//           background: linear-gradient(135deg, #818cf8, #6c63ff, #a78bfa);
+//           -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+//           background-clip: text;
+//         }
+//         .db-hero-sub {
+//           font-family: 'DM Sans', sans-serif;
+//           font-size: 1rem; color: rgba(255,255,255,0.45);
+//           max-width: 480px; margin: 0 auto;
+//           line-height: 1.65;
+//         }
+
+//         /* Content */
+//         .db-content {
+//           position: relative; z-index: 1;
+//           max-width: 1100px; margin: 0 auto;
+//           padding: 0 1.5rem 4rem;
+//           margin-top: -3rem;
+//         }
+
+//         /* Section label */
+//         .db-section-label {
+//           font-size: 0.7rem; font-weight: 600;
+//           letter-spacing: 0.1em; text-transform: uppercase;
+//           color: rgba(255,255,255,0.3);
+//           margin-bottom: 1rem;
+//           padding-left: 2px;
+//         }
+
+//         /* Main cards grid */
+//         .db-cards-grid {
+//           display: grid;
+//           grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+//           gap: 1.25rem;
+//           margin-bottom: 1.5rem;
+//         }
+
+//         .db-main-card {
+//           position: relative;
+//           background: rgba(255,255,255,0.04);
+//           border: 1px solid rgba(255,255,255,0.09);
+//           border-radius: 22px;
+//           padding: 2rem;
+//           text-decoration: none;
+//           display: flex; flex-direction: column;
+//           backdrop-filter: blur(20px);
+//           -webkit-backdrop-filter: blur(20px);
+//           transition: transform 0.22s, box-shadow 0.22s, border-color 0.22s, background 0.22s;
+//           overflow: hidden;
+//           animation: cardFadeIn 0.6s cubic-bezier(0.22,1,0.36,1) both;
+//         }
+//         .db-main-card:nth-child(1) { animation-delay: 0.05s; }
+//         .db-main-card:nth-child(2) { animation-delay: 0.12s; }
+//         .db-main-card:nth-child(3) { animation-delay: 0.19s; }
+//         @keyframes cardFadeIn {
+//           from { opacity:0; transform:translateY(24px); }
+//           to   { opacity:1; transform:translateY(0); }
+//         }
+//         .db-main-card::before {
+//           content:''; position:absolute;
+//           top:0; left:10%; right:10%; height:1px;
+//           background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+//         }
+//         .db-main-card:hover {
+//           transform: translateY(-5px);
+//           background: rgba(255,255,255,0.065);
+//         }
+
+//         .db-card-icon-wrap {
+//           width: 54px; height: 54px; border-radius: 16px;
+//           display: flex; align-items: center; justify-content: center;
+//           margin-bottom: 1.4rem;
+//           transition: transform 0.2s;
+//         }
+//         .db-main-card:hover .db-card-icon-wrap { transform: scale(1.1); }
+
+//         .db-card-title {
+//           font-size: 1.1rem; font-weight: 700;
+//           color: #fff; letter-spacing: -0.02em;
+//           margin-bottom: 0.5rem;
+//         }
+//         .db-card-desc {
+//           font-family: 'DM Sans', sans-serif;
+//           font-size: 0.855rem; color: rgba(255,255,255,0.42);
+//           line-height: 1.6; flex: 1; margin-bottom: 1.5rem;
+//         }
+//         .db-card-cta {
+//           display: inline-flex; align-items: center; gap: 6px;
+//           font-size: 0.8rem; font-weight: 700;
+//           letter-spacing: 0.02em;
+//           transition: gap 0.2s;
+//         }
+//         .db-main-card:hover .db-card-cta { gap: 10px; }
+
+//         /* Bottom row */
+//         .db-bottom-grid {
+//           display: grid;
+//           grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+//           gap: 1.25rem;
+//         }
+
+//         .db-bottom-card {
+//           background: rgba(255,255,255,0.04);
+//           border: 1px solid rgba(255,255,255,0.09);
+//           border-radius: 18px;
+//           padding: 1.4rem 1.6rem;
+//           display: flex; align-items: center; gap: 1rem;
+//           text-decoration: none;
+//           backdrop-filter: blur(20px);
+//           -webkit-backdrop-filter: blur(20px);
+//           transition: transform 0.2s, background 0.2s;
+//           animation: cardFadeIn 0.6s cubic-bezier(0.22,1,0.36,1) both;
+//         }
+//         .db-bottom-card:nth-child(1) { animation-delay: 0.26s; }
+//         .db-bottom-card:nth-child(2) { animation-delay: 0.32s; }
+//         .db-bottom-card:hover { transform: translateY(-3px); background: rgba(255,255,255,0.06); }
+
+//         .db-bottom-icon {
+//           width: 46px; height: 46px; border-radius: 13px; flex-shrink: 0;
+//           display: flex; align-items: center; justify-content: center;
+//         }
+//         .db-bottom-card-title {
+//           font-size: 0.95rem; font-weight: 700; color: #fff;
+//           letter-spacing: -0.01em; margin-bottom: 2px;
+//         }
+//         .db-bottom-card-sub {
+//           font-family: 'DM Sans', sans-serif;
+//           font-size: 0.8rem; color: rgba(255,255,255,0.38);
+//         }
+//         .db-bottom-arrow {
+//           margin-left: auto; color: rgba(255,255,255,0.2);
+//           transition: color 0.2s, transform 0.2s;
+//           flex-shrink: 0;
+//         }
+//         .db-bottom-card:hover .db-bottom-arrow { color: rgba(255,255,255,0.5); transform: translateX(3px); }
+//       `}</style>
+
+//       <div className="db-root">
+//         <div className="db-orb db-orb-1" />
+//         <div className="db-orb db-orb-2" />
+//         <div className="db-orb db-orb-3" />
+//         <div className="db-grid" />
+
+//         {/* NAVBAR */}
+//         <nav className="db-nav">
+//           <div className="db-nav-logo">
+//             <div className="db-nav-logo-icon">🚗</div>
+//             <span className="db-nav-title">AutoLease AI</span>
+//           </div>
+//           <div className="db-nav-right">
+//             <span
+//               className="db-welcome"
+//               style={{ display: "none" }}
+//               id="db-welcome-sm"
+//             >
+//               Welcome, <span>{user.name}</span>
+//             </span>
+//             <span className="db-welcome hidden sm:block">
+//               Welcome, <span>{user.name}</span>
+//             </span>
+//             <div className="db-avatar">
+//               {user.name?.[0]?.toUpperCase() || "U"}
+//             </div>
+//             <button onClick={handleLogout} className="db-logout-btn">
+//               <svg
+//                 width="13"
+//                 height="13"
+//                 viewBox="0 0 24 24"
+//                 fill="none"
+//                 stroke="currentColor"
+//                 strokeWidth="2.5"
+//                 strokeLinecap="round"
+//                 strokeLinejoin="round"
+//               >
+//                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+//                 <polyline points="16 17 21 12 16 7" />
+//                 <line x1="21" y1="12" x2="9" y2="12" />
+//               </svg>
+//               Logout
+//             </button>
+//           </div>
+//         </nav>
+
+//         {/* HERO */}
+//         <div className="db-hero">
+//           <div>
+//             <span className="db-hero-badge">
+//               <span className="db-hero-dot" />
+//               AI-Powered Assistant
+//             </span>
+//           </div>
+//           <h2 className="db-hero-title">
+//             Your Personal
+//             <br />
+//             <span>Car Buying Assistant</span>
+//           </h2>
+//           <p className="db-hero-sub">
+//             Upload contracts, uncover hidden fees, and negotiate like a pro.
+//           </p>
+//         </div>
+
+//         {/* MAIN CONTENT */}
+//         <div className="db-content">
+//           <p className="db-section-label">Quick Actions</p>
+
+//           {/* 3 MAIN CARDS */}
+//           <div className="db-cards-grid">
+//             {mainCards.map((card) => (
+//               <Link
+//                 key={card.to}
+//                 to={card.to}
+//                 className="db-main-card"
+//                 style={{
+//                   "--card-glow": card.glowColor,
+//                   "--card-border": card.borderColor,
+//                 }}
+//                 onMouseEnter={(e) => {
+//                   e.currentTarget.style.borderColor = card.borderColor;
+//                   e.currentTarget.style.boxShadow = `0 12px 40px ${card.glowColor}, 0 0 0 1px ${card.borderColor}`;
+//                 }}
+//                 onMouseLeave={(e) => {
+//                   e.currentTarget.style.borderColor = "rgba(255,255,255,0.09)";
+//                   e.currentTarget.style.boxShadow = "none";
+//                 }}
+//               >
+//                 <div
+//                   className="db-card-icon-wrap"
+//                   style={{ background: card.iconBg, color: card.iconColor }}
+//                 >
+//                   {card.icon}
+//                 </div>
+//                 <div className="db-card-title">{card.label}</div>
+//                 <div className="db-card-desc">{card.desc}</div>
+//                 <span className="db-card-cta" style={{ color: card.ctaColor }}>
+//                   {card.cta}
+//                   <svg
+//                     width="14"
+//                     height="14"
+//                     viewBox="0 0 24 24"
+//                     fill="none"
+//                     stroke="currentColor"
+//                     strokeWidth="2.5"
+//                     strokeLinecap="round"
+//                     strokeLinejoin="round"
+//                   >
+//                     <path d="M5 12h14M12 5l7 7-7 7" />
+//                   </svg>
+//                 </span>
+//               </Link>
+//             ))}
+//           </div>
+
+//           <p className="db-section-label" style={{ marginTop: "2rem" }}>
+//             More Tools
+//           </p>
+
+//           {/* SECONDARY ROW */}
+//           <div className="db-bottom-grid">
+//             <Link
+//               to="/history"
+//               className="db-bottom-card"
+//               onMouseEnter={(e) => {
+//                 e.currentTarget.style.borderColor = "rgba(255,255,255,0.18)";
+//               }}
+//               onMouseLeave={(e) => {
+//                 e.currentTarget.style.borderColor = "rgba(255,255,255,0.09)";
+//               }}
+//             >
+//               <div
+//                 className="db-bottom-icon"
+//                 style={{
+//                   background: "rgba(255,255,255,0.07)",
+//                   color: "rgba(255,255,255,0.6)",
+//                 }}
+//               >
+//                 <svg
+//                   width="20"
+//                   height="20"
+//                   viewBox="0 0 24 24"
+//                   fill="none"
+//                   stroke="currentColor"
+//                   strokeWidth="1.8"
+//                   strokeLinecap="round"
+//                   strokeLinejoin="round"
+//                 >
+//                   <circle cx="12" cy="12" r="10" />
+//                   <polyline points="12 6 12 12 16 14" />
+//                 </svg>
+//               </div>
+//               <div>
+//                 <div className="db-bottom-card-title">View History</div>
+//                 <div className="db-bottom-card-sub">
+//                   Access your past uploads
+//                 </div>
+//               </div>
+//               <svg
+//                 className="db-bottom-arrow"
+//                 width="16"
+//                 height="16"
+//                 viewBox="0 0 24 24"
+//                 fill="none"
+//                 stroke="currentColor"
+//                 strokeWidth="2.5"
+//                 strokeLinecap="round"
+//                 strokeLinejoin="round"
+//               >
+//                 <path d="M5 12h14M12 5l7 7-7 7" />
+//               </svg>
+//             </Link>
+
+//             <div className="db-bottom-card" style={{ cursor: "default" }}>
+//               <div
+//                 className="db-bottom-icon"
+//                 style={{
+//                   background: "rgba(108,99,255,0.15)",
+//                   color: "#a5b4fc",
+//                 }}
+//               >
+//                 <svg
+//                   width="20"
+//                   height="20"
+//                   viewBox="0 0 24 24"
+//                   fill="none"
+//                   stroke="currentColor"
+//                   strokeWidth="1.8"
+//                   strokeLinecap="round"
+//                   strokeLinejoin="round"
+//                 >
+//                   <path d="M12 2a10 10 0 1 0 10 10" />
+//                   <path d="M12 8v4l3 3" />
+//                   <circle
+//                     cx="18"
+//                     cy="6"
+//                     r="3"
+//                     fill="currentColor"
+//                     stroke="none"
+//                     opacity="0.6"
+//                   />
+//                   <path
+//                     d="M16.5 6h3M18 4.5v3"
+//                     stroke="currentColor"
+//                     strokeWidth="1.5"
+//                   />
+//                 </svg>
+//               </div>
+//               <div>
+//                 <div
+//                   className="db-bottom-card-title"
+//                   style={{ color: "#c4b5fd" }}
+//                 >
+//                   Need Advice?
+//                 </div>
+//                 <div className="db-bottom-card-sub">
+//                   Click the chat bubble ↘ to ask the AI Coach!
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </>
+//   );
+// };
+
+// export default DashboardPage;
+
+
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -368,6 +1011,9 @@ const DashboardPage = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState({ name: "Guest" });
   const [loading, setLoading] = useState(true);
+  const [dueReminders, setDueReminders] = useState([]);
+  const [heroText, setHeroText] = useState("");
+  const fullHero = "Your Personal Car Buying Assistant";
 
   useEffect(() => {
     const storedUser = sessionStorage.getItem("user");
@@ -377,18 +1023,40 @@ const DashboardPage = () => {
       navigate("/login");
     } else {
       try {
-        const parsedUser = storedUser
-          ? JSON.parse(storedUser)
-          : { name: "User" };
-        setUser(parsedUser);
+        setUser(storedUser ? JSON.parse(storedUser) : { name: "User" });
       } catch (error) {
-        console.error("User Data Corrupt:", error);
-        localStorage.clear();
+        sessionStorage.clear();
         navigate("/login");
       }
     }
     setLoading(false);
   }, [navigate]);
+
+  useEffect(() => {
+    const reminders = JSON.parse(localStorage.getItem('autoReminders') || '[]');
+    const today = new Date().toDateString();
+    const due = reminders.filter(r => new Date(r.reminderDate).toDateString() === today);
+    if (due.length > 0) setDueReminders(due);
+  }, []);
+
+  useEffect(() => {
+    if (loading) return;
+    let i = 0;
+    const iv = setInterval(() => {
+      setHeroText(fullHero.slice(0, i + 1));
+      i++;
+      if (i >= fullHero.length) clearInterval(iv);
+    }, 38);
+    return () => clearInterval(iv);
+  }, [loading]);
+
+  useEffect(() => {
+    if (loading) return;
+    const cards = document.querySelectorAll('.db-main-card, .db-bottom-card');
+    cards.forEach((card, i) => {
+      setTimeout(() => card.classList.add('card-visible'), 150 + i * 120);
+    });
+  }, [loading]);
 
   const handleLogout = () => {
     sessionStorage.clear();
@@ -396,114 +1064,26 @@ const DashboardPage = () => {
     navigate("/login");
   };
 
-  if (loading) {
-    return (
-      <div
-        className="min-h-screen flex items-center justify-center"
-        style={{ background: "#050816" }}
-      >
-        <style>{`
-          @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap');
-          .loading-pulse { animation: loadpulse 1.4s ease-in-out infinite; }
-          @keyframes loadpulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-        `}</style>
-        <div
-          className="loading-pulse"
-          style={{
-            fontFamily: "'Sora',sans-serif",
-            fontSize: "1.1rem",
-            fontWeight: 600,
-            color: "#a5b4fc",
-            letterSpacing: "0.05em",
-          }}
-        >
-          Loading Dashboard…
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <div className="min-h-screen flex items-center justify-center" style={{ background: "#050816" }}>Loading Dashboard…</div>;
 
   const mainCards = [
     {
       to: "/upload",
-      icon: (
-        <svg
-          width="28"
-          height="28"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-          <polyline points="14 2 14 8 20 8" />
-          <line x1="12" y1="18" x2="12" y2="12" />
-          <line x1="9" y1="15" x2="15" y2="15" />
-        </svg>
-      ),
-      iconBg: "rgba(59,130,246,0.15)",
-      iconColor: "#60a5fa",
-      glowColor: "rgba(59,130,246,0.18)",
-      borderColor: "rgba(59,130,246,0.2)",
-      label: "Analyze Contract",
-      desc: "Extract terms and uncover hidden junk fees instantly.",
-      cta: "Start Analysis",
-      ctaColor: "#60a5fa",
+      icon: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="12" y1="18" x2="12" y2="12" /><line x1="9" y1="15" x2="15" y2="15" /></svg>,
+      iconBg: "rgba(59,130,246,0.15)", iconColor: "#60a5fa", glowColor: "rgba(59,130,246,0.18)", borderColor: "rgba(59,130,246,0.2)",
+      label: "Analyze Contract", desc: "Extract terms and uncover hidden junk fees instantly.", cta: "Start Analysis", ctaColor: "#60a5fa",
     },
     {
       to: "/compare",
-      icon: (
-        <svg
-          width="28"
-          height="28"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <line x1="18" y1="20" x2="18" y2="10" />
-          <line x1="12" y1="20" x2="12" y2="4" />
-          <line x1="6" y1="20" x2="6" y2="14" />
-        </svg>
-      ),
-      iconBg: "rgba(139,92,246,0.15)",
-      iconColor: "#a78bfa",
-      glowColor: "rgba(139,92,246,0.18)",
-      borderColor: "rgba(139,92,246,0.2)",
-      label: "Compare Offers",
-      desc: "Lay multiple quotes side-by-side for a clear winner.",
-      cta: "Go to Comparison",
-      ctaColor: "#a78bfa",
+      icon: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10" /><line x1="12" y1="20" x2="12" y2="4" /><line x1="6" y1="20" x2="6" y2="14" /></svg>,
+      iconBg: "rgba(139,92,246,0.15)", iconColor: "#a78bfa", glowColor: "rgba(139,92,246,0.18)", borderColor: "rgba(139,92,246,0.2)",
+      label: "Compare Offers", desc: "Lay multiple quotes side-by-side for a clear winner.", cta: "Go to Comparison", ctaColor: "#a78bfa",
     },
     {
       to: "/email",
-      icon: (
-        <svg
-          width="28"
-          height="28"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-          <polyline points="22,6 12,13 2,6" />
-        </svg>
-      ),
-      iconBg: "rgba(16,185,129,0.15)",
-      iconColor: "#34d399",
-      glowColor: "rgba(16,185,129,0.18)",
-      borderColor: "rgba(16,185,129,0.2)",
-      label: "Negotiator",
-      desc: "Generate AI-powered counter-offer emails in seconds.",
-      cta: "Draft Email",
-      ctaColor: "#34d399",
+      icon: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" /></svg>,
+      iconBg: "rgba(16,185,129,0.15)", iconColor: "#34d399", glowColor: "rgba(16,185,129,0.18)", borderColor: "rgba(16,185,129,0.2)",
+      label: "Negotiator", desc: "Generate AI-powered counter-offer emails in seconds.", cta: "Draft Email", ctaColor: "#34d399",
     },
   ];
 
@@ -512,314 +1092,82 @@ const DashboardPage = () => {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
         *, *::before, *::after { box-sizing: border-box; }
-
-        .db-root {
-          font-family: 'Sora', sans-serif;
-          min-height: 100vh;
-          background: #050816;
-          position: relative;
-          overflow-x: hidden;
-        }
-
-        /* Orbs */
-        .db-orb {
-          position: fixed;
-          border-radius: 50%;
-          filter: blur(90px);
-          pointer-events: none;
-          z-index: 0;
-          animation: orbdrift 14s ease-in-out infinite alternate;
-        }
+        .db-root { font-family: 'Sora', sans-serif; min-height: 100vh; background: #050816; position: relative; overflow-x: hidden; }
+        .db-orb { position: fixed; border-radius: 50%; filter: blur(90px); pointer-events: none; z-index: 0; animation: orbdrift 14s ease-in-out infinite alternate; }
         .db-orb-1 { width:600px;height:600px; background:radial-gradient(circle,#4f46e5,#1e1b4b); top:-200px;left:-200px; opacity:0.35; animation-delay:0s; }
         .db-orb-2 { width:500px;height:500px; background:radial-gradient(circle,#0ea5e9,#0369a1); bottom:-180px;right:-150px; opacity:0.28; animation-delay:-6s; }
         .db-orb-3 { width:300px;height:300px; background:radial-gradient(circle,#8b5cf6,#6d28d9); top:40%;left:55%; opacity:0.2; animation-delay:-10s; }
-        @keyframes orbdrift {
-          0%   { transform: translate(0,0) scale(1); }
-          100% { transform: translate(30px,25px) scale(1.06); }
-        }
-
-        .db-grid {
-          position: fixed; inset: 0; z-index: 0; pointer-events: none;
-          background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-                            linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
-          background-size: 48px 48px;
-        }
-
-        /* Navbar */
-        .db-nav {
-          position: sticky; top: 0; z-index: 50;
-          background: rgba(5,8,22,0.75);
-          border-bottom: 1px solid rgba(255,255,255,0.08);
-          backdrop-filter: blur(24px);
-          -webkit-backdrop-filter: blur(24px);
-          padding: 0 2rem;
-          height: 64px;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-        }
-        .db-nav-logo {
-          display: flex; align-items: center; gap: 10px;
-        }
-        .db-nav-logo-icon {
-          width: 36px; height: 36px;
-          background: linear-gradient(135deg, #6c63ff, #4f46e5);
-          border-radius: 10px;
-          display: flex; align-items: center; justify-content: center;
-          font-size: 18px;
-          box-shadow: 0 4px 16px rgba(108,99,255,0.35);
-        }
-        .db-nav-title {
-          font-size: 1.1rem; font-weight: 700;
-          color: #fff; letter-spacing: -0.02em;
-        }
+        @keyframes orbdrift { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(30px,25px) scale(1.06); } }
+        .db-grid { position: fixed; inset: 0; z-index: 0; pointer-events: none; background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px); background-size: 48px 48px; }
+        .db-nav { position: sticky; top: 0; z-index: 50; background: rgba(5,8,22,0.75); border-bottom: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); padding: 0 2rem; height: 64px; display: flex; align-items: center; justify-content: space-between; }
+        .db-nav-logo { display: flex; align-items: center; gap: 10px; }
+        .db-nav-logo-icon { width: 36px; height: 36px; background: linear-gradient(135deg, #6c63ff, #4f46e5); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; box-shadow: 0 4px 16px rgba(108,99,255,0.35); }
+        .db-nav-title { font-size: 1.1rem; font-weight: 700; color: #fff; letter-spacing: -0.02em; }
         .db-nav-right { display: flex; align-items: center; gap: 14px; }
-        .db-welcome {
-          font-family: 'DM Sans', sans-serif;
-          font-size: 0.875rem;
-          color: rgba(255,255,255,0.45);
-        }
+        .db-welcome { font-family: 'DM Sans', sans-serif; font-size: 0.875rem; color: rgba(255,255,255,0.45); }
         .db-welcome span { color: #a5b4fc; font-weight: 600; }
-
-        .db-avatar {
-          width: 34px; height: 34px; border-radius: 50%;
-          background: linear-gradient(135deg, #6c63ff, #4f46e5);
-          display: flex; align-items: center; justify-content: center;
-          font-size: 0.8rem; font-weight: 700; color: #fff;
-          border: 2px solid rgba(108,99,255,0.4);
-          flex-shrink: 0;
-        }
-
-        .db-logout-btn {
-          display: flex; align-items: center; gap: 6px;
-          background: rgba(239,68,68,0.1);
-          border: 1px solid rgba(239,68,68,0.25);
-          color: #f87171;
-          font-family: 'Sora', sans-serif;
-          font-size: 0.8rem; font-weight: 600;
-          padding: 7px 14px; border-radius: 10px;
-          cursor: pointer;
-          transition: background 0.2s, border-color 0.2s, transform 0.15s;
-        }
-        .db-logout-btn:hover {
-          background: rgba(239,68,68,0.18);
-          border-color: rgba(239,68,68,0.45);
-          transform: translateY(-1px);
-        }
-
-        /* Hero */
-        .db-hero {
-          position: relative; z-index: 1;
-          text-align: center;
-          padding: 4rem 1.5rem 6rem;
-        }
-        .db-hero-badge {
-          display: inline-flex; align-items: center; gap: 6px;
-          background: rgba(108,99,255,0.14);
-          border: 1px solid rgba(108,99,255,0.3);
-          border-radius: 999px;
-          padding: 5px 16px;
-          font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
-          color: #a5b4fc; text-transform: uppercase;
-          margin-bottom: 1.5rem;
-        }
-        .db-hero-dot {
-          width: 6px; height: 6px; border-radius: 50%;
-          background: #6c63ff; box-shadow: 0 0 6px #6c63ff;
-          animation: pulse-dot 2s ease-in-out infinite;
-        }
+        .db-logout-btn { display: flex; align-items: center; gap: 6px; background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.25); color: #f87171; font-family: 'Sora', sans-serif; font-size: 0.8rem; font-weight: 600; padding: 7px 14px; border-radius: 10px; cursor: pointer; transition: background 0.2s, border-color 0.2s, transform 0.15s; }
+        .db-logout-btn:hover { background: rgba(239,68,68,0.18); border-color: rgba(239,68,68,0.45); transform: translateY(-1px); }
+        .db-hero { position: relative; z-index: 1; text-align: center; padding: 4rem 1.5rem 6rem; background: linear-gradient(135deg, #0F172A 0%, #1A1F2E 50%, #0D1117 100%);}
+        .db-hero-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(200,168,80,0.12); border: 1px solid rgba(200,168,80,0.3); border-radius: 999px; padding: 5px 16px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; color: #C8A850; text-transform: uppercase; margin-bottom: 1.5rem; }
+        .db-hero-dot { width: 6px; height: 6px; border-radius: 50%; background: #C8A850; box-shadow: 0 0 6px #C8A850; animation: pulse-dot 2s ease-in-out infinite; }
         @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.7)} }
-
-        .db-hero-title {
-          font-size: clamp(2rem, 5vw, 3.2rem);
-          font-weight: 800; color: #fff;
-          letter-spacing: -0.04em; line-height: 1.1;
-          margin-bottom: 1rem;
-        }
-        .db-hero-title span {
-          background: linear-gradient(135deg, #818cf8, #6c63ff, #a78bfa);
-          -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-          background-clip: text;
-        }
-        .db-hero-sub {
-          font-family: 'DM Sans', sans-serif;
-          font-size: 1rem; color: rgba(255,255,255,0.45);
-          max-width: 480px; margin: 0 auto;
-          line-height: 1.65;
-        }
-
-        /* Content */
-        .db-content {
-          position: relative; z-index: 1;
-          max-width: 1100px; margin: 0 auto;
-          padding: 0 1.5rem 4rem;
-          margin-top: -3rem;
-        }
-
-        /* Section label */
-        .db-section-label {
-          font-size: 0.7rem; font-weight: 600;
-          letter-spacing: 0.1em; text-transform: uppercase;
-          color: rgba(255,255,255,0.3);
-          margin-bottom: 1rem;
-          padding-left: 2px;
-        }
-
-        /* Main cards grid */
-        .db-cards-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-          gap: 1.25rem;
-          margin-bottom: 1.5rem;
-        }
-
-        .db-main-card {
-          position: relative;
-          background: rgba(255,255,255,0.04);
-          border: 1px solid rgba(255,255,255,0.09);
-          border-radius: 22px;
-          padding: 2rem;
-          text-decoration: none;
-          display: flex; flex-direction: column;
-          backdrop-filter: blur(20px);
-          -webkit-backdrop-filter: blur(20px);
-          transition: transform 0.22s, box-shadow 0.22s, border-color 0.22s, background 0.22s;
-          overflow: hidden;
-          animation: cardFadeIn 0.6s cubic-bezier(0.22,1,0.36,1) both;
-        }
-        .db-main-card:nth-child(1) { animation-delay: 0.05s; }
-        .db-main-card:nth-child(2) { animation-delay: 0.12s; }
-        .db-main-card:nth-child(3) { animation-delay: 0.19s; }
-        @keyframes cardFadeIn {
-          from { opacity:0; transform:translateY(24px); }
-          to   { opacity:1; transform:translateY(0); }
-        }
-        .db-main-card::before {
-          content:''; position:absolute;
-          top:0; left:10%; right:10%; height:1px;
-          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
-        }
-        .db-main-card:hover {
-          transform: translateY(-5px);
-          background: rgba(255,255,255,0.065);
-        }
-
-        .db-card-icon-wrap {
-          width: 54px; height: 54px; border-radius: 16px;
-          display: flex; align-items: center; justify-content: center;
-          margin-bottom: 1.4rem;
-          transition: transform 0.2s;
-        }
+        .db-hero-title { font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 800; color: #fff; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 1rem; }
+        .db-hero-sub { font-family: 'DM Sans', sans-serif; font-size: 1rem; color: rgba(255,255,255,0.45); max-width: 480px; margin: 0 auto; line-height: 1.65; }
+        .db-content { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 0 1.5rem 4rem; margin-top: -3rem; }
+        .db-section-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-bottom: 1rem; padding-left: 2px; }
+        .db-cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-bottom: 1.5rem; }
+        .db-main-card { position: relative; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.09); border-radius: 22px; padding: 2rem; text-decoration: none; display: flex; flex-direction: column; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); transition: transform 0.22s, box-shadow 0.22s, border-color 0.22s, background 0.22s; overflow: hidden; opacity: 0; transform: translateY(24px); }
+        .db-main-card.card-visible { opacity: 1; transform: translateY(0); }
+        .db-main-card::before { content:''; position:absolute; top:0; left:10%; right:10%; height:1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent); }
+        .db-main-card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.065); }
+        .db-card-icon-wrap { width: 54px; height: 54px; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.4rem; transition: transform 0.2s; }
         .db-main-card:hover .db-card-icon-wrap { transform: scale(1.1); }
-
-        .db-card-title {
-          font-size: 1.1rem; font-weight: 700;
-          color: #fff; letter-spacing: -0.02em;
-          margin-bottom: 0.5rem;
-        }
-        .db-card-desc {
-          font-family: 'DM Sans', sans-serif;
-          font-size: 0.855rem; color: rgba(255,255,255,0.42);
-          line-height: 1.6; flex: 1; margin-bottom: 1.5rem;
-        }
-        .db-card-cta {
-          display: inline-flex; align-items: center; gap: 6px;
-          font-size: 0.8rem; font-weight: 700;
-          letter-spacing: 0.02em;
-          transition: gap 0.2s;
-        }
+        .db-card-title { font-size: 1.1rem; font-weight: 700; color: #fff; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+        .db-card-desc { font-family: 'DM Sans', sans-serif; font-size: 0.855rem; color: rgba(255,255,255,0.42); line-height: 1.6; flex: 1; margin-bottom: 1.5rem; }
+        .db-card-cta { display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.02em; transition: gap 0.2s; }
         .db-main-card:hover .db-card-cta { gap: 10px; }
-
-        /* Bottom row */
-        .db-bottom-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-          gap: 1.25rem;
-        }
-
-        .db-bottom-card {
-          background: rgba(255,255,255,0.04);
-          border: 1px solid rgba(255,255,255,0.09);
-          border-radius: 18px;
-          padding: 1.4rem 1.6rem;
-          display: flex; align-items: center; gap: 1rem;
-          text-decoration: none;
-          backdrop-filter: blur(20px);
-          -webkit-backdrop-filter: blur(20px);
-          transition: transform 0.2s, background 0.2s;
-          animation: cardFadeIn 0.6s cubic-bezier(0.22,1,0.36,1) both;
-        }
-        .db-bottom-card:nth-child(1) { animation-delay: 0.26s; }
-        .db-bottom-card:nth-child(2) { animation-delay: 0.32s; }
+        .db-bottom-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem; }
+        .db-bottom-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.09); border-radius: 18px; padding: 1.4rem 1.6rem; display: flex; align-items: center; gap: 1rem; text-decoration: none; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); transition: transform 0.2s, background 0.2s; opacity: 0; transform: translateY(24px); }
+        .db-bottom-card.card-visible { opacity: 1; transform: translateY(0); }
         .db-bottom-card:hover { transform: translateY(-3px); background: rgba(255,255,255,0.06); }
-
-        .db-bottom-icon {
-          width: 46px; height: 46px; border-radius: 13px; flex-shrink: 0;
-          display: flex; align-items: center; justify-content: center;
-        }
-        .db-bottom-card-title {
-          font-size: 0.95rem; font-weight: 700; color: #fff;
-          letter-spacing: -0.01em; margin-bottom: 2px;
-        }
-        .db-bottom-card-sub {
-          font-family: 'DM Sans', sans-serif;
-          font-size: 0.8rem; color: rgba(255,255,255,0.38);
-        }
-        .db-bottom-arrow {
-          margin-left: auto; color: rgba(255,255,255,0.2);
-          transition: color 0.2s, transform 0.2s;
-          flex-shrink: 0;
-        }
+        .db-bottom-icon { width: 46px; height: 46px; border-radius: 13px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+        .db-bottom-card-title { font-size: 0.95rem; font-weight: 700; color: #fff; letter-spacing: -0.01em; margin-bottom: 2px; }
+        .db-bottom-card-sub { font-family: 'DM Sans', sans-serif; font-size: 0.8rem; color: rgba(255,255,255,0.38); }
+        .db-bottom-arrow { margin-left: auto; color: rgba(255,255,255,0.2); transition: color 0.2s, transform 0.2s; flex-shrink: 0; }
         .db-bottom-card:hover .db-bottom-arrow { color: rgba(255,255,255,0.5); transform: translateX(3px); }
       `}</style>
 
-      <div className="db-root">
+      <div className="db-root page-enter">
         <div className="db-orb db-orb-1" />
         <div className="db-orb db-orb-2" />
         <div className="db-orb db-orb-3" />
         <div className="db-grid" />
 
-        {/* NAVBAR */}
+        {dueReminders.map((r, i) => (
+          <div key={i} style={{ background: 'rgba(200,168,80,0.12)', borderBottom: '1px solid rgba(200,168,80,0.3)', padding: '12px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'relative', zIndex: 100 }}>
+            <span style={{ color: '#FDE68A', fontWeight: 600, fontSize: '0.85rem' }}>⏰ Reminder: Follow up with "{r.dealerName}" today!</span>
+            <button onClick={() => setDueReminders(prev => prev.filter((_, j) => j !== i))} style={{ background: 'transparent', border: 'none', color: '#94A3B8', cursor: 'pointer', fontSize: '1.1rem' }}>✕</button>
+          </div>
+        ))}
+
         <nav className="db-nav">
           <div className="db-nav-logo">
             <div className="db-nav-logo-icon">🚗</div>
             <span className="db-nav-title">AutoLease AI</span>
           </div>
           <div className="db-nav-right">
-            <span
-              className="db-welcome"
-              style={{ display: "none" }}
-              id="db-welcome-sm"
-            >
-              Welcome, <span>{user.name}</span>
-            </span>
-            <span className="db-welcome hidden sm:block">
-              Welcome, <span>{user.name}</span>
-            </span>
-            <div className="db-avatar">
-              {user.name?.[0]?.toUpperCase() || "U"}
-            </div>
+            <span className="db-welcome hidden sm:block">Welcome, <span>{user.name}</span></span>
+            <Link to="/profile" style={{ width: '34px', height: '34px', borderRadius: '50%', background: 'linear-gradient(135deg,#C8A850,#a07830)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0F172A', fontWeight: 700, fontSize: '0.85rem', textDecoration: 'none' }}>
+              {(user.name || 'U')[0].toUpperCase()}
+            </Link>
             <button onClick={handleLogout} className="db-logout-btn">
-              <svg
-                width="13"
-                height="13"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                <polyline points="16 17 21 12 16 7" />
-                <line x1="21" y1="12" x2="9" y2="12" />
-              </svg>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" /></svg>
               Logout
             </button>
           </div>
         </nav>
 
-        {/* HERO */}
         <div className="db-hero">
           <div>
             <span className="db-hero-badge">
@@ -828,169 +1176,49 @@ const DashboardPage = () => {
             </span>
           </div>
           <h2 className="db-hero-title">
-            Your Personal
-            <br />
-            <span>Car Buying Assistant</span>
+            {heroText}<span className="blink-cursor" style={{ color: "#C8A850", fontWeight: 300 }}>|</span>
           </h2>
-          <p className="db-hero-sub">
-            Upload contracts, uncover hidden fees, and negotiate like a pro.
-          </p>
+          <p className="db-hero-sub">Upload contracts, uncover hidden fees, and negotiate like a pro.</p>
         </div>
 
-        {/* MAIN CONTENT */}
         <div className="db-content">
           <p className="db-section-label">Quick Actions</p>
 
-          {/* 3 MAIN CARDS */}
           <div className="db-cards-grid">
             {mainCards.map((card) => (
-              <Link
-                key={card.to}
-                to={card.to}
-                className="db-main-card"
-                style={{
-                  "--card-glow": card.glowColor,
-                  "--card-border": card.borderColor,
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = card.borderColor;
-                  e.currentTarget.style.boxShadow = `0 12px 40px ${card.glowColor}, 0 0 0 1px ${card.borderColor}`;
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.09)";
-                  e.currentTarget.style.boxShadow = "none";
-                }}
-              >
-                <div
-                  className="db-card-icon-wrap"
-                  style={{ background: card.iconBg, color: card.iconColor }}
-                >
-                  {card.icon}
-                </div>
+              <Link key={card.to} to={card.to} className="db-main-card" style={{ "--card-glow": card.glowColor, "--card-border": card.borderColor }} onMouseEnter={(e) => { e.currentTarget.style.borderColor = card.borderColor; e.currentTarget.style.boxShadow = `0 12px 40px ${card.glowColor}, 0 0 0 1px ${card.borderColor}`; }} onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.09)"; e.currentTarget.style.boxShadow = "none"; }}>
+                <div className="db-card-icon-wrap" style={{ background: card.iconBg, color: card.iconColor }}>{card.icon}</div>
                 <div className="db-card-title">{card.label}</div>
                 <div className="db-card-desc">{card.desc}</div>
                 <span className="db-card-cta" style={{ color: card.ctaColor }}>
                   {card.cta}
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M5 12h14M12 5l7 7-7 7" />
-                  </svg>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
                 </span>
               </Link>
             ))}
           </div>
 
-          <p className="db-section-label" style={{ marginTop: "2rem" }}>
-            More Tools
-          </p>
+          <p className="db-section-label" style={{ marginTop: "2rem" }}>More Tools</p>
 
-          {/* SECONDARY ROW */}
           <div className="db-bottom-grid">
-            <Link
-              to="/history"
-              className="db-bottom-card"
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = "rgba(255,255,255,0.18)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = "rgba(255,255,255,0.09)";
-              }}
-            >
-              <div
-                className="db-bottom-icon"
-                style={{
-                  background: "rgba(255,255,255,0.07)",
-                  color: "rgba(255,255,255,0.6)",
-                }}
-              >
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <circle cx="12" cy="12" r="10" />
-                  <polyline points="12 6 12 12 16 14" />
-                </svg>
+            <Link to="/history" className="db-bottom-card" onMouseEnter={(e) => e.currentTarget.style.borderColor = "rgba(255,255,255,0.18)"} onMouseLeave={(e) => e.currentTarget.style.borderColor = "rgba(255,255,255,0.09)"}>
+              <div className="db-bottom-icon" style={{ background: "rgba(255,255,255,0.07)", color: "rgba(255,255,255,0.6)" }}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
               </div>
               <div>
                 <div className="db-bottom-card-title">View History</div>
-                <div className="db-bottom-card-sub">
-                  Access your past uploads
-                </div>
+                <div className="db-bottom-card-sub">Access your past uploads</div>
               </div>
-              <svg
-                className="db-bottom-arrow"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
+              <svg className="db-bottom-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
             </Link>
 
             <div className="db-bottom-card" style={{ cursor: "default" }}>
-              <div
-                className="db-bottom-icon"
-                style={{
-                  background: "rgba(108,99,255,0.15)",
-                  color: "#a5b4fc",
-                }}
-              >
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M12 2a10 10 0 1 0 10 10" />
-                  <path d="M12 8v4l3 3" />
-                  <circle
-                    cx="18"
-                    cy="6"
-                    r="3"
-                    fill="currentColor"
-                    stroke="none"
-                    opacity="0.6"
-                  />
-                  <path
-                    d="M16.5 6h3M18 4.5v3"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                  />
-                </svg>
+              <div className="db-bottom-icon" style={{ background: "rgba(108,99,255,0.15)", color: "#a5b4fc" }}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a10 10 0 1 0 10 10" /><path d="M12 8v4l3 3" /><circle cx="18" cy="6" r="3" fill="currentColor" stroke="none" opacity="0.6" /><path d="M16.5 6h3M18 4.5v3" stroke="currentColor" strokeWidth="1.5" /></svg>
               </div>
               <div>
-                <div
-                  className="db-bottom-card-title"
-                  style={{ color: "#c4b5fd" }}
-                >
-                  Need Advice?
-                </div>
-                <div className="db-bottom-card-sub">
-                  Click the chat bubble ↘ to ask the AI Coach!
-                </div>
+                <div className="db-bottom-card-title" style={{ color: "#c4b5fd" }}>Need Advice?</div>
+                <div className="db-bottom-card-sub">Click the chat bubble ↘ to ask the AI Coach!</div>
               </div>
             </div>
           </div>
