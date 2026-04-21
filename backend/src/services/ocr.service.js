@@ -17,6 +17,7 @@
 
 const Tesseract = require("tesseract.js");
 const fs = require("fs");
+const path = require("path"); // 👈 Added path module to safely locate the language files
 const { convertPdfToImages } = require("./pdf_to_png.service");
 
 const extractTextFromPDF = async (filePath) => {
@@ -24,30 +25,33 @@ const extractTextFromPDF = async (filePath) => {
     if (!fs.existsSync(filePath)) {
       throw new Error("PDF file not found");
     }
-    // const result = await Tesseract.recognize(filePath, "eng");
+    
     const pages = await convertPdfToImages(filePath);
 
     let fullText = "";
-
-    // for (const page of pages) {
-    //   const result = await Tesseract.recognize(page.content, "eng");
-    //   fullText += "\n" + result.data.text;
-    // }
-    
     let pageTexts = [];
     let pageNumber = 1;
-    for(const page of pages){
-      const result = await Tesseract.recognize(page.content,"eng");
-      const pageText = (result?.data?.text||"").trim();
+    
+    for (const page of pages) {
+      // 🔥 NEW: Now supporting both English AND Hindi simultaneously!
+      // The langPath points to the root 'backend' folder where hin.traineddata lives.
+      const result = await Tesseract.recognize(page.content, "eng+hin", {
+        langPath: path.join(__dirname, "../../") 
+      });
+      
+      const pageText = (result?.data?.text || "").trim();
+      
       pageTexts.push({
-        page:pageNumber,
-        text:pageText
-      })
-      if(pageText.length>0){
-      fullText += `\n\n--- Page ${pageNumber} ---\n\n` + pageText;
+        page: pageNumber,
+        text: pageText
+      });
+      
+      if (pageText.length > 0) {
+        fullText += `\n\n--- Page ${pageNumber} ---\n\n` + pageText;
       }
       pageNumber++;
     }
+    
     let warnings = [];
 
     for (const p of pageTexts) {
@@ -60,12 +64,11 @@ const extractTextFromPDF = async (filePath) => {
     if (!text || text.trim().length === 0) {
       throw new Error("OCR returned empty text");
     }
-    
 
     return {
       success: true,
       rawText: text,
-      totalPages:pages.length,
+      totalPages: pages.length,
       warnings
     };
   } catch (error) {
@@ -80,3 +83,4 @@ const extractTextFromPDF = async (filePath) => {
 module.exports = {
   extractTextFromPDF,
 };
+

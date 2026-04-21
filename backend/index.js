@@ -148,6 +148,12 @@ const healthRoutes = require("./src/routes/health.routes");
 const vinRoutes = require("./src/routes/vin.routes"); // Assuming this exists
 const negotiateRoute = require('./src/routes/negotiate.route');
 const statsRoute = require('./src/routes/stats.route');
+const summarizeRoute = require('./src/routes/summarize.route'); // <--- ADDED
+const analyticsRoute = require('./src/routes/analytics.route'); // <--- ADDED
+
+const explainRoute = require('./src/routes/explain.route'); // Phase 3
+const diffRoute = require('./src/routes/diff.route'); // Phase 3
+const contactRoute = require("./src/routes/contact.route");
 
 
 // Middleware
@@ -171,25 +177,17 @@ app.use("/api/auth", authRoute);
 app.use("/api/v1/vin", vinRoutes);
 app.use('/api/negotiate', negotiateRoute);
 app.use('/api/user/stats', statsRoute);
+app.use('/api/summarize', summarizeRoute); // <--- ADDED
+app.use('/api/analytics', analyticsRoute); // <--- ADDED
+app.use('/api/explain', explainRoute); // Phase 3
+app.use('/api/diff', diffRoute); // Phase 3
+app.use("/api/contact",contactRoute);
+
+
 
 
 // Global Error Handler
 app.use(errorHandler);
-
-// const PORT = process.env.PORT || 3000;
-
-// async function startServer() {
-//   try {
-//     await connectToDB();
-//     logger.info("✅ Database connected.");
-//     app.listen(PORT, () => logger.info(`🚀 Server running on  http://localhost:${PORT}`));
-//   } catch (err) {
-//     logger.error(`Startup failed: ${err.message}`);
-//     process.exit(1);
-//   }
-// }
-
-// startServer();
 
 const PORT = process.env.PORT || 3000;
 
