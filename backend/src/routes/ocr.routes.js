@@ -19,7 +19,7 @@ router.post("/test", upload.single("file"), async (req, res) => {
       });
     }
 
-    // const filePath = path.join(__dirname, "..", req.file.path);
+    
     const filePath = req.file.path;
     const ocrResult = await extractTextFromPDF(filePath);
 

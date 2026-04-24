@@ -5,8 +5,7 @@ const OcrResult = require('../models/OcrResult');
 
 router.get('/', auth, async (req, res) => {
   try {
-    // Because OcrResultSchema does not have a userId field yet, 
-    // we fetch all documents so your 65 contracts show up!
+    
     const results = await OcrResult.find({}).lean();
     const total = results.length;
     

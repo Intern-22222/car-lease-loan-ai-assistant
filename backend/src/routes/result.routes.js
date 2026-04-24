@@ -1,106 +1,4 @@
-// const express = require("express");
-// const mongoose = require("mongoose");
-// const router = express.Router();
-// const OcrResult = require("../models/OcrResult");
-// router.get("/results/:id", async (req, res) => {
-//   try {
-//     const recordId = req.params.id;
 
-//     if (!mongoose.Types.ObjectId.isValid(recordId)) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Invalid record ID format",
-//       });
-//     }
-
-//     const record = await OcrResult.findById(recordId);
-
-//     if (!record) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "Record not found",
-//       });
-//     }
-
-//     return res.json({
-//       success: true,
-//       record,
-//     });
-//     // return res.json({
-//     //   success: true,
-//     //   message: "Results endpoint working",
-//     //   idReceived: recordId,
-//     // });
-//   } catch (error) {
-//     return res.status(500).json({
-//       success: false,
-//       message: "Unexpected server error",
-//       error: error.message,
-//     });
-//   }
-// });
-
-// router.get("/results", async (req, res) => {
-//   try {
-//     const records = await OcrResult.find().sort({ uploadedAt: -1 });
-
-//     return res.json({
-//       success: true,
-//       count: records.length,
-//       records,
-//     });
-//   } catch (error) {
-//     return res.status(500).json({
-//       success: false,
-//       message: "Unexpected server error",
-//       error: error.message,
-//     });
-//   }
-// });
-
-// module.exports = router;
-
-// const express = require("express");
-// const mongoose = require("mongoose");
-// const router = express.Router();
-// const OcrResult = require("../models/OcrResult");
-
-// // GET Single Result
-// router.get("/results/:id", async (req, res) => {
-//   try {
-//     const recordId = req.params.id;
-
-//     if (!mongoose.Types.ObjectId.isValid(recordId)) {
-//       return res
-//         .status(400)
-//         .json({ success: false, message: "Invalid record ID" });
-//     }
-
-//     const record = await OcrResult.findById(recordId);
-
-//     if (!record) {
-//       return res
-//         .status(404)
-//         .json({ success: false, message: "Record not found" });
-//     }
-
-//     res.json({ success: true, data: record }); // Standardized 'data' key
-//   } catch (error) {
-//     res.status(500).json({ success: false, message: error.message });
-//   }
-// });
-
-// // GET All Results
-// router.get("/results", async (req, res) => {
-//   try {
-//     const records = await OcrResult.find().sort({ uploadedAt: -1 });
-//     res.json({ success: true, count: records.length, records });
-//   } catch (error) {
-//     res.status(500).json({ success: false, message: error.message });
-//   }
-// });
-
-// module.exports = router;
 
 
 
@@ -110,7 +8,7 @@ const router = express.Router();
 const OcrResult = require("../models/OcrResult");
 const authMiddleware = require("../middlewares/auth.middleware");
 
-// GET Single Result — ✅ only owner can access
+
 router.get("/results/:id", authMiddleware, async (req, res) => {
   try {
     const recordId = req.params.id;
@@ -125,7 +23,7 @@ router.get("/results/:id", authMiddleware, async (req, res) => {
       return res.status(404).json({ success: false, message: "Record not found" });
     }
 
-    // ✅ Block access if this record belongs to a different user
+   
     if (record.userId && record.userId.toString() !== req.user.id) {
       return res.status(403).json({ success: false, message: "Access denied" });
     }
@@ -136,7 +34,7 @@ router.get("/results/:id", authMiddleware, async (req, res) => {
   }
 });
 
-// GET All Results — ✅ only return THIS user's records
+
 router.get("/results", authMiddleware, async (req, res) => {
   try {
     const records = await OcrResult.find({ userId: req.user.id }).sort({ uploadedAt: -1 });

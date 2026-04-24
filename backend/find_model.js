@@ -4,7 +4,6 @@ require("dotenv").config();
 async function findWorkingModel() {
   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-  // List of all possible model variants
   const candidates = [
     "gemini-1.5-flash",
     "gemini-1.5-flash-001",
@@ -29,12 +28,12 @@ async function findWorkingModel() {
       console.log(
         `\n🎉 SOLUTION: Open 'src/services/ai.service.js' and change 'MODEL_NAME' to: "${modelName}"\n`,
       );
-      return; // Stop after finding the first working one
+      return; 
     } catch (e) {
       if (e.message.includes("404")) {
         console.log("❌ Not Found (404)");
       } else {
-        console.log(`❌ Error: ${e.message.split("[")[0]}`); // Print short error
+        console.log(`❌ Error: ${e.message.split("[")[0]}`); 
       }
     }
   }

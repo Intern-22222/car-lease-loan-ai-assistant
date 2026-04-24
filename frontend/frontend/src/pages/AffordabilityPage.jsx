@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-// ─── CALCULATION ENGINE ─────────────────────────────────────────────
 const computeEMI = (principal, annualRate, months) => {
     if (!principal || !annualRate || !months) return 0;
     const r = annualRate / 100 / 12;
@@ -93,7 +92,7 @@ const AffordabilityPage = () => {
         setTimeout(() => resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
     };
 
-    // Animated DTI counter
+   
     useEffect(() => {
         if (!result) return;
         const target = result.dtiRatio;
@@ -144,7 +143,7 @@ const AffordabilityPage = () => {
                 <div className="aff-grid" />
                 <div className="aff-wrap">
 
-                    {/* Header */}
+                    
                     <div style={{ marginBottom: '2rem' }}>
                         <Link to="/dashboard" style={{ color: '#94A3B8', textDecoration: 'none', fontSize: '0.82rem', display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '8px 14px', background: 'rgba(255,255,255,0.05)', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.09)', marginBottom: '1.5rem' }}>
                             ← Dashboard
@@ -161,7 +160,7 @@ const AffordabilityPage = () => {
                         </p>
                     </div>
 
-                    {/* Input Form Card */}
+                    
                     <div className="aff-card" style={{ marginBottom: '1.5rem' }}>
                         <p style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: '1.25rem' }}>Your Financial Details</p>
 
@@ -209,11 +208,11 @@ const AffordabilityPage = () => {
                         </button>
                     </div>
 
-                    {/* Results */}
+                    
                     {result && (
                         <div ref={resultRef} className="aff-result">
 
-                            {/* Main Verdict */}
+                           
                             <div style={{ background: `${result.color}10`, border: `1px solid ${result.color}35`, borderRadius: '20px', padding: '1.75rem', marginBottom: '1.25rem' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '1rem' }}>
                                     <span style={{ fontSize: '2rem' }}>{result.icon}</span>
@@ -226,7 +225,7 @@ const AffordabilityPage = () => {
                                         <div style={{ color: '#94A3B8', fontSize: '0.72rem' }}>of monthly income</div>
                                     </div>
                                 </div>
-                                {/* DTI bar */}
+                                
                                 <div style={{ height: '10px', background: 'rgba(255,255,255,0.07)', borderRadius: '5px', overflow: 'hidden', marginBottom: '10px' }}>
                                     <div style={{ height: '100%', width: `${Math.min(result.dtiRatio, 100)}%`, background: `linear-gradient(90deg,#10B981,${result.color})`, borderRadius: '5px', transition: 'width 1s ease' }} />
                                 </div>
@@ -236,7 +235,7 @@ const AffordabilityPage = () => {
                                 <p style={{ color: '#F1F5F9', fontFamily: "'DM Sans',sans-serif", fontSize: '0.9rem', lineHeight: 1.65, margin: 0 }}>{result.message}</p>
                             </div>
 
-                            {/* Stats Grid */}
+                           
                             <div className="aff-grid-2" style={{ marginBottom: '1.25rem' }}>
                                 {[
                                     { label: 'New Monthly EMI', val: `₹${result.newEMI.toLocaleString('en-IN')}`, color: '#C8A850' },
@@ -253,7 +252,7 @@ const AffordabilityPage = () => {
                                 ))}
                             </div>
 
-                            {/* Smart Tips based on result */}
+                            
                             <div className="aff-card" style={{ marginBottom: '1.25rem' }}>
                                 <p style={{ color: '#C8A850', fontWeight: 700, fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.07em', margin: '0 0 1rem' }}>💡 Smart Recommendations</p>
                                 {result.dtiRatio > 40 && (

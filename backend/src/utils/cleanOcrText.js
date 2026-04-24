@@ -73,8 +73,7 @@ function cleanOcrText(rawText) {
     cleanedText = cleanedText.slice(0, 200000);
   }
 
-  // TODO: enable logging for debugging later if needed
-  // console.log("Cleaned OCR text preview:", cleanedText.slice(0, 500));
+  
 
   return cleanedText;
 }

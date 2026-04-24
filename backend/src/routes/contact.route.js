@@ -10,22 +10,20 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ success: false, message: 'Name, email, and message are required.' });
     }
 
-    // Set up the email transporter
+   
     const transporter = nodemailer.createTransport({
-      service: 'gmail', // Change this if you aren't using Gmail
+      service: 'gmail',
       auth: {
         user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS, // Make sure you are using an App Password, not your normal password
+        pass: process.env.EMAIL_PASS, 
       },
     });
 
-    // Fetch the admin email from your .env
     const adminEmail = process.env.ADMIN_EMAIL;
 
-    // Send the email
     await transporter.sendMail({
       from: `"${name} (AutoLease AI)" <${process.env.EMAIL_USER}>`,
-      replyTo: email, // This allows you to hit "Reply" and email the user directly!
+      replyTo: email, 
       to: adminEmail,
       subject: `[AutoLease AI Contact] ${subject}`,
       text: `You have received a new message from the AutoLease AI Contact Form.\n\nName: ${name}\nEmail: ${email}\nTopic: ${subject}\n\nMessage:\n${message}`,

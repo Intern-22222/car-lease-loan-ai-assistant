@@ -19,7 +19,7 @@ router.post('/', auth, async (req, res) => {
       return res.status(404).json({ success: false, message: 'One or both contracts not found' });
     }
 
-    // Build field comparison
+    
     const fieldKeys = ['loan_amount', 'interest_rate', 'tenure_months', 'monthly_payment', 'down_payment', 'early_termination_fee', 'late_payment_penalty'];
     const fieldDiffs = fieldKeys.map(key => {
       const before = original.fields?.[key];
@@ -31,14 +31,14 @@ router.post('/', auth, async (req, res) => {
       let direction = 'unchanged';
       
       if (!isNaN(bNum) && !isNaN(aNum) && bNum !== aNum) {
-        // For most fields, lower is better (fees, rate). For loan amount, depends.
+       
         const lowerIsBetter = ['interest_rate', 'early_termination_fee', 'late_payment_penalty', 'monthly_payment', 'down_payment'].includes(key);
         direction = aNum < bNum ? (lowerIsBetter ? 'improved' : 'changed') : (lowerIsBetter ? 'worsened' : 'changed');
       }
       return { field: key.replace(/_/g, ' '), before: before || '—', after: after || '—', direction };
     }).filter(Boolean);
 
-    // Price comparison
+   
     const priceChange = {
       originalScore: original.pricingAnalysis?.score,
       revisedScore: revised.pricingAnalysis?.score,
@@ -48,7 +48,7 @@ router.post('/', auth, async (req, res) => {
       revisedVerdict: revised.pricingAnalysis?.verdict,
     };
 
-    // Fee comparison
+    
     const origFees = (original.hiddenFees?.fees || []).map(f => f.name);
     const revFees = (revised.hiddenFees?.fees || []).map(f => f.name);
     const feesRemoved = origFees.filter(f => !revFees.includes(f));

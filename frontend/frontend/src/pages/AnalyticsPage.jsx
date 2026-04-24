@@ -17,11 +17,10 @@ const AnalyticsPage = () => {
             .finally(() => setLoading(false));
     }, []);
 
-    // Native Canvas Drawing (Zero Dependencies!)
+   
     useEffect(() => {
         if (!data || !barRef.current || !donutRef.current) return;
 
-        // Draw Bar Chart (Monthly)
         const ctxBar = barRef.current.getContext('2d');
         ctxBar.clearRect(0, 0, 400, 200);
         const maxCount = Math.max(...data.monthly.map(d => d.count), 1);
@@ -48,7 +47,7 @@ const AnalyticsPage = () => {
             }
         });
 
-        // Draw Donut Chart (Scores)
+        
         const ctxDonut = donutRef.current.getContext('2d');
         ctxDonut.clearRect(0, 0, 200, 200);
         const totalScores = data.scoreDist.poor + data.scoreDist.fair + data.scoreDist.good || 1;
@@ -84,7 +83,6 @@ const AnalyticsPage = () => {
                     <Link to="/" style={{ padding: '8px 16px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', color: '#94A3B8', textDecoration: 'none', fontSize: '0.85rem' }}>← Dashboard</Link>
                 </div>
 
-                {/* Top Stat Cards */}
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.25rem', marginBottom: '2rem' }}>
                     <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', padding: '1.5rem', borderRadius: '18px' }}>
                         <p style={{ color: '#94A3B8', margin: '0 0 8px', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 700 }}>Total Contracts</p>
@@ -97,13 +95,13 @@ const AnalyticsPage = () => {
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.25rem' }}>
-                    {/* Uploads Bar Chart */}
+                   
                     <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', padding: '1.5rem', borderRadius: '18px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                         <h3 style={{ margin: '0 0 1rem', width: '100%', fontSize: '1rem', color: '#F1F5F9' }}>Uploads Over Time</h3>
                         <canvas ref={barRef} width={400} height={200} style={{ width: '100%', maxWidth: '400px' }} />
                     </div>
 
-                    {/* Score Donut */}
+                    
                     <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', padding: '1.5rem', borderRadius: '18px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                         <h3 style={{ margin: '0 0 1rem', width: '100%', fontSize: '1rem', color: '#F1F5F9' }}>Score Distribution</h3>
                         <canvas ref={donutRef} width={200} height={200} />

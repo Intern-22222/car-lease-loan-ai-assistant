@@ -39,7 +39,7 @@ const uploadContract = async (req, res) => {
       }
     }
 
-    // ---------------- MARKET FAIR PRICE ----------------
+    
 
     if (ocrResult.vehicleDetails) {
       const pricingResult = estimateMarketFairPrice(ocrResult.vehicleDetails);
@@ -48,17 +48,7 @@ const uploadContract = async (req, res) => {
         const contractPrice = extractedResult.fields?.loan_amount || null;
 
         if (contractPrice) {
-          //   ocrResult.pricingAnalysis = {
-          /* marketFairPrice: pricingResult.marketFairPrice,
-            // contractPrice,
-            // difference: contractPrice - pricingResult.marketFairPrice,
-            // verdict:
-            //   contractPrice > pricingResult.marketFairPrice
-            //     ? "Overpriced"
-            //     : "Fair",
-            // confidence: pricingResult.confidence,
-            // source: pricingResult.source,
-            */
+          
           let recommendationText = "";
 
           const diff = contractPrice - pricingResult.marketFairPrice;

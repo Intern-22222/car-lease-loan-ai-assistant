@@ -33,7 +33,7 @@ const AboutPage = () => {
                     </p>
                 </div>
 
-                {/* THE PROBLEM */}
+               
                 <div className="reveal" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '3rem', marginBottom: '6rem', alignItems: 'center' }}>
                     <div>
                         <h2 style={{ fontFamily: "'Sora', sans-serif", fontSize: '2rem', marginBottom: '1rem' }}>The Asymmetry Problem</h2>

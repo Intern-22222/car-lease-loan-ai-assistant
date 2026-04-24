@@ -3,7 +3,7 @@ const router = express.Router();
 const auth = require('../middlewares/auth.middleware');
 const OpenAI = require('openai');
 
-// Configure the OpenAI SDK to use OpenRouter
+
 const openai = new OpenAI({
   baseURL: "https://openrouter.ai/api/v1",
   apiKey: process.env.OPENROUTER_API_KEY,
@@ -17,7 +17,7 @@ router.post('/', auth, async (req, res) => {
       ? `${vehicleDetails.year || ''} ${vehicleDetails.make || ''} ${vehicleDetails.model || ''}`.trim()
       : 'the vehicle';
       
-    // Safely extract fees whether it's an array or an object containing a fees array
+    
     let feesArray = [];
     if (Array.isArray(hiddenFees)) {
       feesArray = hiddenFees;
@@ -43,7 +43,7 @@ Return plain text only, no markdown, no asterisks.
     `.trim();
 
     const completion = await openai.chat.completions.create({
-      model: 'openai/gpt-3.5-turbo', // OpenRouter prefix formatting
+      model: 'openai/gpt-3.5-turbo', 
       messages: [{ role: 'user', content: prompt }],
       max_tokens: 600,
       temperature: 0.7,

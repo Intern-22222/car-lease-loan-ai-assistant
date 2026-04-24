@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import LandingNav from '../components/LandingNav';
 
 const LandingPage = () => {
-    // Scroll Animation Logic
+    
     useEffect(() => {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {

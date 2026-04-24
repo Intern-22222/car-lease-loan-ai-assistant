@@ -1,23 +1,8 @@
-// const dotenv = require("dotenv").config();
 
-// const OCR_PROVIDER = process.env.OCR_PROVIDER;
-// const OCR_API_KEY = process.env.OCR_API_KEY;
-// const OCR_BASE_URL = process.env.OCR_BASE_URL;
-
-// const extractTextFromPDF = async (filePath) => {
-//   if(!OCR_PROVIDER||!OCR_API_KEY||!OCR_BASE_URL){
-//       return null;
-//   }
-//   return null;
-// };
-
-// module.exports = {
-//   extractTextFromPDF,
-// };
 
 const Tesseract = require("tesseract.js");
 const fs = require("fs");
-const path = require("path"); // 👈 Added path module to safely locate the language files
+const path = require("path"); 
 const { convertPdfToImages } = require("./pdf_to_png.service");
 
 const extractTextFromPDF = async (filePath) => {
@@ -33,8 +18,7 @@ const extractTextFromPDF = async (filePath) => {
     let pageNumber = 1;
     
     for (const page of pages) {
-      // 🔥 NEW: Now supporting both English AND Hindi simultaneously!
-      // The langPath points to the root 'backend' folder where hin.traineddata lives.
+      
       const result = await Tesseract.recognize(page.content, "eng+hin", {
         langPath: path.join(__dirname, "../../") 
       });

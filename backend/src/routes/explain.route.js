@@ -65,7 +65,7 @@ REASON: [one sentence explanation]`;
 
     const raw = completion.choices[0]?.message?.content || '';
 
-    // Parse the structured response
+   
     const factors = raw.split('---').map(block => {
       const lines = block.trim().split('\n').filter(Boolean);
       const get = (key) => lines.find(l => l.startsWith(key + ':'))?.replace(key + ':', '').trim() || '';

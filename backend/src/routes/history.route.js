@@ -2,10 +2,10 @@ const express = require("express");
 const router = express.Router();
 const OcrResult = require("../models/OcrResult");
 
-// GET /api/history
+
 router.get("/", async (req, res) => {
   try {
-    // Fetch all records, sorted by newest first
+    
     const history = await OcrResult.find().sort({ uploadedAt: -1 });
 
     res.json({
@@ -20,7 +20,7 @@ router.get("/", async (req, res) => {
 });
 
 
-// DELETE /api/history/:id
+
 router.delete("/:id", async (req, res) => {
   try {
     await OcrResult.findByIdAndDelete(req.params.id);
